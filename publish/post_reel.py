@@ -1,12 +1,13 @@
 """Post the next unposted reel from publish/queue.json to Instagram (Graph API, resumable upload).
 Env: IG_TOKEN, IG_USER_ID, optional GRAPH_VERSION, EPISODE (force one id), COUNT (default 1), DRY_RUN=1 (only check token).
-Video comes from the repo; cover = first frame (thumb_offset=0). Nothing is rendered here."""
+Video is uploaded from the repo; cover is fetched by Instagram from the public repo (cover_url). Nothing is rendered here."""
 import json, os, sys, time
 import requests
 
 TOKEN, IG_ID = os.environ['IG_TOKEN'].strip(), os.environ['IG_USER_ID'].strip()
 VER = os.environ.get('GRAPH_VERSION', 'v24.0')
 QUEUE = 'publish/queue.json'
+RAW = 'https://raw.githubusercontent.com/' + os.environ.get('GITHUB_REPOSITORY', 'prakharAgr2001/frontend-decoded') + '/main/'
 
 def pick_host():
     # Instagram-login tokens live on graph.instagram.com, Facebook/system-user tokens on graph.facebook.com
@@ -21,7 +22,7 @@ def post(host, e):
     path = e['video']; size = os.path.getsize(path)
     r = requests.post(f'{host}/{VER}/{IG_ID}/media', data={
         'media_type': 'REELS', 'upload_type': 'resumable', 'caption': e['caption'],
-        'thumb_offset': '0', 'share_to_feed': 'true', 'access_token': TOKEN}, timeout=60)
+        'cover_url': RAW + e['cover'], 'share_to_feed': 'true', 'access_token': TOKEN}, timeout=60)
     if not r.ok: sys.exit(f'create container failed: {r.text}')
     cid = r.json()['id']; uri = r.json().get('uri') or f'https://rupload.facebook.com/ig-api-upload/{VER}/{cid}'
     print(e['id'], 'container', cid)

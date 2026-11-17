@@ -11,6 +11,6 @@
 
 ## Instagram publishing (S1)
 - Page: @tech.explained.dev. Secrets `IG_TOKEN` (system-user token, no expiry) + `IG_USER_ID` set in GitHub.
-- `publish/make_covers.py` → `covers/S1Exx.jpg`; `publish/prep_videos.py` → `videos/S1Exx.mp4` (cover as first 0.1 s, crf 27).
+- `publish/make_covers.py` → `covers/S1Exx.jpg`; `publish/prep_videos.py` → `videos/S1Exx.mp4` (crf 27; cover sent as cover_url from public repo).
 - `publish/build_queue.py` → `publish/queue.json` (captions from notes/season1_captions.md, rebranded).
 - `.github/workflows/post-reel.yml`: daily 19:00 IST posts next unposted reel; manual run supports episode/count/dry_run.

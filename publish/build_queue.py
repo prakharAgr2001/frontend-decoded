@@ -10,7 +10,7 @@ for m in re.finditer(r'\*\*E(\d\d) · [^*]+\*\*\n(.*?)(?=\n\n\*\*E|\Z)', md, re.
     ep = f'S1E{m.group(1)}'
     cap = m.group(2).strip().replace('Frontend Decoded', 'Tech, Explained')
     e = q.get(ep, {'id': ep, 'posted': False})
-    e.update(video=f'videos/{ep}.mp4', caption=f'{cap}\n\nFollow @tech.explained.dev for the full series.\n\n{TAGS}')
+    e.update(video=f'videos/{ep}.mp4', cover=f'covers/{ep}.jpg', caption=f'{cap}\n\nFollow @tech.explained.dev for the full series.\n\n{TAGS}')
     out.append(e)
 json.dump(out, open('publish/queue.json', 'w'), indent=1, ensure_ascii=False)
 print(len(out), 'entries')
