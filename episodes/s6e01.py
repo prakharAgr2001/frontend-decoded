@@ -72,30 +72,36 @@ def postcard(c):
     if c.on(tc): chapter(c, 540, 1200, 'S1 · E04', 'HTTP = a postcard', tc)
 
 
+def oven(c, cx, cy, s=1.0, door=0.0):
+    c.pen.rr(cx - 170, cy - 150, cx + 170, cy + 150, 20, fill=(220, 215, 205), outline=INK, w=5)
+    c.pen.rr(cx - 140, cy - 80, cx + 140, cy + 125, 14, fill=(60, 50, 45) if door < 0.5 else (255, 190, 110), outline=INK, w=4)
+    for k in range(3): c.pen.circ(cx - 90 + k * 60, cy - 115, 14, fill=WHITE, outline=INK, w=3)
+    if door >= 0.5: c.pen.rr(cx - 70, cy + 20, cx + 70, cy + 80, 30, fill=(200, 140, 80), outline=INK, w=3)
+
+
 def analogy(c):
-    tb = c.T('noticeboard')
+    tb = c.T('oven')
     if c.on(tb):
         card(c.pen, 70, 400, 520, 1140, 26, WHITE, 10, 5)
-        c.pen.text(295, 460, 'NOTICEBOARD', 'osw', 48, INK)
-        c.pen.rr(140, 520, 450, 740, 10, fill=(205, 165, 115), outline=INK, w=4)
-        for k, (x, y, col) in enumerate(((170, 545, YEL), (300, 560, WHITE), (180, 650, PINK), (320, 660, CYAN))):
-            c.pen.rect(x, y, x + 100, y + 60, fill=col, outline=INK, w=2)
+        c.pen.text(295, 460, 'NO TIMER', 'osw', 48, INK)
         tc = c.T('check')
-        dx = 70 * math.sin((c.t - tc) * 4) if c.on(tc) else 0
-        person(c.pen, 295 + dx, 1050, 1.2, BLUE)
-        if c.on(c.T('Again')): txt(c, 295, 1100, 'check · check · check', c.T('Again'), 'ints', 30, MUTE)
-        label(c, 295, 800, 'PULL', c.T('walk'), RED, WHITE, 32)
+        door = (math.sin((c.t - tc) * 5) > 0) if c.on(tc) else False
+        oven(c, 295, 630, door=1.0 if door else 0.0)
+        person(c.pen, 295, 1050, 1.2, BLUE)
+        if c.on(c.T('Again')): txt(c, 295, 1100, 'open · check · open · check', c.T('Again'), 'ints', 26, MUTE)
+        label(c, 295, 835, 'PULL', tc, RED, WHITE, 32)
     to = c.T('opposite')
     if c.on(to):
         dy = (1 - c.P(to, 0.45)) * 900
         card(c.pen, 560, 400 + dy, 1010, 1140 + dy, 26, WHITE, 10, 5)
-        c.pen.text(785, 460 + dy, 'SHOULDER TAP', 'osw', 48, INK)
-        person(c.pen, 760, 1000 + dy, 1.2, BLUE)
-        tt = c.T('taps')
-        if c.on(tt):
-            c.pen.circ(830, 790 + dy, 34 * c.B(tt, 0.35), fill=YEL, outline=INK, w=4); c.sfx(tt, 'ding')
-            pill(c.pen, 840, 700 + dy, 'news!', c.B(tt + 0.15, 0.35), YEL, INK, 34)
-        label(c, 785, 580, 'PUSH', c.T('moment'), GRN, WHITE, 32)
+        c.pen.text(785, 460 + dy, 'THE TIMER', 'osw', 48, INK)
+        icon(c.pen, 'clock', 785, 610 + dy, 1.6)
+        td = c.T('dings')
+        if c.on(td):
+            c.sfx(td, 'ding')
+            pill(c.pen, 785, 735 + dy, 'ding! ready', c.B(td, 0.35), YEL, INK, 34)
+        person(c.pen, 785, 1050 + dy, 1.2, BLUE)
+        label(c, 785, 835, 'PUSH', c.T('moment'), GRN, WHITE, 32)
 
 
 def menu(c):
@@ -122,8 +128,8 @@ SCENES = [
     (hook, "Your friend hits send on her phone. Less than a second later, the message pops up in WhatsApp Web on your laptop. You didn't click. You didn't refresh. So who told your browser?"),
     (devtools, "Open DevTools, go to Network, and filter by WS. There's one connection that never finishes. Click it, open Messages, and watch. Every time a message arrives, a new frame appears with a red down arrow. Send one, and a green up arrow appears."),
     (postcard, "That's surprising, because the web was built on request and response. In season one, HTTP was a postcard. The browser asks, the server answers, done. The server can't send a postcard nobody asked for."),
-    (analogy, "Think of a school noticeboard. To get news, you walk over and check it. Again, and again. Real time is the opposite. Someone taps your shoulder, the moment there's news."),
-    (menu, "This season covers five ways to get that tap. Short polling. Long polling. Server sent events. WebSockets. And WebRTC, where browsers talk directly to each other. Then the hard parts: dropped connections, ordering, duplicates, presence, and two people editing one document."),
+    (analogy, "Think of baking a cake with no timer. You keep opening the oven to check. Again, and again. Real time is the opposite. The timer dings, the moment it's ready."),
+    (menu, "This season covers five ways to get that ding. Short polling. Long polling. Server sent events. WebSockets. And WebRTC, where browsers talk directly to each other. Then the hard parts: dropped connections, ordering, duplicates, presence, and two people editing one document."),
     (trap, "Interview trap: real time means WebSockets. Not always. An unread badge can poll every minute. An AI answer streams fine over server sent events. Pick by who talks, and how often."),
     (scene_next('S6 · E02', 'SHORT POLLING', 'are we there yet?', 'polling', 'there'),
      "Next: short polling, the simplest trick of all. It's a kid asking, are we there yet? Comment NOTES for the cheat sheet."),

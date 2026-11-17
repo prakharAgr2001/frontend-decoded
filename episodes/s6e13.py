@@ -42,16 +42,19 @@ def callcentre(c):
     title(c, 'THE CALL CENTRE', 330, c.T('centre'), 96, hlcol=YEL)
     for k in range(3):
         x = 240 + k * 300
-        person(c.pen, x, 760, 1.0, [BLUE, ORANGE, GRN][k])
-        icon(c.pen, 'phone', x + 60, 640, 0.45)
-        txt(c, x, 800, f'operator {k + 1}', c.T('operator'), 'ints', 26, MUTE)
-    tp = c.T('PA')
+        person(c.pen, x, 700, 1.0, [BLUE, ORANGE, GRN][k])
+        icon(c.pen, 'phone', x + 60, 580, 0.45)
+        txt(c, x, 740, f'operator {k + 1}', c.T('operator'), 'ints', 26, MUTE)
+    tm = c.T('mail')
+    if c.on(tm):
+        s = c.B(tm, 0.4)
+        card(c.pen, 540 - 200 * s, 900 - 80 * s, 540 + 200 * s, 900 + 80 * s, 16, (225, 215, 195), 8, 4)
+        c.pen.text(540, 900, 'MAIL ROOM', 'osw', 44 * s, INK)
+        packet(c, (180, 640, 300, 720), (340, 820, 740, 980), tm + 0.3, tm + 0.9, YEL, 'note')
+    tp = c.T('picks')
     if c.on(tp):
-        c.pen.poly([(470, 480), (610, 440), (610, 560), (470, 520)], fill=YEL, outline=INK, w=4)
-        for k in range(3):
-            r = 60 + ((c.t - tp) * 120 + k * 50) % 150
-            c.pen.arc(610 - r, 500 - r, 610 + r, 500 + r, -30, 30, mix(PAPER, INK, 1 - (r - 60) / 150), 6)
-        label(c, 540, 960, 'everyone hears the PA', c.T('hears'), YEL, INK, 32)
+        packet(c, (340, 820, 740, 980), (780, 640, 900, 720), tp, tp + 0.6, YEL, 'note')
+        label(c, 540, 1080, 'whoever holds that caller picks it up', tp + 0.4, YEL, INK, 30)
 
 
 def pubsub(c):
@@ -97,8 +100,8 @@ def trap(c):
 SCENES = [
     (hook, "One WebSocket in your DevTools looks cheap. But each one is a live connection, held on one specific server, sometimes for hours. Now picture a million of them."),
     (stateful, "HTTP servers are stateless: any server can answer any request. Sockets are stateful. Alice is connected to server A. Bob is connected to server B. Alice sends Bob a message. Server A doesn't have Bob."),
-    (callcentre, "It's a call centre. Each operator holds their own callers. To reach someone on another operator's line, you need the office PA system, the one that everyone hears."),
-    (pubsub, "That PA is a pub sub layer, like Redis or Kafka. Server A publishes to Bob's channel. Every server subscribed to it, including B, receives it, and pushes it down Bob's socket."),
+    (callcentre, "It's a call centre. Each operator holds their own callers. To reach someone on another operator's line, you drop a note in the mail room, and whoever holds that caller picks it up."),
+    (pubsub, "That mail room is a pub sub layer, like Redis or Kafka. Server A publishes to Bob's channel. Every server subscribed to it, including B, receives it, and pushes it down Bob's socket."),
     (ops, "Keep the socket servers dumb. Load balancers must support the upgrade, and long idle timeouts. Each server holds a limited number of connections, so you add servers, and keep state in the pub sub layer. The hidden cost is deploys. Restarting a server drops every socket on it. Drain slowly, and let clients reconnect with jitter."),
     (trap, "Interview trap: sticky sessions solve this, right? No. Stickiness makes reconnects land on the same server. It doesn't deliver Alice's message to Bob on another server. You still need pub sub."),
     (scene_next('S6 · E14', 'PRESENCE', 'online, typing, last seen', 'presence', 'typing'),

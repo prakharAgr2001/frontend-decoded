@@ -60,23 +60,25 @@ def clocks(c):
 
 
 def pages(c):
-    title(c, 'THE DROPPED EXAM SHEETS', 330, c.T('dropping'), 72, hlcol=YEL)
-    ts = c.T('sort')
+    title(c, 'A NOVEL BY POST', 330, c.T('novel'), 100, hlcol=YEL)
     order = [3, 1, 4, 2]
-    q = c.P(c.T('corner'), 0.8)
+    q = c.P(c.T('number'), 0.8)
     for k, n in enumerate(order):
-        x0_ = 150 + k * 200 + 15 * math.sin(k * 2.0)
-        x1_ = 150 + (n - 1) * 200
+        t = c.T('envelope') + k * 0.25
+        if not c.on(t): continue
+        x0_ = 150 + k * 200; x1_ = 150 + (n - 1) * 200
         x = x0_ + (x1_ - x0_) * q
-        ang = (1 - q) * (k - 1.5) * 8
-        y = 620 + (1 - q) * (k % 2) * 60
-        card(c.pen, x, y, x + 170, y + 230, 10, WHITE, 6, 4)
-        for j in range(4): c.pen.line([(x + 20, y + 40 + j * 34), (x + 150, y + 40 + j * 34)], LIGHT, 4)
-        c.pen.circ(x + 140, y + 200, 22, fill=YEL, outline=INK, w=3)
-        c.pen.text(x + 140, y + 200, str(n), 'intx', 26, INK)
-    if c.on(ts): txt(c, 540, 960, 'not by when you think you wrote them', ts, 'ints', 32, MUTE)
-    tp = c.T('number')
-    if c.on(tp): label(c, 540, 1080, 'by the number in the corner', tp, YEL, INK, 34)
+        y = 600 + (1 - q) * (k % 2) * 60
+        card(c.pen, x, y, x + 170, y + 120, 8, (255, 246, 214), 6, 4)
+        c.pen.line([(x, y), (x + 85, y + 60), (x + 170, y)], INK, 3)
+        c.pen.circ(x + 135, y + 30, 20, outline=RED, w=3)
+        c.pen.text(x + 135, y + 30, f'{[9, 7, 8, 6][k]}', 'int', 18, RED)
+        c.pen.rr(x + 35, y + 140, x + 135, y + 190, 10, fill=YEL, outline=INK, w=3)
+        c.pen.text(x + 85, y + 165, f'Ch {n}', 'intx', 26, INK)
+    tp = c.T('postmarks')
+    if c.on(tp): txt(c, 540, 900, 'not by postmark: posting order lies', tp, 'ints', 32, MUTE)
+    tn = c.T('number')
+    if c.on(tn): label(c, 540, 1040, 'by the chapter number on top', tn, YEL, INK, 34)
 
 
 def seq(c):
@@ -113,7 +115,7 @@ SCENES = [
     (hook, "In a busy group chat, have you ever seen a reply show up above the question it answers, then jump into place a second later? That's an ordering bug, being fixed live."),
     (paths, "Within one WebSocket, TCP keeps messages in order. But your users have many paths. Two devices. A reconnect. A message sent over HTTP, while another arrives on the socket. Between paths, order isn't guaranteed."),
     (clocks, "And you can't sort by the sender's clock. Sorting by device time fails, because a phone's clock can be wrong by seconds, sometimes minutes."),
-    (pages, "Imagine dropping a stack of exam sheets. You don't sort them by when you think you wrote them. You sort by the page number in the corner."),
+    (pages, "Imagine a novel arriving by post, one chapter per envelope. You don't read them in the order of the postmarks. You read by the chapter number printed on top."),
     (seq, "So the server stamps each message with a sequence number, per chat. The client inserts by that number. If it gets forty one, forty two, then forty four, it knows forty three is missing, holds forty four, and asks for the gap."),
     (trap, "Interview trap: an async message handler. Each message is its own task, from season one, episodes fifteen and sixteen. But if your handler awaits, say, decryption, message two can finish before message one. Queue messages, and process them one at a time."),
     (scene_next('S6 · E12', 'ACKS & DEDUP', 'what the ticks really mean', 'acks', 'ticks'),

@@ -57,20 +57,23 @@ def harm(c):
         label(c, 540, 1020, 'proxies cut idle connections (~60 s)', tl, (255, 210, 210), INK, 32)
 
 
-def radio(c):
-    title(c, 'THE RADIO CHECK', 330, c.T('radio'), 96, hlcol=YEL)
-    icon(c.pen, 'tower', 830, 720, 1.8)
-    tp = c.T('radio')
-    if c.on(tp):
-        c.pen.poly([(140, 720), (420, 700), (480, 720), (420, 740)], fill=WHITE, outline=INK, w=5)
-        c.pen.poly([(300, 705), (360, 620), (390, 620), (360, 705)], fill=WHITE, outline=INK, w=4)
-        c.pen.poly([(300, 735), (360, 820), (390, 820), (360, 735)], fill=WHITE, outline=INK, w=4)
-    td = c.T('read')
-    if c.on(td): pill(c.pen, 380, 920, 'tower, do you read?', c.B(td, 0.35), WHITE, INK, 32); c.sfx(td, 'pop')
-    tl = c.T('loud')
-    if c.on(tl): pill(c.pen, 760, 1010, 'loud and clear', c.B(tl, 0.35), (200, 240, 200), INK, 32); c.sfx(tl, 'pop')
-    ts = c.T('stops')
-    if c.on(ts): label(c, 540, 1160, 'no answer = act now, not later', ts, YEL, INK, 34)
+def rope(c):
+    title(c, 'THE ROPE TUG', 330, c.T('climbers'), 100, hlcol=YEL)
+    tc = c.T('climbers')
+    if c.on(tc):
+        c.pen.line([(180, 560), (900, 1060)], (120, 80, 50), 8)
+        person(c.pen, 200, 620, 1.1, ORANGE)
+        person(c.pen, 880, 1120, 1.1, BLUE)
+    tt = c.T('tug')
+    if c.on(tt):
+        q = ((c.t - tt) * 1.2) % 1
+        x = 300 + 500 * q; y = 630 + 350 * q
+        c.pen.circ(x, y, 16, fill=YEL, outline=INK, w=3)
+        pill(c.pen, 390, 860, 'tug', c.B(tt, 0.35), WHITE, INK, 32)
+    tb = c.T('back')
+    if c.on(tb): pill(c.pen, 760, 760, 'tug back: all good', c.B(tb, 0.35), (200, 240, 200), INK, 30); c.sfx(tb, 'pop')
+    ta = c.T('acts')
+    if c.on(ta): label(c, 540, 1240, 'no tug back = act now, not later', ta, YEL, INK, 34)
 
 
 def code_(c):
@@ -106,7 +109,7 @@ SCENES = [
     (hook, "Leave a chat tab open, with WS messages showing. Even when nobody types, on many apps, a tiny message goes out every few seconds, and one comes back. Ping. Pong."),
     (silent, "Here's why. When Wi-Fi drops, or a laptop sleeps, a TCP connection doesn't announce that it's dead. Remember the phone call, from season one, episode three? The line can go silent, and neither side knows if the other hung up. That's a half open connection."),
     (harm, "So your app shows your friend as online, while messages pile up, going nowhere. And proxies and load balancers quietly cut connections that stay idle for too long."),
-    (radio, "It's a pilot's radio check. Every few minutes: tower, do you read? Loud and clear. If the tower stops answering, the pilot acts now, not later."),
+    (rope, "It's two climbers on a rope. Every few minutes, one gives a tug. A tug back means: all good. If no tug comes back, the climber acts now, not later."),
     (code_, "In code: the server pings every thirty seconds. Every message resets a timer. No message for thirty five seconds? Assume the connection is dead, and close it. Answer pings with pongs, so the server can do the same. Then reconnect."),
     (builtin, "Wait, doesn't WebSocket have built in ping frames? It does. But the browser answers them silently, and JavaScript can't send them. That's why apps send their own heartbeat messages."),
     (trap, "Interview trap: what interval? Too fast, and you drain phone batteries and server CPU. Too slow, and the idle timeout kills you first. Stay under the shortest idle timeout on the path, often twenty to thirty seconds."),
