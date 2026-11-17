@@ -76,7 +76,7 @@ def proof(c):
     if c.on(tt):
         c.pen.rr(110, 470, 560, 540, 12, fill=(40, 46, 56), outline=(90, 96, 106), w=2)
         lab = 'Slow 4G' if c.on(c.T('Slow')) else 'No throttling'
-        c.pen.text(140, 505, lab + '  ▾', 'int', 30, YEL if 'Slow' in lab else WHITE, 'lm')
+        c.pen.text(140, 505, lab, 'int', 30, YEL if 'Slow' in lab else WHITE, 'lm')
     tr = c.T('Reload')
     if c.on(tr):
         slow = 1.0
