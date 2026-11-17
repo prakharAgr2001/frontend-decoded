@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><rect width="1080" height="1080" fill="#F4F1EA"/>
+<g transform="translate(70,60) scale(0.87)">
+<rect x="120" y="170" width="840" height="760" rx="50" fill="#16181D"/><rect x="100" y="150" width="840" height="760" rx="50" fill="#FFFFFF" stroke="#16181D" stroke-width="18"/>
+<line x1="100" y1="260" x2="940" y2="260" stroke="#16181D" stroke-width="14"/>
+<circle cx="170" cy="205" r="18" fill="#E63946"/><circle cx="225" cy="205" r="18" fill="#FFD23F"/><circle cx="280" cy="205" r="18" fill="#28965A"/>
+<clipPath id="w"><rect x="109" y="268" width="822" height="633" rx="40"/></clipPath>
+<g clip-path="url(#w)"><rect x="100" y="260" width="840" height="660" fill="#FFD23F"/><g transform="translate(-20,150) scale(0.98)">
+  <!-- ears -->
+  <g transform="rotate(-0.0 395 380)">
+    <path d="M285 470 L345 160 L480 370 Z" fill="#F28C28" stroke="#16181D" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M325 420 L355 245 L435 370 Z" fill="#16181D"/>
+  </g>
+  <g transform="rotate(0.0 685 380)">
+    <path d="M795 470 L735 160 L600 370 Z" fill="#F28C28" stroke="#16181D" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M755 420 L725 245 L645 370 Z" fill="#16181D"/>
+  </g>
+  <!-- head -->
+  <path d="M250 480 Q540 300 830 480 Q880 650 705 770 Q610 845 540 868 Q470 845 375 770 Q200 650 250 480 Z" fill="#F28C28" stroke="#16181D" stroke-width="16" stroke-linejoin="round"/>
+  <!-- cheeks / muzzle -->
+  <path d="M285 610 Q420 640 505 760 Q535 820 540 866 Q470 845 385 772 Q275 690 285 610 Z" fill="#FFF4E6"/>
+  <path d="M795 610 Q660 640 575 760 Q545 820 540 866 Q610 845 695 772 Q805 690 795 610 Z" fill="#FFF4E6"/>
+  <path d="M250 480 Q540 300 830 480 Q880 650 705 770 Q610 845 540 868 Q470 845 375 770 Q200 650 250 480 Z" fill="none" stroke="#16181D" stroke-width="16" stroke-linejoin="round"/>
+  <!-- forehead stripe -->
+  <path d="M500 400 Q540 380 580 400 L560 500 Q540 512 520 500 Z" fill="#D9701A"/>
+  <ellipse cx="442" cy="612.0" rx="30" ry="40.0" fill="#16181D"/><circle cx="452" cy="598.0" r="10" fill="white"/><ellipse cx="638" cy="612.0" rx="30" ry="40.0" fill="#16181D"/><circle cx="648" cy="598.0" r="10" fill="white"/>
+  <!-- dev glasses -->
+  <rect x="372" y="548" width="140" height="124" rx="34" fill="none" stroke="#16181D" stroke-width="14"/>
+  <rect x="568" y="548" width="140" height="124" rx="34" fill="none" stroke="#16181D" stroke-width="14"/>
+  <path d="M512 600 Q540 584 568 600" fill="none" stroke="#16181D" stroke-width="12" stroke-linecap="round"/>
+  <!-- nose + smile -->
+  <ellipse cx="540" cy="790" rx="40" ry="28" fill="#16181D"/>
+  <ellipse cx="528" cy="781" rx="12" ry="7" fill="white" opacity="0.7"/>
+  <path d="M500 830 Q540 860 580 830" fill="none" stroke="#16181D" stroke-width="10" stroke-linecap="round"/>
+  <!-- code tag badge -->
+  <rect x="470" y="420" width="140" height="62" rx="31" fill="#16181D"/>
+  <text x="540" y="463" text-anchor="middle" font-family="DejaVu Sans Mono" font-weight="bold" font-size="40" fill="#FFD23F">&lt;/&gt;</text>
+</g></g></g></svg>
