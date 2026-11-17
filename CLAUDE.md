@@ -17,3 +17,9 @@ Read `STATE.md` first (where we are), then `BIBLE.md` (rules), then only the reg
 
 Word timings come from the script + silence detection (`engine/align.py`), no transcription call needed.
 `vo/`, `out/`, `tmp/` are git-ignored.
+
+## Parallel seasons (several chats at once)
+- Only create/edit files for YOUR season: `episodes/sN*.py`, `notes/seasonN.md`, `state/SN.md`. Never edit another season's files.
+- Do not change existing functions in `engine/`. New shared helpers go in a NEW file `engine/sN_extra.py` (import it in your episodes).
+- Track progress in `state/SN.md` (not STATE.md) so chats never conflict.
+- Before every push: `git pull --rebase origin main`, then `git -c push.negotiate=true push`.
