@@ -7,4 +7,4 @@
   tailor (thrashing), sticker (compositing), one-chef kitchen (main thread), plates (call stack), VIP club line (microtasks), bank counter (long tasks),
   stone in a pond (event phases), receptionist (delegation).
 - Pending callbacks for Season 2: hydration ↔ S1E14 main thread; SSR TTFB ↔ S1E01; streaming ↔ S1E05.
-- Not done yet: DM cheat-sheet notes for the "Comment NOTES" CTA.
+- DM cheat sheets for the "Comment NOTES" CTA: `notes/season1.md`.
