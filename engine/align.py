@@ -1,7 +1,7 @@
 """Word timings from the known script + the voiceover's silences (no transcription call)."""
 import re, subprocess
 
-ACRO1 = {'DOM': 1, 'CORS': 1, 'JSON': 2, 'NASA': 2, 'GIF': 1, 'RAM': 1, 'QUIC': 1, 'DevTools': 3}
+ACRO1 = {'DOM': 1, 'CORS': 1, 'JSON': 2, 'NASA': 2, 'GIF': 1, 'RAM': 1, 'QUIC': 1, 'DevTools': 3, 'SYN': 1, 'ACK': 1, 'SYNACK': 2, 'QUIC': 1, 'CSSOM': 4, 'GPU': 3, 'CPU': 3, 'API': 3, 'URL': 3, 'UDP': 3}
 
 def norm(w):
     return re.sub(r"[^a-z0-9']", '', w.lower().replace('’', "'"))

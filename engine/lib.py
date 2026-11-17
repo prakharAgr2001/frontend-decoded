@@ -522,7 +522,7 @@ def scene_next(tag, name, sub, kw_name, kw_sub, cta=True):
         c.pen.text(cx, 430, 'NEXT EPISODE', 'int', 34, YEL)
         c.pen.text(cx, 505, tag, 'osw', 64, WHITE)
         tn = c.T(kw_name)
-        size = 200 if len(name) <= 9 else max(96, int(1650 / len(name)))
+        size = min(200, 800 / max(1, c.pen.tw(name, 'osw', 100)) * 100)
         if c.on(tn - 0.01):
             c.sfx(tn, 'thud'); c.pen.text(cx, 680, name, 'osw', size * c.B(tn, 0.45), YEL)
         ts = c.T(kw_sub)
@@ -561,7 +561,8 @@ def scene_iq(num, question, answer, kw_answer='answer', code_lines=None):
             txt(c, 540, qy + i * 70, ln, 0.15 + i * 0.12, 'intx', 54, INK)
         y = qy + len(lines) * 70 + 30
         if code_lines:
-            code(c, 90, y, 990, y + 90 + len(code_lines) * 54, code_lines, 0.4, 0.08, 30, 'question.js', dy=0)
+            csz = min(30, int(820 / (0.6 * max(len(l) for l in code_lines))))
+            code(c, 90, y, 990, y + 90 + len(code_lines) * 54, code_lines, 0.4, 0.08, csz, 'question.js', dy=0)
             y += 130 + len(code_lines) * 54
         ta = c.T(kw_answer)
         # think timer between question end and answer
@@ -605,3 +606,68 @@ def chapter(c, x, y, tag, name, at):
     c.pen.rr(x - (w1 + w2) / 2, y - 30 * s, x - (w1 + w2) / 2 + w1, y + 30 * s, 30 * s, fill=INK)
     c.pen.text(x - (w1 + w2) / 2 + w1 / 2, y, tag, 'int', 26 * s, WHITE)
     c.pen.text(x - (w1 + w2) / 2 + w1 + w2 / 2, y, name, 'intx', 34 * s, INK)
+
+# ---------------------------------------------------------------- pipeline / perf helpers
+STAGE_COL = {'JS': YEL, 'Style': (150, 120, 230), 'Layout': PURPLE, 'Paint': GRN, 'Composite': CYAN}
+
+def pipeline(c, x0, y, active, at, stages=('Layout', 'Paint', 'Composite'), w=230, h=90, gap=40, label_=None):
+    """row of stage chips; active = set of lit stages"""
+    if not c.on(at - 0.01): return
+    c.sfx(at, 'pop')
+    if label_: c.pen.text(x0, y - 70, label_, 'intx', 40, INK, 'lm')
+    for i, st in enumerate(stages):
+        x = x0 + i * (w + gap); p = c.B(at + i * 0.12, 0.3)
+        on = st in active
+        fill = STAGE_COL.get(st, YEL) if on else LIGHT
+        c.pen.rr(x + 6, y - h / 2 * p + 8, x + w + 6, y + h / 2 * p + 8, 18, fill=INK if on else None)
+        c.pen.rr(x, y - h / 2 * p, x + w, y + h / 2 * p, 18, fill=fill, outline=INK if on else GREY, w=4)
+        c.pen.text(x + w / 2, y, st, 'intx', 36 * p, (INK if st not in ('Layout',) else WHITE) if on else GREY)
+        if i < len(stages) - 1: arrow(c.pen, x + w + 4, y, x + w + gap - 4, y, 1, INK if on else GREY, 4, 14)
+
+def flame(c, x0, y0, x1, blocks, at, h=54, labels=True):
+    """blocks: list of (start_frac, dur_frac, row, kind, warn) drawn left->right as time sweeps"""
+    for (s, d, row, kind, *rest) in blocks:
+        warn = rest[0] if rest else False
+        t0 = at + s * 2.0
+        if not c.on(t0): continue
+        p = c.P(t0, max(0.15, d * 2.0), lambda x: x)
+        xa = x0 + (x1 - x0) * s; xb = xa + (x1 - x0) * d * p
+        y = y0 + row * (h + 8)
+        c.pen.rect(xa, y, xb, y + h, fill=STAGE_COL.get(kind, YEL), outline=INK, w=2)
+        if labels and (xb - xa) > 70: c.pen.text((xa + xb) / 2, y + h / 2, kind, 'int', 22, INK if kind != 'Layout' else WHITE)
+        if warn and p >= 1: c.pen.poly([(xb - 16, y), (xb, y), (xb, y + 16)], fill=RED)
+
+def tree(c, nodes, at, step=0.15, col=WHITE, size=30):
+    """nodes: list of (key, label, x, y, parent_key, kw_or_None). draws edges + pills in order"""
+    pos = {}
+    for i, (k, lab, x, y, par, kw) in enumerate(nodes):
+        t = c.T(kw) if isinstance(kw, str) else (at + i * step if kw is None else kw)
+        pos[k] = (x, y, t)
+    for (k, lab, x, y, par, kw) in nodes:
+        t = pos[k][2]
+        if par and c.on(t): 
+            px, py, _ = pos[par]
+            q = c.P(t, 0.3); c.pen.line([(px, py + 26), (px + (x - px) * q, py + 26 + (y - 26 - py - 26) * q)], INK, 4)
+    for (k, lab, x, y, par, kw) in nodes:
+        t = pos[k][2]
+        if not c.on(t): continue
+        c.sfx(t, 'tick'); s = c.B(t, 0.3)
+        w = c.pen.tw(lab, 'monob', size) + 36
+        fill = col(k) if callable(col) else col
+        c.pen.rr(x - w / 2 * s + 5, y - 28 * s + 6, x + w / 2 * s + 5, y + 28 * s + 6, 14, fill=INK)
+        c.pen.rr(x - w / 2 * s, y - 28 * s, x + w / 2 * s, y + 28 * s, 14, fill=fill, outline=INK, w=4)
+        c.pen.text(x, y, lab, 'monob', size * s, INK)
+    return pos
+
+def chips(c, x0, y, items, at, step=0.25, size=32):
+    """items: list of (text, fill). wraps at 960"""
+    x = x0
+    for i, (s_, fill) in enumerate(items):
+        w = c.pen.tw(s_, 'monob', size) + 40
+        if x + w > 990: x = x0; y += 80
+        t = at + i * step
+        if c.on(t):
+            c.sfx(t, 'pop'); p = c.B(t, 0.3)
+            c.pen.rr(x, y - 30 * p, x + w, y + 30 * p, 30 * p, fill=fill, outline=INK, w=4)
+            c.pen.text(x + w / 2, y, s_, 'monob', size * p, INK)
+        x += w + 20
