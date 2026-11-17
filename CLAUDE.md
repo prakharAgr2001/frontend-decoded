@@ -1,0 +1,19 @@
+# Frontend Decoded — production repo
+
+Vox-style 9:16 explainer reels on frontend system design. Owner posts on Instagram (no personal name in branding).
+Read `STATE.md` first (where we are), then `BIBLE.md` (rules), then only the registry lines for the episodes requested.
+
+## Make episodes (the whole loop)
+1. Write `episodes/sXeYY.py` (see any S1 episode for the pattern): `EP` dict + `SCENES = [(scene_fn, "narration"), ...]`.
+   - Scene functions draw with helpers from `engine/lib.py` (card, node, link, packet, code, panel, browser, flame, pipeline, tree, chips, stamp, title, txt, label, counter, ring, scene_try, scene_next, scene_iq_intro, scene_iq, chapter).
+   - Sync visuals to words with `c.T('word', n)` (local time of the n-th occurrence). Check repeated words — use n.
+   - `[[3]]` in narration inserts 3 s of silence (IQ "pause and think").
+2. `python3 -m engine.build text SxEyy` → exact TTS text.
+3. Voiceover: Speko `audio.synthesize`, voice `Charon`, provider `google-tts`, language `en-US`, one call per episode,
+   instructions = calm Vox documentary narrator + pronunciation of acronyms/camelCase. Save as `vo/SxEyy.wav`.
+4. `python3 -m engine.build check SxEyy` → `tmp/SxEyy_sheet.jpg` (one frame per scene). Look at it once; fix overlaps.
+5. `python3 -m engine.build render SxEyy` → `out/SxEyy_<Title>.mp4` (~4–5 min each on 2 cores; run in background, queue several).
+6. Send videos to the user in chat (GitHub releases are not allowed from sessions). Commit specs + update `STATE.md`.
+
+Word timings come from the script + silence detection (`engine/align.py`), no transcription call needed.
+`vo/`, `out/`, `tmp/` are git-ignored.
