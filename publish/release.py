@@ -12,4 +12,5 @@ if eps:
     subprocess.run([sys.executable, '-m', 'publish.prep_videos', *eps], check=True)
 subprocess.run([sys.executable, '-m', 'publish.build_queue'], check=True)
 subprocess.run([sys.executable, '-m', 'publish.build_cheatsheets'], check=True)
+subprocess.run([sys.executable, '-m', 'publish.build_site'], check=True)
 print('Now: git add videos covers publish/queue.json CHEATSHEETS.md && commit && pull --rebase && push')

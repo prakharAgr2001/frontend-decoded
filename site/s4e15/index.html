@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Optimistic UI · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: Optimistic UI. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="Optimistic UI · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: Optimistic UI. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S4 · E15 · State management</span>
+<h1><span>Optimistic UI</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ul>
+<li>Update the UI as if success, send the request, fix on failure. Feels instant on slow networks.</li>
+<li>React Query: <code>onMutate</code> → <code>cancelQueries</code> → <code>setQueryData</code>. React 19: <code>useOptimistic</code> (value lives while the action runs).</li>
+<li>Use for likes, toggles, reorder, chat. Not for payments, last-item stock, anything where false success costs the user.</li>
+<li>Trap: cancel in-flight refetches first, or an old response overwrites your optimistic value.</li>
+</ul></div>
+<div class="nav"><span><a href="../s4e14/">← Normalization</a></span>
+<span><a href="../s4e16/">Rollback →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The showdown · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: The showdown. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="The showdown · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: The showdown. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S6 · E07 · Real-time</span>
+<h1><span>The showdown</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ol>
+<li>Audio/video/peer data → <strong>WebRTC</strong>. 2. Client sends often, low latency (chat, games, cursors) → <strong>WebSockets</strong>.</li>
+<li>Server pushes, client listens (scores, notifications, AI answers) → <strong>SSE</strong>. 4. Rare updates / delay OK → <strong>polling</strong> (long polling if faster).</li>
+<li>SSE: one-way, built-in reconnect, text, plain HTTP. WS: two-way, binary, DIY reconnect, leaves HTTP after upgrade. Polling: most compatible, most wasteful.</li>
+<li>Trap: "chat needs WebSockets" → not necessarily: SSE down + POST up is valid and stays plain HTTP (caching, auth, load balancing).</li>
+</ol></div>
+<div class="nav"><span><a href="../s6e06/">← WebRTC</a></span>
+<span><a href="../s6e08/">IQ: transports →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

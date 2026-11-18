@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The context trap · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: The context trap. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="The context trap · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: The context trap. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S4 · E04 · State management</span>
+<h1><span>The context trap</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ul>
+<li><code>useContext</code> subscribes to the <strong>whole</strong> value. Any change → every consumer re-renders.</li>
+<li>Trap 1: <code>value={{ user, cart }}</code> is a new object every render → <code>useMemo</code> it.</li>
+<li>Trap 2: one big context → split by concern (UserCtx, ThemeCtx, CartCtx) and split state from dispatch.</li>
+<li><code>React.memo</code> does NOT stop context re-renders. Context = delivery, not a state manager; hot state → store with selectors.</li>
+<li>See it: React Profiler → "Why did this render? Context changed".</li>
+</ul></div>
+<div class="nav"><span><a href="../s4e03/">← Colocation</a></span>
+<span><a href="../s4e05/">IQ: state basics →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

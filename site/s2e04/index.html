@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Server-side rendering (SSR) · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: Server-side rendering (SSR). Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="Server-side rendering (SSR) · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: Server-side rendering (SSR). Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S2 · E04 · Rendering strategies</span>
+<h1><span>Server-side rendering (SSR)</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ul>
+<li>Every request: server fetches data + builds full HTML → browser paints immediately; JS loads after to make it interactive.</li>
+<li>TTFB goes up (server is cooking), first paint comes sooner.</li>
+<li>See it: View Source on Amazon shows titles/prices; Network → document → Timing → "Waiting for server response" ≈ render time.</li>
+<li>Trap: SSR isn't always faster — slow DB or far server = huge TTFB, and still not interactive until JS. SSR moves work, doesn't delete it.</li>
+</ul></div>
+<div class="nav"><span><a href="../s2e03/">← Client-side routing</a></span>
+<span><a href="../s2e05/">Static site generation (SSG) →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

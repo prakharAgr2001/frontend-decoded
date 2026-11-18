@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rollback · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: Rollback. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="Rollback · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: Rollback. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S4 · E16 · State management</span>
+<h1><span>Rollback</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ul>
+<li><code>onMutate</code>: snapshot <code>prev</code> and return it · <code>onError</code>: restore <code>ctx.prev</code> + toast with Retry · <code>onSettled</code>: invalidate (server truth wins).</li>
+<li>Races: like/unlike/like out of order → stale snapshot. Fix: send intent (<code>PUT { liked: true }</code>, idempotent) not toggle, serialize per item, always settle with a refetch.</li>
+</ul></div>
+<div class="nav"><span><a href="../s4e15/">← Optimistic UI</a></span>
+<span><a href="../s4e17/">IQ: server state →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

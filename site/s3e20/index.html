@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Web fonts · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: Web fonts. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="Web fonts · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: Web fonts. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S3 · E20 · Web performance</span>
+<h1><span>Web fonts</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><ul>
+<li>FOIT (invisible text while loading) vs FOUT (fallback, then swap). <code>font-display</code>: block · swap · optional.</li>
+<li>Swap can cause CLS → matched fallback with <code>size-adjust</code>, <code>ascent-override</code>. Arrive sooner: self-host, preload 1–2 files, woff2, subset.</li>
+<li>IQ: safest for CWV is often <code>optional</code> (no invisible text, no late shift) — trade-off: slow first visits may never show the brand font.</li>
+</ul></div>
+<div class="nav"><span><a href="../s3e19/">← LCP image priority</a></span>
+<span><a href="../s3e21/">Third-party cost →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

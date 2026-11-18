@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The 5 types of state · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: The 5 types of state. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="The 5 types of state · cheat sheet · Tech, Explained">
+<meta property="og:description" content="Cheat sheet: The 5 types of state. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S4 · E02 · State management</span>
+<h1><span>The 5 types of state</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="sheet"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Examples</th>
+<th>Home</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local UI</td>
+<td>isOpen, activeTab, hovered</td>
+<td><code>useState</code></td>
+</tr>
+<tr>
+<td>Shared client</td>
+<td>cart, theme, user</td>
+<td>context / store</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>menu, prices, orders</td>
+<td>server cache (React Query, SWR, RTK Query)</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>?q=</code>, filters, page</td>
+<td>the address bar</td>
+</tr>
+<tr>
+<td>Form</td>
+<td>values, touched, errors</td>
+<td>form library</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>3 questions: from the server? → cache. Survive refresh/share? → URL. Distant components? → context/store. Otherwise local.</li>
+<li>Classic mistake: server data copied into a global store = hand-written loading flags, refetching, cache rules.</li>
+</ul></div>
+<div class="nav"><span><a href="../s4e01/">← What is state</a></span>
+<span><a href="../s4e03/">Colocation →</a></span></div>
+<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
+<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
