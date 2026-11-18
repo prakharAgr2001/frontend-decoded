@@ -1,0 +1,45 @@
+name: Post short to Instagram
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 13:30 IST daily (series episode stays at 19:00)
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: 'Short id (e.g. SH02). Empty = next unposted'
+        required: false
+        default: ''
+      trial:
+        description: 'Post as trial reel (non-followers first)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency: post-reel
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Post
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          QUEUE: publish/shorts_queue.json
+          EPISODE: ${{ github.event.inputs.episode }}
+          TRIAL: ${{ (github.event_name == 'schedule' || github.event.inputs.trial == 'true') && '1' || '0' }}
+        run: python3 publish/post_reel.py
+      - name: Save queue status
+        if: always()
+        run: |
+          git config user.name "reel-bot"
+          git config user.email "reel-bot@users.noreply.github.com"
+          git add publish/shorts_queue.json
+          git diff --cached --quiet || (git commit -m "Mark short posted" && git pull --rebase origin main && git push)

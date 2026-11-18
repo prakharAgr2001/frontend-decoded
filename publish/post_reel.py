@@ -6,7 +6,8 @@ import requests
 
 TOKEN, IG_ID = os.environ['IG_TOKEN'].strip(), os.environ['IG_USER_ID'].strip()
 VER = os.environ.get('GRAPH_VERSION', 'v24.0')
-QUEUE = 'publish/queue.json'
+QUEUE = os.environ.get('QUEUE') or 'publish/queue.json'
+TRIAL = os.environ.get('TRIAL') == '1'  # Instagram trial reel: shown to non-followers first
 RAW = 'https://raw.githubusercontent.com/' + os.environ.get('GITHUB_REPOSITORY', 'prakharAgr2001/frontend-decoded') + '/main/'
 
 def pick_host():
@@ -19,9 +20,14 @@ def pick_host():
     sys.exit('Token not accepted by either Graph host. Check IG_TOKEN / IG_USER_ID secrets.')
 
 def post(host, e):
-    r = requests.post(f'{host}/{VER}/{IG_ID}/media', data={
-        'media_type': 'REELS', 'video_url': RAW + e['video'], 'caption': e['caption'],
-        'cover_url': RAW + e['cover'], 'share_to_feed': 'true', 'access_token': TOKEN}, timeout=60)
+    data = {'media_type': 'REELS', 'video_url': RAW + e['video'], 'caption': e['caption'],
+            'cover_url': RAW + e['cover'], 'share_to_feed': 'true', 'access_token': TOKEN}
+    r = None
+    if TRIAL:
+        r = requests.post(f'{host}/{VER}/{IG_ID}/media', data={**data, 'trial_params': json.dumps({'graduation_strategy': 'SS_PERFORMANCE'})}, timeout=60)
+        if not r.ok: print('trial reel not accepted, posting normally:', r.text[:200]); r = None
+    if r is None:
+        r = requests.post(f'{host}/{VER}/{IG_ID}/media', data=data, timeout=60)
     if not r.ok: sys.exit(f'create container failed: {r.text}')
     cid = r.json()['id']; print(e['id'], 'container', cid)
     for _ in range(90):  # up to 15 min
