@@ -1,5 +1,6 @@
-"""Instagram cover images (1080x1920 JPEG) for Season 1. Usage: python3 -m publish.make_covers"""
-import io, os, sys
+"""Instagram cover images (1080x1920 JPEG). S1 has hand-written titles; other seasons derive from the episode EP dict
+(EP['short'], optional EP['hook']). Usage: python3 -m publish.make_covers S2E01 S2E02 ...  (no args = all of S1)"""
+import importlib, io, os, sys
 import cairosvg
 from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -46,13 +47,30 @@ def fox_img(w):
         _FOX = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=svg.encode(), output_width=1080, output_height=1080))).convert('RGBA')
     return _FOX.resize((w, w), Image.LANCZOS)
 
-def cover(n):
-    lines, hook, kind = S1[n]
+def split2(t):
+    w = t.split()
+    if len(w) < 2 or len(t) <= 9: return [t]
+    best = min(range(1, len(w)), key=lambda i: abs(len(' '.join(w[:i])) - len(' '.join(w[i:]))))
+    return [' '.join(w[:best]), ' '.join(w[best:])]
+
+def spec(ep):
+    s, n = int(ep[1:ep.index('E')]), int(ep[ep.index('E') + 1:])
+    if s == 1: return S1[n]
+    EP = importlib.import_module(f'episodes.s{s}e{n:02d}').EP
+    short, hook = EP['short'].strip(), EP.get('hook', '')
+    if short.upper().startswith('IQ:'):
+        return ['INTERVIEW', 'Qs'], hook or short[3:].strip().lower() + ' · test yourself', 'iq'
+    if short.upper().startswith('FINALE'):
+        return ['FINALE'], hook or short.split(':', 1)[-1].strip().lower(), 'finale'
+    return split2(short), hook, ''
+
+def cover(ep):
+    lines, hook, kind = spec(ep)
     dark = kind == 'finale'
     bg, fg = (DARK, WHITE) if dark else (PAPER, INK)
     im = Image.new('RGB', (1080, 1920), bg); d = ImageDraw.Draw(im)
     # episode pill
-    tag = f'S1 · E{n:02d}'; f = font('int', 44)
+    tag = ep.replace('E', ' · E', 1); f = font('int', 44)
     tw = f.getlength(tag)
     d.rounded_rectangle((540 - tw / 2 - 34, 330, 540 + tw / 2 + 34, 410), 40, fill=YEL if dark else INK)
     d.text((540, 371), tag, font=f, fill=INK if dark else WHITE, anchor='mm')
@@ -66,13 +84,13 @@ def cover(n):
         d.polygon([(x0, y + 12 + sk), (x1 + 8, y - 4), (x1, y + lh - 30), (x0 + 6, y + lh - 16 - sk)], fill=hlc)
         d.text((540, y + lh // 2 - 8), l, font=fo, fill=INK, anchor='mm')
         y += lh
-    d.text((540, y + 60), hook, font=font('int', 48), fill=fg, anchor='mm')
+    if hook: d.text((540, y + 60), hook, font=font('int', 48), fill=fg, anchor='mm')
     fx = fox_img(560); im.paste(fx, (260, 1150), fx)
     d.text((540, 1832), 'TECH, EXPLAINED', font=font('osw', 64), fill=YEL if dark else RED, anchor='mm')
     return im
 
 if __name__ == '__main__':
     os.makedirs('covers', exist_ok=True)
-    for n in S1:
-        cover(n).save(f'covers/S1E{n:02d}.jpg', quality=92)
+    for ep in sys.argv[1:] or [f'S1E{n:02d}' for n in S1]:
+        cover(ep).save(f'covers/{ep}.jpg', quality=92)
     print('covers ok')
