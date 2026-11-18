@@ -261,45 +261,63 @@
  },
  {
   "id": "S2E02",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E02.mp4",
   "cover": "covers/S2E02.jpg",
-  "caption": "View Source on a React app and the content isn't there. Just one empty div 🔍\nThat's CSR: the server sends a shell, your user's phone builds the page. Great for dashboards, risky for link previews.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "View Source on a React app and the content isn't there. Just one empty div 🔍\nThat's CSR: the server sends a shell, your user's phone builds the page. Great for dashboards, risky for link previews.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18016313258972255",
+  "permalink": "https://www.instagram.com/reel/Df5eVTBmo-c/",
+  "posted_at": "2026-11-18 21:30 UTC"
  },
  {
   "id": "S2E03",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E03.mp4",
   "cover": "covers/S2E03.jpg",
-  "caption": "Click a video on YouTube: the URL changes, the page changes, but there's no new page load 📺\nIntercept the click, pushState, fetch JSON, swap the view. Plus the refresh-404 trap every SPA hits.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Click a video on YouTube: the URL changes, the page changes, but there's no new page load 📺\nIntercept the click, pushState, fetch JSON, swap the view. Plus the refresh-404 trap every SPA hits.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18084891308529420",
+  "permalink": "https://www.instagram.com/reel/Df5eeFCAMyt/",
+  "posted_at": "2026-11-18 21:31 UTC"
  },
  {
   "id": "S2E04",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E04.mp4",
   "cover": "covers/S2E04.jpg",
-  "caption": "View Source on Amazon: titles and prices are already in the HTML, before any JS runs ☕\nSSR = a chai stall. Fresh for every customer, but you wait while it's made. Higher TTFB, faster first paint.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "View Source on Amazon: titles and prices are already in the HTML, before any JS runs ☕\nSSR = a chai stall. Fresh for every customer, but you wait while it's made. Higher TTFB, faster first paint.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18097199642187936",
+  "permalink": "https://www.instagram.com/reel/Df5errwAtq3/",
+  "posted_at": "2026-11-18 21:34 UTC"
  },
  {
   "id": "S2E05",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E05.mp4",
   "cover": "covers/S2E05.jpg",
-  "caption": "Why do docs pages load in a blink from anywhere in the world? 🥛\nBuilt once at build time, copied to the CDN, served as is. Perfect until 50,000 prices change every hour.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Why do docs pages load in a blink from anywhere in the world? 🥛\nBuilt once at build time, copied to the CDN, served as is. Perfect until 50,000 prices change every hour.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18122955160948659",
+  "permalink": "https://www.instagram.com/reel/Df5e2IQlXe_/",
+  "posted_at": "2026-11-18 21:34 UTC"
  },
  {
   "id": "S2E06",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E06.mp4",
   "cover": "covers/S2E06.jpg",
-  "caption": "One price changes. Do you rebuild 50,000 pages? 🍞\nISR: serve the static page, rebuild it in the background after it expires. And the trap: who still sees the old price?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "One price changes. Do you rebuild 50,000 pages? 🍞\nISR: serve the static page, rebuild it in the background after it expires. And the trap: who still sees the old price?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18137933737661101",
+  "permalink": "https://www.instagram.com/reel/Df5e_CjCbFp/",
+  "posted_at": "2026-11-18 21:36 UTC"
  },
  {
   "id": "S2E07",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E07.mp4",
   "cover": "covers/S2E07.jpg",
-  "caption": "4 rendering questions interviewers love. Pause before each answer ⏸️\nEmpty root div, refresh 404s, TTFB vs first paint, and picking a strategy per page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "4 rendering questions interviewers love. Pause before each answer ⏸️\nEmpty root div, refresh 404s, TTFB vs first paint, and picking a strategy per page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "17958151650294639",
+  "permalink": "https://www.instagram.com/reel/Df5fF8YjL0i/",
+  "posted_at": "2026-11-18 21:37 UTC"
  },
  {
   "id": "S2E08",
