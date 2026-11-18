@@ -1,0 +1,39 @@
+name: Comment NOTES bot
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # every 10 min (GitHub may delay runs)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only print what would be sent'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency: notes-bot
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - name: Reply to NOTES comments
+        env:
+          INSTANTDM_KEY: ${{ secrets.INSTANTDM_KEY }}
+          PUBLIC_REPLY: '1'
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+        run: python3 publish/notes_bot.py
+      - name: Save handled comments
+        if: always()
+        run: |
+          git config user.name "reel-bot"
+          git config user.email "reel-bot@users.noreply.github.com"
+          git add publish/notes_sent.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "NOTES bot: handled comments" && git pull --rebase origin main && git push)

@@ -12,3 +12,17 @@ for f in files:
     out += [f'## Season {n}', '', body, '']
 open('CHEATSHEETS.md', 'w').write('\n'.join(out))
 print('CHEATSHEETS.md:', len(files), 'seasons')
+
+# one page per episode: cheatsheets/SxEyy.md (the per-reel "Comment NOTES" DM links here)
+import os
+os.makedirs('cheatsheets', exist_ok=True)
+for f in files:
+    n = re.search(r'(\d+)', f).group(1)
+    for sec in re.split(r'\n(?=## E\d\d)', open(f).read())[1:]:
+        m = re.match(r'## E(\d\d) · (.*)', sec)
+        ep = f'S{n}E{m.group(1)}'
+        body = sec.split('\n', 1)[1].strip().replace('Frontend Decoded', 'Tech, Explained')
+        open(f'cheatsheets/{ep}.md', 'w').write(
+            f'# {m.group(2).strip()} · S{n} · E{m.group(1)}\n\n{body}\n\n---\n'
+            f'Every episode\'s cheat sheet: [all cheat sheets](../CHEATSHEETS.md) · New reel daily on Instagram: @tech.explained.dev\n')
+print('per-episode pages:', len(os.listdir('cheatsheets')))
