@@ -251,10 +251,13 @@
  },
  {
   "id": "S2E01",
-  "posted": false,
+  "posted": true,
   "video": "videos/S2E01.mp4",
   "cover": "covers/S2E01.jpg",
-  "caption": "Same phone, same network. One site shows products in a second, the other shows a white screen ⬜\nSeason 2 of Tech, Explained: rendering strategies. It all comes down to one question: who builds the HTML?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Same phone, same network. One site shows products in a second, the other shows a white screen ⬜\nSeason 2 of Tech, Explained: rendering strategies. It all comes down to one question: who builds the HTML?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18107949377320385",
+  "permalink": "https://www.instagram.com/reel/Df5d9DXCQkp/",
+  "posted_at": "2026-11-18 21:27 UTC"
  },
  {
   "id": "S2E02",
