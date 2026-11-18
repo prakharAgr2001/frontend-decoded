@@ -14,4 +14,4 @@
 - `publish/make_covers.py` → `covers/S1Exx.jpg`; `publish/prep_videos.py` → `videos/S1Exx.mp4` (crf 27; cover sent as cover_url from public repo).
 - `publish/build_queue.py` → `publish/queue.json` (captions from notes/season1_captions.md, rebranded).
 - `.github/workflows/post-reel.yml`: daily 19:00 IST posts next unposted reel; manual run supports episode/count/dry_run.
-- `.github/workflows/notes-bot.yml` (every 10 min): "NOTES" comment → DM with that reel's `cheatsheets/SxEyy.md` via InstantDM API (secret `INSTANTDM_KEY`, 1 credit/DM).
+- `.github/workflows/notes-bot.yml` (every 10 min): "NOTES" comment → DM with that reel's cheat sheet as plain text (from `cheatsheets/SxEyy.md`, no link) via InstantDM API (secret `INSTANTDM_KEY`, 1 credit/DM).

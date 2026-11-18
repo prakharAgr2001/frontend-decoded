@@ -1,8 +1,8 @@
-"""'Comment NOTES' bot: DMs each commenter the cheat sheet for THAT reel, via InstantDM's API.
+"""'Comment NOTES' bot: DMs each commenter the cheat sheet text for THAT reel (no links), via InstantDM's API.
 Runs every ~10 min from GitHub Actions. Env: INSTANTDM_KEY, optional PUBLIC_REPLY=1, DRY_RUN=1, LOOKBACK_DAYS (default 6).
-Followers get the episode link; non-followers get a 'follow, then comment NOTES again' DM.
+Followers get the episode's cheat sheet as text; non-followers get a 'follow, then comment NOTES again' DM.
 Handled comment ids are kept in publish/notes_sent.json so nobody is messaged twice. Each DM costs 1 InstantDM credit."""
-import json, os, random, sys, time
+import json, os, random, re, sys, time
 from datetime import datetime, timedelta, timezone
 import requests
 
@@ -59,6 +59,23 @@ def following(uid):
     print('contact_profile', uid, r.status_code, r.text[:200])
     return None  # unknown -> be generous, send the sheet
 
+def sheet(ep):
+    # the cheat sheet itself, as plain DM text (no link): '📝 Title · S1 · E05' + bullets
+    md = open(f'cheatsheets/{ep}.md').read().split('\n---')[0]
+    title, body = md.split('\n', 1)
+    body = re.sub(r'\*\*|`', '', body.strip())
+    rows, out, hdr = [], [], True  # markdown tables -> '• a: b → c'
+    for line in body.split('\n'):
+        if line.startswith('|'):
+            cells = [c.strip() for c in line.strip('|').split('|')]
+            if set(''.join(cells)) <= set('-: '): continue
+            if hdr: hdr = False; continue
+            out.append('• ' + cells[0] + ': ' + ' → '.join(cells[1:]))
+        else: hdr = True; out.append(line)
+    body = '\n'.join(out)
+    body = re.sub(r'^- ', '• ', body, flags=re.M)
+    return f"📝 {title.lstrip('# ').strip()}\n\n{body}\n\nNew episode every day 🦊 Save this!"[:990]
+
 def send(comment_id, text):
     if DRY: print('  [dry] DM:', text.replace('\n', ' | ')); return True
     r = requests.post(V1, headers=H, json={'action': 'send_message', 'type': 'comment_reply',
@@ -91,9 +108,7 @@ if __name__ == '__main__':
                 ok = send(cid, "Hey! 👋 Your cheat sheet is ready. Follow @tech.explained.dev, then comment NOTES again and it'll land here in a few minutes 🦊")
                 state = 'asked_follow'
             else:
-                ok = send(cid, f"Here's your cheat sheet for {e['id'][:2]} · {e['id'][2:]} 🦊\n\n"
-                               f"Key ideas, DevTools tricks and interview traps 👇\n{PAGE.format(e['id'])}\n\n"
-                               "New episode every day, see you tomorrow!")
+                ok = send(cid, sheet(e['id']))
                 state = 'sent'
                 if ok: public_reply(cid)
             if ok and not DRY: sent[cid] = state; n_new += 1
