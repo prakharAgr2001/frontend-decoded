@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E21', tag='S2 · E21', short='FINALE: THREE SITES', tail=3.0)
+EP = dict(id='S2E21', tag='S2 · E21', short='FINALE: THREE SITES', tail=3.0, hook='Amazon vs Gmail vs a blog')
 
 def chaps(c, items, y0=820, gap=95):
     for i, (tag, name, kw) in enumerate(items):

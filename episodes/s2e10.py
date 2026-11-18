@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E10', tag='S2 · E10', short='VISIBLE, NOT CLICKABLE')
+EP = dict(id='S2E10', tag='S2 · E10', short='VISIBLE, NOT CLICKABLE', hook='the uncanny valley')
 
 def hook(c):
     fill_page(c, phone(c, 540, 740, 440, 780), 'full')

@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S2E20', tag='S2 · E20', short='IQ: MODERN RENDERING')
+EP = dict(id='S2E20', tag='S2 · E20', short='IQ: MODERN RENDERING', hook='RSC · actions · islands · edge')
 
 SCENES = [
     (scene_iq_intro('MODERN RENDERING'),

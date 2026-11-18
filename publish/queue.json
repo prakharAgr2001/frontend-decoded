@@ -248,5 +248,152 @@
   "media_id": "18123386836987083",
   "permalink": "https://www.instagram.com/reel/Df4GDLpDGNH/",
   "posted_at": "2026-11-18 08:39 UTC"
+ },
+ {
+  "id": "S2E01",
+  "posted": false,
+  "video": "videos/S2E01.mp4",
+  "cover": "covers/S2E01.jpg",
+  "caption": "Same phone, same network. One site shows products in a second, the other shows a white screen ⬜\nSeason 2 of Tech, Explained: rendering strategies. It all comes down to one question: who builds the HTML?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E02",
+  "posted": false,
+  "video": "videos/S2E02.mp4",
+  "cover": "covers/S2E02.jpg",
+  "caption": "View Source on a React app and the content isn't there. Just one empty div 🔍\nThat's CSR: the server sends a shell, your user's phone builds the page. Great for dashboards, risky for link previews.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E03",
+  "posted": false,
+  "video": "videos/S2E03.mp4",
+  "cover": "covers/S2E03.jpg",
+  "caption": "Click a video on YouTube: the URL changes, the page changes, but there's no new page load 📺\nIntercept the click, pushState, fetch JSON, swap the view. Plus the refresh-404 trap every SPA hits.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E04",
+  "posted": false,
+  "video": "videos/S2E04.mp4",
+  "cover": "covers/S2E04.jpg",
+  "caption": "View Source on Amazon: titles and prices are already in the HTML, before any JS runs ☕\nSSR = a chai stall. Fresh for every customer, but you wait while it's made. Higher TTFB, faster first paint.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E05",
+  "posted": false,
+  "video": "videos/S2E05.mp4",
+  "cover": "covers/S2E05.jpg",
+  "caption": "Why do docs pages load in a blink from anywhere in the world? 🥛\nBuilt once at build time, copied to the CDN, served as is. Perfect until 50,000 prices change every hour.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E06",
+  "posted": false,
+  "video": "videos/S2E06.mp4",
+  "cover": "covers/S2E06.jpg",
+  "caption": "One price changes. Do you rebuild 50,000 pages? 🍞\nISR: serve the static page, rebuild it in the background after it expires. And the trap: who still sees the old price?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E07",
+  "posted": false,
+  "video": "videos/S2E07.mp4",
+  "cover": "covers/S2E07.jpg",
+  "caption": "4 rendering questions interviewers love. Pause before each answer ⏸️\nEmpty root div, refresh 404s, TTFB vs first paint, and picking a strategy per page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E08",
+  "posted": false,
+  "video": "videos/S2E08.mp4",
+  "cover": "covers/S2E08.jpg",
+  "caption": "The button is on screen. You tap it. Nothing happens 🍜\nServer HTML is the noodle cake, JavaScript is the hot water. Hydration is the wait, and it runs on the main thread.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E09",
+  "posted": false,
+  "video": "videos/S2E09.mp4",
+  "cover": "covers/S2E09.jpg",
+  "caption": "\"Hydration failed because the server rendered HTML didn't match the client.\" What it means 🔴\nDates, Math.random, localStorage in render. The fix is useEffect, and the typeof window trick makes it worse.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E10",
+  "posted": false,
+  "video": "videos/S2E10.mp4",
+  "cover": "covers/S2E10.jpg",
+  "caption": "You tap, nothing. Tap again, harder. Still nothing 😤\nThe uncanny valley: the page looks ready but JS is still loading. FCP vs TTI vs TBT, and why a green Lighthouse score can lie.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E11",
+  "posted": false,
+  "video": "videos/S2E11.mp4",
+  "cover": "covers/S2E11.jpg",
+  "caption": "Should your Add to cart tap wait for the recommendations carousel to hydrate? 🙋\nReact 18 hydrates each Suspense boundary on its own, and the part you click jumps the queue.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E12",
+  "posted": false,
+  "video": "videos/S2E12.mp4",
+  "cover": "covers/S2E12.jpg",
+  "caption": "4 hydration questions. Answer before the reveal ⏸️\nWhat hydration is, mismatch causes, dead buttons, and how Suspense helps.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E13",
+  "posted": false,
+  "video": "videos/S2E13.mp4",
+  "cover": "covers/S2E13.jpg",
+  "caption": "Header instantly, the rest a moment later, with zero fetches from the browser 🍛\nStreaming sends HTML in chunks like a thali, dish by dish. Plus why you can't send a 404 after the shell.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E14",
+  "posted": false,
+  "video": "videos/S2E14.mp4",
+  "cover": "covers/S2E14.jpg",
+  "caption": "Those ?_rsc= requests on nextjs.org aren't HTML or JSON. So what are they? 🧑‍🍳\nReact Server Components run only on the server and never ship their code. Only the dish leaves the kitchen.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E15",
+  "posted": false,
+  "video": "videos/S2E15.mp4",
+  "cover": "covers/S2E15.jpg",
+  "caption": "A form POSTs to your server, and you never wrote an API route 🛎️\n'use server' turns a function call into a request. It's still a public endpoint, so check auth inside it.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E16",
+  "posted": false,
+  "video": "videos/S2E16.mp4",
+  "cover": "covers/S2E16.jpg",
+  "caption": "A sea of static HTML with small islands of JavaScript 🏝️\nOnly the interactive widgets hydrate, each on its own: client:load, client:visible, client:idle. And the shared-state trap.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E17",
+  "posted": false,
+  "video": "videos/S2E17.mp4",
+  "cover": "covers/S2E17.jpg",
+  "caption": "Hydration re-runs your whole app to rediscover what the server already knew. What if the browser just continued? 🎮\nResumability is loading a game save instead of replaying every level.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E18",
+  "posted": false,
+  "video": "videos/S2E18.mp4",
+  "cover": "covers/S2E18.jpg",
+  "caption": "Your server is in Virginia. Your user is in Bengaluru. That's ~250 ms before the HTML starts cooking 🌍\nEdge rendering cooks it next door, unless your database is still across the planet.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E19",
+  "posted": false,
+  "video": "videos/S2E19.mp4",
+  "cover": "covers/S2E19.jpg",
+  "caption": "Design the rendering for an online store. Most candidates get it wrong in the first sentence 🛒\n3 questions per page: SEO? Same for everyone? How often does the data change? One store, four strategies.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E20",
+  "posted": false,
+  "video": "videos/S2E20.mp4",
+  "cover": "covers/S2E20.jpg",
+  "caption": "4 questions on streaming, server components, server actions and islands ⏸️\nPause, answer, then check the reveal. Tell us your score.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S2E21",
+  "posted": false,
+  "video": "videos/S2E21.mp4",
+  "cover": "covers/S2E21.jpg",
+  "caption": "A blog, Amazon and Gmail: three sites you use every day, three ways to render a page 🏁\n21 episodes, one question: who builds the HTML, and when? Next season: web performance.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
  }
 ]

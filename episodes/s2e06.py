@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E06', tag='S2 · E06', short='INCREMENTAL STATIC REGEN')
+EP = dict(id='S2E06', tag='S2 · E06', short='INCREMENTAL STATIC REGEN', hook='static pages that update')
 
 def pricecard(c, x0, y0, price, at, stale=False):
     if not c.on(at - 0.01): return

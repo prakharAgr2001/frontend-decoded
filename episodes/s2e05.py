@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E05', tag='S2 · E05', short='STATIC SITE GENERATION')
+EP = dict(id='S2E05', tag='S2 · E05', short='STATIC SITE GENERATION', hook='cook once, serve millions')
 
 def hook(c):
     icon(c.pen, 'globe', 540, 640, 3.4 * c.B(0.1, 0.5))

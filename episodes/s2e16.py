@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E16', tag='S2 · E16', short='ISLANDS ARCHITECTURE')
+EP = dict(id='S2E16', tag='S2 · E16', short='ISLANDS ARCHITECTURE', hook='a sea of HTML, islands of JS')
 
 def hook(c):
     p = panel(c, 50, 330, 1030, 1100, ('Elements',), 0, (1 - c.P(0, 0.45)) * 900)

@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E03', tag='S2 · E03', short='CLIENT-SIDE ROUTING')
+EP = dict(id='S2E03', tag='S2 · E03', short='CLIENT-SIDE ROUTING', hook='new page, no page load')
 
 def netrows(c, x0, y0, rows, at, step=0.35):
     for i, (name, typ, col) in enumerate(rows):

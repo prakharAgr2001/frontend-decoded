@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S2E12', tag='S2 · E12', short='IQ: HYDRATION')
+EP = dict(id='S2E12', tag='S2 · E12', short='IQ: HYDRATION', hook='4 hydration questions')
 
 SCENES = [
     (scene_iq_intro('HYDRATION'),

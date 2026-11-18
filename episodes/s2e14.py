@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E14', tag='S2 · E14', short='SERVER COMPONENTS')
+EP = dict(id='S2E14', tag='S2 · E14', short='SERVER COMPONENTS', hook='components that never ship')
 
 def hook(c):
     p = panel(c, 50, 330, 1030, 1000, ('Network',), 0, (1 - c.P(0, 0.45)) * 900)

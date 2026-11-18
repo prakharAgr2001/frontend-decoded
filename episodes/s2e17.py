@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E17', tag='S2 · E17', short='RESUMABILITY')
+EP = dict(id='S2E17', tag='S2 · E17', short='RESUMABILITY', hook='skip hydration entirely')
 
 def hook(c):
     ts = c.T('server')

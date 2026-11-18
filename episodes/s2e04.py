@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E04', tag='S2 · E04', short='SERVER-SIDE RENDERING')
+EP = dict(id='S2E04', tag='S2 · E04', short='SERVER-SIDE RENDERING', hook='what Amazon sends first')
 
 def hook(c):
     tv = c.T('View')

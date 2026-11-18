@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E13', tag='S2 · E13', short='STREAMING SSR')
+EP = dict(id='S2E13', tag='S2 · E13', short='STREAMING SSR', hook='send the page before it’s done')
 
 def hook(c):
     box = phone(c, 540, 780, 460, 860)

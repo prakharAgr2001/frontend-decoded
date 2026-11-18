@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E08', tag='S2 · E08', short='HYDRATION')
+EP = dict(id='S2E08', tag='S2 · E08', short='HYDRATION', hook='just add hot water')
 
 def hook(c):
     fill_page(c, phone(c, 540, 760, 460, 820), 'full')

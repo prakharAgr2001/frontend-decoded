@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E09', tag='S2 · E09', short='HYDRATION MISMATCH')
+EP = dict(id='S2E09', tag='S2 · E09', short='HYDRATION MISMATCH', hook='the red error everyone hits')
 
 def hook(c):
     tc = c.T('console')

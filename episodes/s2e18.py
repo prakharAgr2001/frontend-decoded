@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E18', tag='S2 · E18', short='EDGE RENDERING')
+EP = dict(id='S2E18', tag='S2 · E18', short='EDGE RENDERING', hook='render next door to the user')
 
 CITIES = {'Virginia': (250, 620), 'Bengaluru': (780, 820), 'Frankfurt': (520, 540), 'Singapore': (860, 900), 'Sao Paulo': (330, 1000), 'Sydney': (930, 1100)}
 

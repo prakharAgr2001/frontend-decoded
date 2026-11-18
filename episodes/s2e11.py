@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E11', tag='S2 · E11', short='SELECTIVE HYDRATION')
+EP = dict(id='S2E11', tag='S2 · E11', short='SELECTIVE HYDRATION', hook='hydrate what you touch')
 
 PARTS = [('Header', 330, 110), ('Gallery', 470, 250), ('Add to cart', 750, 100), ('Reviews', 880, 200), ('Recommendations', 1110, 180)]
 

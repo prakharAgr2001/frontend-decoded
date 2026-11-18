@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E19', tag='S2 · E19', short='CASE STUDY: A STORE')
+EP = dict(id='S2E19', tag='S2 · E19', short='CASE STUDY: A STORE', hook='design rendering for a store')
 
 ROUTES = [('/blog', 'SSG', GRN), ('/', 'ISR', TEAL), ('/product/:id', 'ISR + client islands', TEAL), ('/search', 'streaming SSR', BLUE),
           ('/cart · /checkout', 'CSR (client)', ORANGE), ('/account', 'CSR (client)', ORANGE)]

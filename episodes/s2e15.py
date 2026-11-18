@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E15', tag='S2 · E15', short='SERVER ACTIONS')
+EP = dict(id='S2E15', tag='S2 · E15', short='SERVER ACTIONS', hook='a function that’s secretly POST')
 
 def hook(c):
     tf = c.T('submit')

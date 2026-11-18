@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E02', tag='S2 · E02', short='CLIENT-SIDE RENDERING')
+EP = dict(id='S2E02', tag='S2 · E02', short='CLIENT-SIDE RENDERING', hook='the mystery of the empty div')
 
 SRC = ['<!doctype html>', '<html>', '  <head><title>My App</title></head>', '  <body>', '    <div id="root"></div>',
        '    <script src="/assets/index-4f2a.js">', '    </script>', '  </body>', '</html>']

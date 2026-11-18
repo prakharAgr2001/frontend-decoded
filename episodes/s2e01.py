@@ -1,6 +1,6 @@
 from engine.s2_extra import *
 
-EP = dict(id='S2E01', tag='S2 · E01', short='WHITE SCREEN FIRST')
+EP = dict(id='S2E01', tag='S2 · E01', short='WHITE SCREEN FIRST', hook='why some sites stay white')
 
 def hook(c):
     label(c, 540, 300, 'Slow 4G · same phone', 0.1, INK, WHITE, 30)
