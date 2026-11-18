@@ -15,3 +15,7 @@
 - `publish/build_queue.py` → `publish/queue.json` (captions from notes/season1_captions.md, rebranded).
 - `.github/workflows/post-reel.yml`: daily 19:00 IST posts next unposted reel; manual run supports episode/count/dry_run.
 - `.github/workflows/notes-bot.yml` (every 10 min): "NOTES" comment → DM with that reel's cheat sheet as plain text (from `cheatsheets/SxEyy.md`, no link) via InstantDM API (secret `INSTANTDM_KEY`, 1 credit/DM).
+- **Shorts (trend reels, 20–35 s):** `engine/shorts.py` (`python3 -m engine.shorts {text|check|render} SHnn`), scripts in `shorts/shNN.py`
+  (EP needs `caption`), voice Charon with punchy instructions. `python3 -m publish.release_shorts` → `publish/shorts_queue.json`;
+  `.github/workflows/post-short.yml` posts the next short daily 13:30 IST (manual: episode id). Trial reels are refused by the API
+  (permission #10), so shorts post as normal reels. Posted 19 Nov: SH01 Nvidia CEO, SH02 GitHub repos, SH03 PW AI.
