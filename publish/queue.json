@@ -1,10 +1,13 @@
 [
  {
   "id": "S1E01",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E01.mp4",
   "caption": "You type google.com and hit Enter. In under a second your browser makes 5 separate journeys 🌐\nEpisode 1 of Tech, Explained: how the browser really works.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E01.jpg"
+  "cover": "covers/S1E01.jpg",
+  "media_id": "17995245729027124",
+  "permalink": "https://www.instagram.com/reel/Df4C2MrHCGr/",
+  "posted_at": "2026-11-18 08:11 UTC"
  },
  {
   "id": "S1E02",
