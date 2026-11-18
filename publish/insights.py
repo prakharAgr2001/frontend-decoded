@@ -15,6 +15,13 @@ for mid, ep in q.items():
     row = {'ep': ep, 'likes': m.get('like_count'), 'comments': m.get('comments_count')}
     for met in METRICS:  # one by one: unsupported metrics shouldn't kill the rest
         r = get(f'{mid}/insights', metric=met)
+        if 'error' in r and ep == 'S1E01': print('ERR', met, r['error'][:160])
         if 'data' in r and r['data']:
             row[met] = r['data'][0]['values'][0]['value'] if r['data'][0].get('values') else r['data'][0].get('total_value', {}).get('value')
     print('REEL', json.dumps(row))
+
+for met in ['reach', 'views', 'follower_count', 'profile_views', 'accounts_engaged', 'total_interactions']:
+    r = get(f'{U}/insights', metric=met, period='day', metric_type='total_value')
+    print('ACCT_INSIGHT', met, json.dumps(r.get('data', r))[:300])
+r = get(f'{U}/insights', metric='follower_demographics', period='lifetime', metric_type='total_value', breakdown='country')
+print('DEMO', json.dumps(r)[:400])
