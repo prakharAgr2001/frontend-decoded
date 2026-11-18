@@ -11,170 +11,242 @@
  },
  {
   "id": "S1E02",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E02.mp4",
   "caption": "Computers don't understand \"google.com\". So who translates it? Meet the internet's phonebook 📖\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E02.jpg"
+  "cover": "covers/S1E02.jpg",
+  "media_id": "18027014486937677",
+  "permalink": "https://www.instagram.com/reel/Df4DF4WmWFp/",
+  "posted_at": "2026-11-18 08:13 UTC"
  },
  {
   "id": "S1E03",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E03.mp4",
   "caption": "Before your browser sends a single byte, it makes a phone call 📞 SYN, SYN-ACK, ACK, explained.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E03.jpg"
+  "cover": "covers/S1E03.jpg",
+  "media_id": "17978576628173343",
+  "permalink": "https://www.instagram.com/reel/Df4DNjpjZig/",
+  "posted_at": "2026-11-18 08:14 UTC"
  },
  {
   "id": "S1E04",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E04.mp4",
   "caption": "That padlock makes 3 promises. Most developers can name only one 🔒 (and it does NOT mean the site is safe)\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E04.jpg"
+  "cover": "covers/S1E04.jpg",
+  "media_id": "17913502161303858",
+  "permalink": "https://www.instagram.com/reel/Df4DVeWlYb6/",
+  "posted_at": "2026-11-18 08:15 UTC"
  },
  {
   "id": "S1E05",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E05.mp4",
   "caption": "Open YouTube's Network tab and you'll see \"h3\". Why did we need HTTP/3? 🚦\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E05.jpg"
+  "cover": "covers/S1E05.jpg",
+  "media_id": "18047595521643518",
+  "permalink": "https://www.instagram.com/reel/Df4DdfKiGjx/",
+  "posted_at": "2026-11-18 08:16 UTC"
  },
  {
   "id": "S1E06",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E06.mp4",
   "caption": "Millions of fans hit play on the same match at once. Why doesn't the server melt? 🏏\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E06.jpg"
+  "cover": "covers/S1E06.jpg",
+  "media_id": "17996685431846957",
+  "permalink": "https://www.instagram.com/reel/Df4DkN9AuIR/",
+  "posted_at": "2026-11-18 08:17 UTC"
  },
  {
   "id": "S1E07",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E07.mp4",
   "caption": "4 real interview questions. Pause and answer before the reveal 🎯 Drop your score below.\n💬 Comment NOTES for the full answers.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E07.jpg"
+  "cover": "covers/S1E07.jpg",
+  "media_id": "18177679036457544",
+  "permalink": "https://www.instagram.com/reel/Df4DrW7DbrJ/",
+  "posted_at": "2026-11-18 08:18 UTC"
  },
  {
   "id": "S1E08",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E08.mp4",
   "caption": "The server sends plain text. How does it become a page you can click? 🌳\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E08.jpg"
+  "cover": "covers/S1E08.jpg",
+  "media_id": "17957869767305929",
+  "permalink": "https://www.instagram.com/reel/Df4DzYfioQb/",
+  "posted_at": "2026-11-18 08:19 UTC"
  },
  {
   "id": "S1E09",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E09.mp4",
   "caption": "Your browser's assembly line, running up to 60 times a second 🏭\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E09.jpg"
+  "cover": "covers/S1E09.jpg",
+  "media_id": "17918624805553858",
+  "permalink": "https://www.instagram.com/reel/Df4D6tlmTdS/",
+  "posted_at": "2026-11-18 08:20 UTC"
  },
  {
   "id": "S1E10",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E10.mp4",
   "caption": "Change one CSS property: smooth. Change another: stutter. Here's why 🎨\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E10.jpg"
+  "cover": "covers/S1E10.jpg",
+  "media_id": "18226704037343185",
+  "permalink": "https://www.instagram.com/reel/Df4EFk7jdKV/",
+  "posted_at": "2026-11-18 08:21 UTC"
  },
  {
   "id": "S1E11",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E11.mp4",
   "caption": "This innocent-looking loop forces hundreds of layouts in one frame 😬\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E11.jpg"
+  "cover": "covers/S1E11.jpg",
+  "media_id": "18117446693121974",
+  "permalink": "https://www.instagram.com/reel/Df4EMKqAfwG/",
+  "posted_at": "2026-11-18 08:22 UTC"
  },
  {
   "id": "S1E12",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E12.mp4",
   "caption": "Two boxes slide. One glides, one stutters. The difference is one line of CSS ✨\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E12.jpg"
+  "cover": "covers/S1E12.jpg",
+  "media_id": "18111577316251040",
+  "permalink": "https://www.instagram.com/reel/Df4EYXzD35G/",
+  "posted_at": "2026-11-18 08:24 UTC"
  },
  {
   "id": "S1E13",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E13.mp4",
   "caption": "4 rendering-pipeline questions interviewers love. How many can you answer? 🎯\n💬 Comment NOTES for the full answers.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E13.jpg"
+  "cover": "covers/S1E13.jpg",
+  "media_id": "17968489659216011",
+  "permalink": "https://www.instagram.com/reel/Df4Ek_vglMe/",
+  "posted_at": "2026-11-18 08:26 UTC"
  },
  {
   "id": "S1E14",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E14.mp4",
   "caption": "Run a 3-second loop and your whole page freezes. JavaScript has only one chef 👨‍🍳\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E14.jpg"
+  "cover": "covers/S1E14.jpg",
+  "media_id": "18199526545392827",
+  "permalink": "https://www.instagram.com/reel/Df4EtHkCMKI/",
+  "posted_at": "2026-11-18 08:27 UTC"
  },
  {
   "id": "S1E15",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E15.mp4",
   "caption": "Log A, setTimeout B with 0ms, log C → A, C, B. Every time. Here's why 🥞\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E15.jpg"
+  "cover": "covers/S1E15.jpg",
+  "media_id": "18133086484878747",
+  "permalink": "https://www.instagram.com/reel/Df4E0eqCJHn/",
+  "posted_at": "2026-11-18 08:28 UTC"
  },
  {
   "id": "S1E16",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E16.mp4",
   "caption": "Promise.then vs setTimeout 0: which runs first? Most people guess wrong 🎟️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E16.jpg"
+  "cover": "covers/S1E16.jpg",
+  "media_id": "18110032250202446",
+  "permalink": "https://www.instagram.com/reel/Df4E7htmsGV/",
+  "posted_at": "2026-11-18 08:29 UTC"
  },
  {
   "id": "S1E17",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E17.mp4",
   "caption": "Your screen gives you ~16 ms per frame. Miss it and users feel the jank ⏱️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E17.jpg"
+  "cover": "covers/S1E17.jpg",
+  "media_id": "17913845829590187",
+  "permalink": "https://www.instagram.com/reel/Df4FI9BEVIt/",
+  "posted_at": "2026-11-18 08:31 UTC"
  },
  {
   "id": "S1E18",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E18.mp4",
   "caption": "You tap a button… nothing happens. Half a second later it responds. Meet the long task 🐢\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E18.jpg"
+  "cover": "covers/S1E18.jpg",
+  "media_id": "18093734783703537",
+  "permalink": "https://www.instagram.com/reel/Df4FPX3mfXx/",
+  "posted_at": "2026-11-18 08:31 UTC"
  },
  {
   "id": "S1E19",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E19.mp4",
   "caption": "4 event-loop puzzles from real interviews. Predict the output before the reveal 🧠\n💬 Comment your score + NOTES for answers.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E19.jpg"
+  "cover": "covers/S1E19.jpg",
+  "media_id": "18161576515511504",
+  "permalink": "https://www.instagram.com/reel/Df4FVeaDwUW/",
+  "posted_at": "2026-11-18 08:32 UTC"
  },
  {
   "id": "S1E20",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E20.mp4",
   "caption": "You clicked one button. The event visited every element around it. Twice 🫧\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E20.jpg"
+  "cover": "covers/S1E20.jpg",
+  "media_id": "18036846677855546",
+  "permalink": "https://www.instagram.com/reel/Df4FdJegJHl/",
+  "posted_at": "2026-11-18 08:33 UTC"
  },
  {
   "id": "S1E21",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E21.mp4",
   "caption": "1,000 emails. Do you need 1,000 click listeners? One is enough ☝️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E21.jpg"
+  "cover": "covers/S1E21.jpg",
+  "media_id": "17968545344981835",
+  "permalink": "https://www.instagram.com/reel/Df4Flf6ETB2/",
+  "posted_at": "2026-11-18 08:35 UTC"
  },
  {
   "id": "S1E22",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E22.mp4",
   "caption": "Why some tabs eat gigabytes of RAM after a day, and how to find the leak 🔍\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E22.jpg"
+  "cover": "covers/S1E22.jpg",
+  "media_id": "17964942222000049",
+  "permalink": "https://www.instagram.com/reel/Df4FtPQALc5/",
+  "posted_at": "2026-11-18 08:36 UTC"
  },
  {
   "id": "S1E23",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E23.mp4",
   "caption": "How does a feed know to autoplay a video when it's mostly on screen? Not with scroll listeners 👀\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E23.jpg"
+  "cover": "covers/S1E23.jpg",
+  "media_id": "18121412866965453",
+  "permalink": "https://www.instagram.com/reel/Df4F0fDAbTF/",
+  "posted_at": "2026-11-18 08:37 UTC"
  },
  {
   "id": "S1E24",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E24.mp4",
   "caption": "4 questions on events, memory leaks and observers. Test yourself 🎯\n💬 Comment NOTES for the full answers.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E24.jpg"
+  "cover": "covers/S1E24.jpg",
+  "media_id": "18119983568120441",
+  "permalink": "https://www.instagram.com/reel/Df4F8CEipVK/",
+  "posted_at": "2026-11-18 08:38 UTC"
  },
  {
   "id": "S1E25",
-  "posted": false,
+  "posted": true,
   "video": "videos/S1E25.mp4",
   "caption": "One visit to YouTube, explained down to the millisecond. Every concept from Season 1 in one reel 🎬\nSeason 2 (rendering strategies) starts next.\n💬 Comment NOTES for the full season cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
-  "cover": "covers/S1E25.jpg"
+  "cover": "covers/S1E25.jpg",
+  "media_id": "18123386836987083",
+  "permalink": "https://www.instagram.com/reel/Df4GDLpDGNH/",
+  "posted_at": "2026-11-18 08:39 UTC"
  }
 ]
