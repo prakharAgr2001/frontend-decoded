@@ -1,4 +1,4 @@
-# Frontend Decoded · Season 1 cheat sheets (DM these for "Comment NOTES")
+# Tech, Explained · Season 1 cheat sheets
 
 ## E01 · URL to pixels
 - 5 journeys: **DNS** (name → IP) → **TCP** (connection) → **TLS** (encrypt + verify) → **HTTP** (request) → **render** (HTML → pixels).
