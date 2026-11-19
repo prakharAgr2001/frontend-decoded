@@ -1,4 +1,4 @@
-"""Static cheat-sheet website -> site/  (no backend; deploy with AWS Amplify, see amplify.yml).
+"""Static cheat-sheet website -> site/  (no backend; deployed on Netlify, see netlify.toml).
 site/index.html       single-page app: type "s2e5", "2 5", "season 2 episode 5" or a name ("event loop") and read
 site/sXeYY/index.html one static page per episode (shareable links, SEO, works without JS)
 site/notes.json       all notes (for anything else that wants them)
