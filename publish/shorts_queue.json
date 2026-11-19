@@ -28,5 +28,103 @@
   "media_id": "18115067654576790",
   "permalink": "https://www.instagram.com/reel/Df5j0EGkWG_/",
   "posted_at": "2026-11-18 22:18 UTC"
+ },
+ {
+  "id": "SH04",
+  "posted": false,
+  "video": "videos/SH04.mp4",
+  "cover": "covers/SH04.jpg",
+  "caption": "5 stages of being a developer jab production down ho jaata hai 🔥\n\nDenial → Panic → Bargaining → Blame → Acceptance\n\nStage 4 hurts the most 😭 Which stage are you in right now? 👇\n📩 Send this to the friend who's on-call tonight.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "SH05",
+  "posted": false,
+  "video": "videos/SH05.mp4",
+  "cover": "covers/SH05.jpg",
+  "caption": "\"Select all images with traffic lights\" 🚦\nBhai, pole bhi count hota hai kya? 😭\n\nPlot twist: that checkbox was watching HOW you moved your mouse. And those old wavy words? Google used them to digitize old books.\n\nTumne kitni baar fail kiya hai? 👇\n📩 Send this to the friend who fails CAPTCHA 3 times.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "SH06",
+  "posted": false,
+  "video": "videos/SH06.mp4",
+  "cover": "covers/SH06.jpg",
+  "caption": "Phone charging: 0→80% 🚀 … 80→100% 🐢\nKyun?! 😭\n\nBattery = glass of water. Khaali ho toh full speed, bharne wala ho toh dheere, warna garmi = battery ka dushman 🔥\n\n📌 Save this: keep it between 20–80%.\n💬 Tumhara phone abhi kitne % pe hai?\n📩 Send this to your 1%-battery friend.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR01",
+  "posted": false,
+  "video": "videos/WR01.mp4",
+  "cover": "covers/WR01.jpg",
+  "caption": "This number almost broke YouTube. 🤯\n\nIn 2014 one K-pop video hit 2,147,483,647 views, the biggest number its 32-bit view counter could hold. One more view and it would have flipped to −2,147,483,648. Engineers saw it coming and moved to 64 bits (limit: ~9.2 quintillion). Then they hid an easter egg that spun the counter negative anyway.\n\nFull system design series on my page. \n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR02",
+  "posted": false,
+  "video": "videos/WR02.mp4",
+  "cover": "covers/WR02.jpg",
+  "caption": "One update. 8.5 million computers. Dead. 💀\n\nOn 19 July 2024, a faulty CrowdStrike file went to every machine at once (Microsoft estimates ~8.5M Windows PCs crashed). Flights grounded, hospital appointments postponed, TV off air. Pulled after 78 minutes, but millions had to be fixed by hand.\n\nThe rule: staged rollouts. Ship to 1% first, so if it breaks, only 1% breaks.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR03",
+  "posted": false,
+  "video": "videos/WR03.mp4",
+  "cover": "covers/WR03.jpg",
+  "caption": "7 crore people. One cricket ball. The same second. 🏏\n\nThe T20 World Cup final (8 March 2026) hit 7+ crore concurrent viewers on JioHotstar, a live-streaming world record (ICC figure). How it held: servers switched on BEFORE the match, video chopped into tiny chunks served from nearby servers, and 'panic mode' that turns off extras to keep the match playing.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR04",
+  "posted": false,
+  "video": "videos/WR04.mp4",
+  "cover": "covers/WR04.jpg",
+  "caption": "Facebook, Instagram, WhatsApp. Gone for ~6 hours. 📵\n\nOn 4 Oct 2021, a routine maintenance command cut Facebook's data centers off its backbone. Its DNS servers, built to go quiet when they can't reach the data centers, withdrew themselves from the internet, so no one could even find facebook.com. The tools to fix it depended on the same network, so engineers had to go on site.\n\nDNS is the internet's phone book (S1E02 on my page).\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR05",
+  "posted": false,
+  "video": "videos/WR05.mp4",
+  "cover": "covers/WR05.jpg",
+  "caption": "One customer changed one setting. Huge parts of the internet went down. 🌐💥\n\nOn 8 June 2021, Amazon, Reddit, the New York Times and gov.uk all showed errors. They shared one CDN: Fastly. A bug shipped in May lay dormant until a customer pushed a perfectly valid config change, and 85% of Fastly's network returned errors. Spotted in 1 minute, 95% back in 49.\n\nCDNs explained in S1E06 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR06",
+  "posted": false,
+  "video": "videos/WR06.mp4",
+  "cover": "covers/WR06.jpg",
+  "caption": "A tenth of a second. That's all it takes. ⏱️💸\n\nAround 2006, Amazon engineers slowed pages on purpose and found every extra 100 ms cost about 1% of sales (Greg Linden). Google saw half a second slower → 20% fewer searches (Marissa Mayer). That's why Google now grades every site on Core Web Vitals: loading (LCP), responsiveness (INP), visual stability (CLS).\n\nWeb vitals explained in S3E01–S3E08 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR07",
+  "posted": false,
+  "video": "videos/WR07.mp4",
+  "cover": "covers/WR07.jpg",
+  "caption": "23 seconds before you could tap anything. 🥶\n\nPinterest's old mobile site (average Android, slow 3G) took 23 s to become interactive: over 2.5 MB of JavaScript to parse first. The 2017 rebuild split the code and shipped only what each page needed: core JS ~620 KB → 150 KB, time to interactive 23 s → 5.6 s. Time spent +40%, user-generated ad revenue +44%.\n\nCode splitting explained in S3E12–S3E15 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR08",
+  "posted": false,
+  "video": "videos/WR08.mp4",
+  "cover": "covers/WR08.jpg",
+  "caption": "Netflix removed React from its landing page… and got 50% faster. 🍿\n\nIn 2017 Netflix kept React on the server to build the logged-out homepage, but swapped client-side React (and libraries like Lodash) for plain JavaScript. ~200 KB less JS, time-to-interactive cut by over 50%. Then it prefetched React for the next sign-up steps while you read.\n\nSSR, hydration and islands explained in Season 2 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR09",
+  "posted": false,
+  "video": "videos/WR09.mp4",
+  "cover": "covers/WR09.jpg",
+  "caption": "You tap a link. The page jumps. You hit an ad. 😤\n\nYahoo! JAPAN News (22B+ page views a month) found its article pages jumping as late images pushed text down. The fix: reserve each image's space before it loads. Layout shift went from ~0.2 to ~0, and pages per session rose 15%, sessions got 13% longer (web.dev case study).\n\nLayout shift (CLS) explained in S3E04 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR10",
+  "posted": false,
+  "video": "videos/WR10.mp4",
+  "cover": "covers/WR10.jpg",
+  "caption": "Your Hinge match was picked by a Nobel Prize–winning algorithm. 💘\n\nHinge's Most Compatible uses a version of the Gale–Shapley algorithm (1962, the 'stable marriage problem'; Shapley shared the 2012 Nobel in economics) plus machine learning. Everyone ranks, one side proposes, better offers win, repeat until nobody wants to switch. Hinge says in tests people were 8x more likely to go on a date with their Most Compatible.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR11",
+  "posted": false,
+  "video": "videos/WR11.mp4",
+  "cover": "covers/WR11.jpg",
+  "caption": "On Bumble, an AI looks at some photos before you do. 🛡️\n\nPrivate Detector (launched 2019) scans images sent in chat; if one looks explicit it arrives blurred, with a warning, and you choose to view, block or report. It was reported as 98% accurate in testing. Only ~0.1% of users send these, but Bumble's scale gave it a huge training set. In 2022 Bumble open-sourced it on GitHub (Apache-2.0).\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
  }
 ]
