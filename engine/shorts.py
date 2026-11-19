@@ -119,3 +119,195 @@ def frame(t, si, spans, scenes, W_, ep, total, chunks, sfxset):
     return fr.convert('RGB')
 
 B.frame = frame
+
+# ================================================================ MEME STYLE (EP['style'] = 'meme')
+# dark bg + rotating rays, giant outlined text, Noto emoji stickers, pop captions, generated music bed.
+import io as _io, wave as _wave
+import numpy as np
+from PIL import ImageDraw as _ID
+BG0, BG1 = (12, 13, 17), (30, 32, 40)
+_EP_STYLE = {}
+
+def _bg_base():
+    if 'base' not in _EP_STYLE:
+        y = np.linspace(0, 1, H)[:, None]; x = np.linspace(-1, 1, W)[None, :]
+        r = np.sqrt(x ** 2 * 0.6 + (y - 0.42) ** 2 * 1.4)
+        g = np.clip(1 - r, 0, 1)[..., None]
+        a = np.array(BG0)[None, None] * (1 - g) + np.array(BG1)[None, None] * g
+        _EP_STYLE['base'] = Image.fromarray(a.astype(np.uint8)).convert('RGBA')
+    return _EP_STYLE['base']
+
+def meme_bg(t, accent=YEL):
+    fr = _bg_base().copy()
+    lay = Image.new('RGBA', (W // 2, H // 2), (0, 0, 0, 0)); d = _ID.Draw(lay)
+    cx, cy, R, n = W // 4, int(H * 0.21), 1400, 14
+    a0 = t * 0.25
+    for i in range(n):
+        a = a0 + i * 2 * math.pi / n
+        d.polygon([(cx, cy), (cx + R * math.cos(a), cy + R * math.sin(a)), (cx + R * math.cos(a + math.pi / n), cy + R * math.sin(a + math.pi / n))],
+                  fill=accent + (16,))
+    fr.alpha_composite(lay.resize((W, H), Image.BILINEAR))
+    return fr
+
+def big(c, x, y, s, size, at=-0.3, col=WHITE, k='osw', stroke=10, d=0.22, rot=0, sound='pop'):
+    """giant outlined text with drop shadow; pops in at `at`"""
+    if not c.on(at - 0.01) or not s: return
+    p = c.B(at, d)
+    if sound and at > 0: c.sfx(at, sound)
+    size = min(size, size * 960 / max(1, c.pen.tw(s, k, size) + 2 * stroke))
+    f = font(k, max(2, size * p) * SS)
+    lay = Image.new('RGBA', (CW, int(size * 2.2 * SS)), (0, 0, 0, 0)); dr = _ID.Draw(lay)
+    my = lay.height // 2
+    dr.text((x * SS + 10 * SS, my + 12 * SS), s, font=f, fill=(0, 0, 0, 170), anchor='mm', stroke_width=int(stroke * SS), stroke_fill=(0, 0, 0, 170))
+    dr.text((x * SS, my), s, font=f, fill=col, anchor='mm', stroke_width=int(stroke * SS), stroke_fill=(8, 8, 10))
+    if rot: lay = lay.rotate(rot, resample=Image.BICUBIC, center=(x * SS, my))
+    c.cv.alpha_composite(lay, (0, int(y * SS - my)))
+
+_EMO = {}
+def emoji(c, name, cx, cy, size, at=-0.3, bob=True, rot=0, sound='pop'):
+    if not c.on(at - 0.01): return
+    p = c.B(at, 0.3)
+    if sound and at > 0: c.sfx(at, sound)
+    px = int(size * SS)
+    key = (name, px)
+    if key not in _EMO:
+        import cairosvg
+        png = cairosvg.svg2png(url=os.path.join(ROOT, 'brand', 'emoji', name + '.svg'), output_width=px, output_height=px)
+        _EMO[key] = Image.open(_io.BytesIO(png)).convert('RGBA')
+    im = _EMO[key]
+    s = max(0.01, p)
+    if s < 0.999: im = im.resize((max(1, int(px * s)), max(1, int(px * s))), Image.LANCZOS)
+    r = rot + (6 * math.sin(c.t * 5 + cx) if bob else 0)
+    if r: im = im.rotate(r, resample=Image.BICUBIC, expand=True)
+    dy = (10 * math.sin(c.t * 6 + cx) if bob else 0) * SS
+    c.cv.alpha_composite(im, (int(cx * SS - im.width / 2), int(cy * SS - im.height / 2 + dy)))
+
+def bar(c, x0, y, x1, frac, col, h=70, label_=None):
+    c.pen.rr(x0, y - h / 2, x1, y + h / 2, h / 2, fill=(40, 42, 50), outline=WHITE, w=5)
+    if frac > 0.01: c.pen.rr(x0 + 8, y - h / 2 + 8, x0 + 8 + (x1 - x0 - 16) * min(1, frac), y + h / 2 - 8, h / 2 - 8, fill=col)
+    if label_: c.pen.text((x0 + x1) / 2, y, label_, 'intx', h * 0.55, WHITE)
+
+def meme_captions(img, t, chunks, ymid=1500):
+    d = _ID.Draw(img)
+    for st, en, ch in chunks:
+        if not (st <= t < en): continue
+        size = 70
+        f = font('intx', size)
+        words = [w[0].upper() for w in ch]
+        gap = 22
+        ws = [f.getlength(w) for w in words]
+        lines = [list(range(len(ch)))]
+        if sum(ws) + gap * (len(ch) - 1) > 900 and len(ch) > 1:
+            m = (len(ch) + 1) // 2; lines = [list(range(m)), list(range(m, len(ch)))]
+        active = max([j for j, w in enumerate(ch) if w[1] - 0.05 <= t] or [-1])
+        for li, L in enumerate(lines):
+            lw = sum(ws[i] for i in L) + gap * (len(L) - 1)
+            if lw > 980: f2 = font('intx', int(size * 980 / lw))
+            else: f2 = f
+            x = 540 - min(lw, 980) / 2; y = ymid + (li - (len(lines) - 1) / 2) * size * 1.25
+            for i in L:
+                on = i == active
+                ff = font('intx', int(f2.size * (1.12 if on else 1)))
+                d.text((x, y), words[i], font=ff, fill=YEL if on else WHITE, anchor='lm', stroke_width=7, stroke_fill=(0, 0, 0))
+                x += f2.getlength(words[i]) + gap
+        return
+
+_chrome_paper = chrome
+def chrome(img, t, ep, total, chunks):
+    if ep.get('style') != 'meme': return _chrome_paper(img, t, ep, total, chunks)
+    d = _ID.Draw(img)
+    d.text((540, 128), 'TECH, EXPLAINED', font=font('osw', 34), fill=YEL, anchor='mm')
+    d.rectangle((0, 1908, W * t / total, 1920), fill=YEL)
+    meme_captions(img, t, chunks)
+B.chrome = chrome
+
+_frame_paper = frame
+def frame(t, si, spans, scenes, W_, ep, total, chunks, sfxset):
+    if ep.get('style') != 'meme': return _frame_paper(t, si, spans, scenes, W_, ep, total, chunks, sfxset)
+    t0, t1 = spans[si]
+    cv = Image.new('RGBA', (CW, CH), (0, 0, 0, 0))
+    words = [(w[0], w[1] - t0, w[2] - t0) for w in W_ if w[3] == si]
+    c = Ctx(Pen(cv, SS), cv, t - t0, words, t1 - t0, sfxset, t0)
+    scenes[si][0](c)
+    lt = t - t0
+    z = 1 + 0.16 * (1 - eo(lin(lt, 0, 0.18))) + 0.05 * lin(lt, 0.18, max(0.3, t1 - t0))
+    sh = 16 * (1 - lin(lt, 0, 0.16)) * SS
+    dx, dy = sh * math.sin(lt * 90), sh * math.cos(lt * 70)
+    cw, ch = CW / z, CH / z
+    x0 = min(max(0, (CW - cw) / 2 + dx), CW - cw); y0 = min(max(0, (CH - ch) / 2 + dy), CH - ch)
+    lay = cv.resize((W, H), Image.BOX, box=(x0, y0, x0 + cw, y0 + ch))
+    fr = meme_bg(t, ep.get('accent', YEL)); fr.alpha_composite(lay)
+    chrome(fr, t, ep, total, chunks)
+    if si > 0 and lt < 1.5 / FPS:
+        fr = Image.blend(fr, Image.new('RGBA', fr.size, (255, 255, 255, 255)), 0.5)
+    return fr.convert('RGB')
+B.frame = frame
+
+# ---------------------------------------------------------------- generated music (no copyright)
+SR = 48000
+def _note(f, n, kind='saw', dec=6.0, harm=8):
+    tt = np.arange(n) / SR
+    if kind == 'sine': s = np.sin(2 * np.pi * f * tt)
+    else: s = sum(np.sin(2 * np.pi * f * h * tt) / h for h in range(1, harm + 1)) * 0.6
+    return s * np.exp(-tt * dec) * np.minimum(1, tt / 0.004)
+
+def music(total, bpm=124, stops=(), seed=7):
+    """house-ish loop in A minor: kick 4/4, clap 2&4, offbeat hats, offbeat bass, chord stabs. Am F C G."""
+    rng = np.random.default_rng(seed)
+    n = int((total + 1) * SR); out = np.zeros(n, np.float32)
+    b = 60 / bpm; bar_ = 4 * b
+    roots = [55.0, 43.65, 65.41, 49.0]                      # A1 F1 C2 G1
+    chords = [[220, 261.6, 329.6], [174.6, 220, 261.6], [196, 261.6, 329.6], [196, 246.9, 293.7]]
+    def add(t, s, g=1.0):
+        i = int(t * SR); j = min(n, i + len(s))
+        if i < n: out[i:j] += s[: j - i] * g
+    tk = np.arange(int(0.32 * SR)) / SR
+    kick = np.sin(2 * np.pi * np.cumsum(45 + 110 * np.exp(-tk * 28)) / SR) * np.exp(-tk * 9)
+    clap = rng.normal(0, 1, int(0.18 * SR)); clap = (clap - np.convolve(clap, np.ones(12) / 12, 'same')) * np.exp(-np.arange(len(clap)) / SR * 22)
+    hat = rng.normal(0, 1, int(0.05 * SR)); hat = (hat - np.convolve(hat, np.ones(4) / 4, 'same')) * np.exp(-np.arange(len(hat)) / SR * 90)
+    t = 0.0; k = 0
+    while t < total + 0.5:
+        bi = int(t // bar_) % 4; beat = k % 4
+        add(t, kick, 0.9)
+        if beat in (1, 3): add(t, clap, 0.35)
+        add(t + b / 2, hat, 0.22); add(t + b / 4, hat, 0.08); add(t + 3 * b / 4, hat, 0.08)
+        add(t + b / 2, _note(roots[bi], int(b / 2 * SR), 'saw', 9, 5), 0.32)
+        if beat in (1, 3):
+            for f in chords[bi]: add(t + b / 2, _note(f, int(0.25 * SR), 'saw', 14, 6), 0.06)
+        t += b; k += 1
+    g = np.ones(n, np.float32)
+    for s0 in stops:  # beat drop: silence for half a beat
+        i, j = int(s0 * SR), int((s0 + b / 2 + 0.05) * SR); g[i:j] = 0.0
+    out *= g
+    return out / (np.abs(out).max() + 1e-6) * 0.5
+
+def _readwav(p):
+    with _wave.open(p) as w:
+        sr, ch, sw = w.getframerate(), w.getnchannels(), w.getsampwidth()
+        x = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16 if sw == 2 else np.int32).astype(np.float32)
+    if ch > 1: x = x.reshape(-1, ch).mean(1)
+    x /= 32768 if sw == 2 else 2 ** 31
+    if sr != SR: x = np.interp(np.arange(int(len(x) * SR / sr)) / SR, np.arange(len(x)) / sr, x).astype(np.float32)
+    return x
+
+_bed_paper = B.bed
+def bed(sfx, total, path):
+    _bed_paper(sfx, total, path)
+    epid = os.path.basename(path).split('_')[0]
+    ep = load(epid)[0]
+    if not ep.get('music'): return
+    x = _readwav(path)
+    stops = list(ep.get('drops', ()))
+    if ep.get('drop_scenes'):
+        spans = B.prep_cache(epid)[3]
+        stops += [spans[i][0] - 0.3 for i in ep['drop_scenes']]
+    m = music(total, ep.get('bpm', 124), stops)[:len(x)]
+    vo = _readwav(f'tmp/{epid}_vo.wav') if os.path.exists(f'tmp/{epid}_vo.wav') else np.zeros(len(x))
+    env = np.convolve(np.abs(vo), np.ones(2400) / 2400, 'same')[:len(m)]
+    env = np.pad(env, (0, max(0, len(m) - len(env))))
+    duck = 1 - 0.6 * np.clip(env / (env.max() * 0.25 + 1e-6), 0, 1)
+    y = x[:len(m)] + m * duck * ep.get('music_gain', 0.55)
+    with _wave.open(path, 'w') as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
+        w.writeframes((np.clip(y, -1, 1) * 32767).astype(np.int16).tobytes())
+B.bed = bed
