@@ -5,13 +5,13 @@ EP = dict(id='WR10', tag='SYSTEMS', short='The math that picks your Hinge date',
                    "Hinge says in tests people were 8x more likely to go on a date with their Most Compatible.\n\n"
                    "Full system design series on my page.\n💬 Comment NOTES for the cheat sheet."))
 NARRATION = [
-    "There's one person on Hinge you're eight times more likely to date. And math picked them.",
-    "Most of us swipe forever. Hinge decided to play matchmaker instead.",
-    "It uses an algorithm from 1962. It literally won a Nobel Prize.",
-    "Picture a room. Everyone ranks everyone. One side asks out their top choice.",
-    "Get a better offer? You switch. Whoever got dumped asks their next choice.",
-    "Repeat until nobody wants to switch. No couple would rather run off.",
-    "Every day, Hinge pairs you with one person like this. And they get you too.",
-    "That's your Most Compatible. Eight times more likely to become a date.",
+    "That Most Compatible person Hinge shows you? Not random. It's a Nobel Prize-winning algorithm.",
+    "You like Maya. Maya likes Leo. Leo likes you. Nobody ends up happy.",
+    "In 1962, two mathematicians cracked it. They called it the stable marriage problem.",
+    "Step one: everyone ranks everyone. Step two: you shoot your shot at your number one.",
+    "If someone better comes along, they trade up. And you move to your number two.",
+    "Keep going, and you land on pairs where nobody wants to swap. Stable.",
+    "Hinge runs its own version on everyone's likes. The person it picks for you sees you as their pick too.",
+    "And it works. Hinge says people were eight times more likely to go on a date with them.",
     "Want to understand systems like this? The full system design series is on my page. Follow.",
 ]
