@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E09', tag='S3 · E09', short='CRITICAL RENDERING PATH')
+EP = dict(id='S3E09', tag='S3 · E09', short='CRITICAL RENDERING PATH', hook='what blocks the first paint')
 
 def hook(c):
     ts = c.T('server')

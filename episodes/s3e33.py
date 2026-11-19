@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E33', tag='S3 · E33', short='FINALE: MADE FAST', tail=3.0)
+EP = dict(id='S3E33', tag='S3 · E33', short='FINALE: MADE FAST', tail=3.0, hook='one product page, made fast')
 
 BAD = {'LCP': ('4.1 s', RED), 'INP': ('410 ms', RED), 'CLS': ('0.31', RED)}
 GOOD = {'LCP': ('1.9 s', GRN), 'INP': ('160 ms', GRN), 'CLS': ('0.02', GRN)}

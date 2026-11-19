@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E02', tag='S3 · E02', short='CORE WEB VITALS')
+EP = dict(id='S3E02', tag='S3 · E02', short='CORE WEB VITALS', hook='the 3 numbers Google grades')
 
 VITALS = [('LCP', 'Largest Contentful Paint', 'loading', BLUE), ('INP', 'Interaction to Next Paint', 'responsiveness', PURPLE),
           ('CLS', 'Cumulative Layout Shift', 'visual stability', ORANGE)]

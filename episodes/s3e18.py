@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E18', tag='S3 · E18', short='RESPONSIVE IMAGES')
+EP = dict(id='S3E18', tag='S3 · E18', short='RESPONSIVE IMAGES', hook='stop sending posters to phones')
 
 def hook(c):
     tp = c.T('photo'); tph = c.T('phone')

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E23', tag='S3 · E23', short='DEBOUNCE')
+EP = dict(id='S3E23', tag='S3 · E23', short='DEBOUNCE', hook='stop firing on every keystroke')
 
 WORD = 'running shoes'
 

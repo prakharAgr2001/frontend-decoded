@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E21', tag='S3 · E21', short='THIRD-PARTY COST')
+EP = dict(id='S3E21', tag='S3 · E21', short='THIRD-PARTY COST', hook='the scripts you invited in')
 
 def hook(c):
     tl = c.T('lean')

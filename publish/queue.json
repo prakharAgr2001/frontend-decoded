@@ -458,5 +458,236 @@
   "media_id": "18139482331644235",
   "permalink": "https://www.instagram.com/reel/Df5hIpCDKDP/",
   "posted_at": "2026-11-18 21:54 UTC"
+ },
+ {
+  "id": "S3E01",
+  "posted": false,
+  "video": "videos/S3E01.mp4",
+  "cover": "covers/S3E01.jpg",
+  "caption": "A tenth of a second. Barely a blink. And it shows up in your sales numbers ⏱️\nWhy speed matters, how fast feels instant, and the interview trap: averages hide your slowest users. Measure p75.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E02",
+  "posted": false,
+  "video": "videos/S3E02.mp4",
+  "cover": "covers/S3E02.jpg",
+  "caption": "Google grades your site on three numbers from real Chrome users 📊\nLCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1, judged at the 75th percentile. And what happened to FID.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E03",
+  "posted": false,
+  "video": "videos/S3E03.mp4",
+  "cover": "covers/S3E03.jpg",
+  "caption": "The page isn't 'loaded' until the big photo and headline show up 📰\nLargest Contentful Paint, its 4 parts, how to see it in DevTools, and why lazy-loading the hero makes it worse.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E04",
+  "posted": false,
+  "video": "videos/S3E04.mp4",
+  "cover": "covers/S3E04.jpg",
+  "caption": "You go to tap Cancel, an ad loads, and you hit Buy instead 😬\nCumulative Layout Shift: how it's scored, the usual culprits, and the fix: reserve space before content arrives.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E05",
+  "posted": false,
+  "video": "videos/S3E05.mp4",
+  "cover": "covers/S3E05.jpg",
+  "caption": "You tap Add to cart. Nothing. You tap again. Now there are two 🛒\nInteraction to Next Paint: input delay, processing, presentation. Paint feedback first, then do the heavy work.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E06",
+  "posted": false,
+  "video": "videos/S3E06.mp4",
+  "cover": "covers/S3E06.jpg",
+  "caption": "When the vitals are bad, these three tell you why 🎬\nFirst byte, first paint, and Total Blocking Time, Lighthouse's stand-in for INP. Plus a TBT puzzle to solve.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E07",
+  "posted": false,
+  "video": "videos/S3E07.mp4",
+  "cover": "covers/S3E07.jpg",
+  "caption": "Lighthouse says 100. Search Console says failing. Both are right 🤔\nOne simulated run vs 28 days of real users. Why they disagree, how to add RUM, and why fixes take weeks to show.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E08",
+  "posted": false,
+  "video": "videos/S3E08.mp4",
+  "cover": "covers/S3E08.jpg",
+  "caption": "Four interview questions on web vitals. Pause and answer before the reveal 🧠\nThresholds, lab vs field, a slow LCP with a fast image, and a banner that wrecks CLS. Comment your score.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E09",
+  "posted": false,
+  "video": "videos/S3E09.mp4",
+  "cover": "covers/S3E09.jpg",
+  "caption": "The server answered in 100 ms. So why is the screen white for 2 seconds? ⬜\nCSS blocks rendering, plain scripts block parsing. Inline critical CSS, defer the rest. And the CSS trap most people miss.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E10",
+  "posted": false,
+  "video": "videos/S3E10.mp4",
+  "cover": "covers/S3E10.jpg",
+  "caption": "Two words on a script tag. Mix them up and your app breaks 💥\nasync runs on arrival in any order; defer runs after parsing, in order. Which to use, and why modules are deferred by default.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E11",
+  "posted": false,
+  "video": "videos/S3E11.mp4",
+  "cover": "covers/S3E11.jpg",
+  "caption": "Tell the browser what's coming before it asks 📞\npreconnect, dns-prefetch, preload, prefetch: what each does, how to see priorities, and why preloading everything backfires.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E12",
+  "posted": false,
+  "video": "videos/S3E12.mp4",
+  "cover": "covers/S3E12.jpg",
+  "caption": "You opened a blog post and downloaded the admin dashboard's code 🧳\nDynamic import(), where to split, how the Coverage tab exposes unused JS, and the tiny-chunk waterfall trap.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E13",
+  "posted": false,
+  "video": "videos/S3E13.mp4",
+  "cover": "covers/S3E13.jpg",
+  "caption": "50 pages in the app. The visitor only needs one 🏨\nReact.lazy + Suspense, prefetch on hover, never lazy-load the landing route, and the ChunkLoadError after every deploy.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E14",
+  "posted": false,
+  "video": "videos/S3E14.mp4",
+  "cover": "covers/S3E14.jpg",
+  "caption": "You imported one function and shipped the whole library 🌳\nHow bundlers drop dead code, why it needs ES modules, sideEffects in package.json, and the barrel-file trap.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E15",
+  "posted": false,
+  "video": "videos/S3E15.mp4",
+  "cover": "covers/S3E15.jpg",
+  "caption": "100 KB of JavaScript costs far more than 100 KB of image 🎒\nMeasure, swap heavy libraries, drop polyfills, dedupe. And why 'gzipped size' isn't the real cost.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E16",
+  "posted": false,
+  "video": "videos/S3E16.mp4",
+  "cover": "covers/S3E16.jpg",
+  "caption": "400 KB on your laptop, ~60 KB over the wire. Same file 🗜️\nMinification, gzip vs Brotli, Accept-Encoding vs Content-Encoding, and why compressing JPEGs is wasted CPU.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E17",
+  "posted": false,
+  "video": "videos/S3E17.mp4",
+  "cover": "covers/S3E17.jpg",
+  "caption": "Four interview questions on loading and bundles. Pause, answer, then check 🧠\nScript timing, resource hints, why tree shaking keeps code, and how you'd cut a 1.5 MB bundle. Comment your score.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E18",
+  "posted": false,
+  "video": "videos/S3E18.mp4",
+  "cover": "covers/S3E18.jpg",
+  "caption": "Your user downloaded a poster to look at a stamp 🖼️\nsrcset + sizes, the math the browser does, AVIF/WebP with <picture>, and what happens when you forget sizes.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E19",
+  "posted": false,
+  "video": "videos/S3E19.mp4",
+  "cover": "covers/S3E19.jpg",
+  "caption": "The hero image is small and compressed. It still shows up last 🛫\nfetchpriority=\"high\", the preload scanner, and why marking every image high priority means nothing is.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E20",
+  "posted": false,
+  "video": "videos/S3E20.mp4",
+  "cover": "covers/S3E20.jpg",
+  "caption": "The layout's there but the text is invisible, waiting for a font 🔤\nFOIT vs FOUT, font-display block/swap/optional, matched fallbacks to stop layout shift, and how to load fonts sooner.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E21",
+  "posted": false,
+  "video": "videos/S3E21.mp4",
+  "cover": "covers/S3E21.jpg",
+  "caption": "Your code is lean. The chat widget, analytics and tag manager aren't 🎉\nThey run on your main thread. Measure with request blocking, use facades, delay tags. And why async isn't free.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E22",
+  "posted": false,
+  "video": "videos/S3E22.mp4",
+  "cover": "covers/S3E22.jpg",
+  "caption": "Four interview questions on assets. Pause and answer each one 🧠\nWhy srcset needs sizes, a slow hero LCP, invisible text vs font shifts, and adding a chat widget safely.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E23",
+  "posted": false,
+  "video": "videos/S3E23.mp4",
+  "cover": "covers/S3E23.jpg",
+  "caption": "13 keystrokes, 13 requests, 12 of them wasted 🔍\nRun once after the user stops typing: the closure, where to use it, and why debounce alone doesn't fix race conditions.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E24",
+  "posted": false,
+  "video": "videos/S3E24.mp4",
+  "cover": "covers/S3E24.jpg",
+  "caption": "Your scroll handler fires dozens of times a second 🚇\nAt most once per interval. Debounce vs throttle, requestAnimationFrame, IntersectionObserver, and the lost final event.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E25",
+  "posted": false,
+  "video": "videos/S3E25.mp4",
+  "cover": "covers/S3E25.jpg",
+  "caption": "10,000 rows, 100,000+ DOM nodes, and every scroll stutters 🚆\nRender only what's visible, content-visibility: auto, and what breaks: Ctrl+F, screen readers, variable heights.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E26",
+  "posted": false,
+  "video": "videos/S3E26.mp4",
+  "cover": "covers/S3E26.jpg",
+  "caption": "Parsing a big CSV and even the spinner freezes 👩‍🍳\nA second thread for heavy work, no DOM access, postMessage both ways. And why postMessage isn't free.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E27",
+  "posted": false,
+  "video": "videos/S3E27.mp4",
+  "cover": "covers/S3E27.jpg",
+  "caption": "You typed one letter and the whole page re-rendered ⚛️\nState, context, or the parent re-rendering. The props myth, render vs commit, and moving state down.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E28",
+  "posted": false,
+  "video": "videos/S3E28.mp4",
+  "cover": "covers/S3E28.jpg",
+  "caption": "Wrapped everything in useMemo and useCallback. Got slower 🧊\nWhat React.memo, useMemo and useCallback really cost, how inline props break memo, and when to memoize.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E29",
+  "posted": false,
+  "video": "videos/S3E29.mp4",
+  "cover": "covers/S3E29.jpg",
+  "caption": "Every keystroke freezes the input while the list re-renders ⌨️\nUrgent vs non-urgent updates, useDeferredValue, and the React Compiler doing your memoization for you.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E30",
+  "posted": false,
+  "video": "videos/S3E30.mp4",
+  "cover": "covers/S3E30.jpg",
+  "caption": "Split long tasks, yes. But how big, and how do you hand control back? 🌱\nSlice by time, scheduler.yield vs setTimeout, postTask priorities, and why await Promise.resolve() doesn't yield.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E31",
+  "posted": false,
+  "video": "videos/S3E31.mp4",
+  "cover": "covers/S3E31.jpg",
+  "caption": "Fast at launch, twice as slow a year later. No single change did it 📉\nBudgets for KB and timings, enforced in CI with Lighthouse CI or size-limit, and how to pick the numbers.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E32",
+  "posted": false,
+  "video": "videos/S3E32.mp4",
+  "cover": "covers/S3E32.jpg",
+  "caption": "Four interview questions on runtime performance. Pause before each reveal 🧠\nDebounce vs throttle, a 10k-row table, wasted re-renders, and a 400 ms click handler. Comment your score.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S3E33",
+  "posted": false,
+  "video": "videos/S3E33.mp4",
+  "cover": "covers/S3E33.jpg",
+  "caption": "Season 3 finale: one slow product page, every fix from this season ⚡\nMeasure, loading, bundle, hero image, layout shifts, third parties, interactions, budgets. All three vitals pass. Next: state management.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
  }
 ]

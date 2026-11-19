@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E12', tag='S3 · E12', short='CODE SPLITTING')
+EP = dict(id='S3E12', tag='S3 · E12', short='CODE SPLITTING', hook="don't ship code nobody uses")
 
 def hook(c):
     browser(c, 110, 330, 970, 720, url='blog.example.com/post', dy=(1 - c.P(0, 0.45)) * 900)

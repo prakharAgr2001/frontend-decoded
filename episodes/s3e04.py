@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E04', tag='S3 · E04', short='CLS')
+EP = dict(id='S3E04', tag='S3 · E04', short='CLS', hook='why buttons jump under your tap')
 
 def hook(c):
     box = phone(c, 540, 760, 460, 860, url='tickets.example.com', dy=(1 - c.P(0, 0.45)) * 900)

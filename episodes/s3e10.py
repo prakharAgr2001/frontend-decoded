@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E10', tag='S3 · E10', short='ASYNC vs DEFER')
+EP = dict(id='S3E10', tag='S3 · E10', short='ASYNC vs DEFER', hook='two words that change load order')
 
 def lanes(c, at, mode, y0=520):
     """three lanes: HTML parsing / script fetch / script run"""

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E11', tag='S3 · E11', short='RESOURCE HINTS')
+EP = dict(id='S3E11', tag='S3 · E11', short='RESOURCE HINTS', hook='tell the browser what is coming')
 
 def hook(c):
     title(c, 'THE LATE DISCOVERY', 330, 0.1, 90)

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E28', tag='S3 · E28', short='MEMO MYTHS')
+EP = dict(id='S3E28', tag='S3 · E28', short='MEMO MYTHS', hook='when useMemo makes it slower')
 
 def hook(c):
     for k, (nm, kw) in enumerate((('useCallback(…)', 'useCallback'), ('useMemo(…)', 'useMemo'), ('React.memo(…)', 'memo'))):

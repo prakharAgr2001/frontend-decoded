@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E16', tag='S3 · E16', short='MINIFY + BROTLI')
+EP = dict(id='S3E16', tag='S3 · E16', short='MINIFY + BROTLI', hook='same code, a fraction of bytes')
 
 def hook(c):
     tl = c.T('laptop')

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E03', tag='S3 · E03', short='LCP')
+EP = dict(id='S3E03', tag='S3 · E03', short='LCP', hook='when does a page feel loaded?')
 
 def page(c, at_logo, at_menu, at_hero, dy=0, box_at=None):
     browser(c, 110, 330, 970, 1150, url='news.example.com', dy=dy)

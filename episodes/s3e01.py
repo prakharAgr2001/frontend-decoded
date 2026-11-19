@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E01', tag='S3 · E01', short='100 ms = MONEY')
+EP = dict(id='S3E01', tag='S3 · E01', short='100 ms = MONEY', hook='why 100 ms costs real money')
 
 def hook(c):
     box = phone(c, 360, 700, 440, 760, url='shop.example.com', dy=(1 - c.P(0, 0.45)) * 900)

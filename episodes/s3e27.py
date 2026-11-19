@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E27', tag='S3 · E27', short='WHY REACT RE-RENDERS')
+EP = dict(id='S3E27', tag='S3 · E27', short='WHY REACT RE-RENDERS', hook='the re-render myth')
 
 def flash(c, box, at, col=GRN):
     if c.on(at) and c.t < at + 1.2:

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E26', tag='S3 · E26', short='WEB WORKERS')
+EP = dict(id='S3E26', tag='S3 · E26', short='WEB WORKERS', hook='a second chef for heavy work')
 
 def hook(c):
     tu = c.T('upload')

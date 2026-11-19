@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E25', tag='S3 · E25', short='VIRTUALIZATION')
+EP = dict(id='S3E25', tag='S3 · E25', short='VIRTUALIZATION', hook='render 10,000 rows smoothly')
 
 def hook(c):
     tt = c.T('ten')

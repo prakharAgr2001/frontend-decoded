@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S3E32', tag='S3 · E32', short='IQ: RUNTIME')
+EP = dict(id='S3E32', tag='S3 · E32', short='IQ: RUNTIME', hook='4 questions on runtime perf')
 
 SCENES = [
     (scene_iq_intro('RUNTIME PERFORMANCE'),

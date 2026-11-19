@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E13', tag='S3 · E13', short='LAZY ROUTES')
+EP = dict(id='S3E13', tag='S3 · E13', short='LAZY ROUTES', hook='load pages only when visited')
 
 def hook(c):
     tf = c.T('fifty')

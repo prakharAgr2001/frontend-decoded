@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E19', tag='S3 · E19', short='LCP IMAGE PRIORITY')
+EP = dict(id='S3E19', tag='S3 · E19', short='LCP IMAGE PRIORITY', hook='make the hero jump the queue')
 
 def hook(c):
     rows(c, 110, 420, [('ready', 'on the server', None, 'ok'), ('small', 'small', None, 'ok'), ('compressed', 'compressed', None, 'ok')], 120, 860, 96, 38)

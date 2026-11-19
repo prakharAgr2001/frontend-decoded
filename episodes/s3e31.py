@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E31', tag='S3 · E31', short='PERFORMANCE BUDGETS')
+EP = dict(id='S3E31', tag='S3 · E31', short='PERFORMANCE BUDGETS', hook='stop regressions before ship')
 
 def hook(c):
     tl = c.T('launch')

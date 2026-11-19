@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E14', tag='S3 · E14', short='TREE SHAKING')
+EP = dict(id='S3E14', tag='S3 · E14', short='TREE SHAKING', hook='how bundlers drop dead code')
 
 def hook(c):
     code(c, 60, 380, 1020, 560, ["import _ from 'lodash';"], max(0.05, c.T('import') - 0.3), 0.1, 34, 'app.js')

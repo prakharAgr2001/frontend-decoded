@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E29', tag='S3 · E29', short='useTransition + COMPILER')
+EP = dict(id='S3E29', tag='S3 · E29', short='useTransition + COMPILER', hook='urgent vs non-urgent updates')
 
 def hook(c):
     tt = c.T('type')

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E30', tag='S3 · E30', short='CHUNKING LONG TASKS')
+EP = dict(id='S3E30', tag='S3 · E30', short='CHUNKING LONG TASKS', hook='yield like you mean it')
 
 def hook(c):
     tt = c.T('ten')

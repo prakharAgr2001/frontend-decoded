@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E20', tag='S3 · E20', short='WEB FONTS')
+EP = dict(id='S3E20', tag='S3 · E20', short='WEB FONTS', hook='invisible text + font flashes')
 
 def page(c, y0, mode, at, label_=None):
     """mini page; mode: 'blank', 'fallback', 'web'"""

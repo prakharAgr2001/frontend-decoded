@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E06', tag='S3 · E06', short='TTFB · FCP · TBT')
+EP = dict(id='S3E06', tag='S3 · E06', short='TTFB · FCP · TBT', hook='the metrics behind the vitals')
 
 def hook(c):
     ts = c.T('spotlight')

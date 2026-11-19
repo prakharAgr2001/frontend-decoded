@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E15', tag='S3 · E15', short='BUNDLE DIET')
+EP = dict(id='S3E15', tag='S3 · E15', short='BUNDLE DIET', hook='cut the KB your users pay for')
 
 def hook(c):
     tb = c.T('two')

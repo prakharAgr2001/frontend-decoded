@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s3_extra import *
 
-EP = dict(id='S3E24', tag='S3 · E24', short='THROTTLE')
+EP = dict(id='S3E24', tag='S3 · E24', short='THROTTLE', hook='at most once every N ms')
 
 def ticks(c, y, at, n, xs, col, label_):
     c.pen.text(110, y - 50, label_, 'intx', 32, INK, 'lm')
