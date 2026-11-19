@@ -119,10 +119,13 @@
  },
  {
   "id": "WR08",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR08.mp4",
   "cover": "covers/WR08.jpg",
-  "caption": "Netflix removed React from its landing page… and got 50% faster. 🍿\n\nIn 2017 Netflix kept React on the server to build the logged-out homepage, but swapped client-side React (and libraries like Lodash) for plain JavaScript. ~200 KB less JS, time-to-interactive cut by over 50%. Then it prefetched React for the next sign-up steps while you read.\n\nSSR, hydration and islands explained in Season 2 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "Netflix removed React from its landing page… and got 50% faster. 🍿\n\nIn 2017 Netflix kept React on the server to build the logged-out homepage, but swapped client-side React (and libraries like Lodash) for plain JavaScript. ~200 KB less JS, time-to-interactive cut by over 50%. Then it prefetched React for the next sign-up steps while you read.\n\nSSR, hydration and islands explained in Season 2 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18097430960169293",
+  "permalink": "https://www.instagram.com/reel/Df8IkfRnIFc/",
+  "posted_at": "2026-11-19 22:17 UTC"
  },
  {
   "id": "WR09",
