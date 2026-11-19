@@ -20,4 +20,4 @@
   `.github/workflows/post-short.yml` posts the next short daily 13:30 IST (manual: episode id). Trial reels are refused by the API
   (permission #10), so shorts post as normal reels. Posted 19 Nov: SH01 Nvidia CEO, SH02 GitHub repos, SH03 PW AI.
 - **Notes website** (`site/`, built by `python3 -m publish.build_site`, also run by `publish.release`): search by `s2e5` / `2 5` /
-  `season 2 episode 5` / topic; one page per episode at `/sXeYY/`. Hosted on Netlify (static, `netlify.toml`, publish `site/`, no build, no backend).
+  `season 2 episode 5` / topic; one page per episode at `/sXeYY/`. Live at https://tech-explained.netlify.app (Netlify project `tech-explained`, linked to this repo: every push to main redeploys; `netlify.toml`, publish `site/`, no build, no backend).

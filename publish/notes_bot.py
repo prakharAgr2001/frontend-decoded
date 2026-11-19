@@ -74,7 +74,7 @@ def sheet(ep):
         else: hdr = True; out.append(line)
     body = '\n'.join(out)
     body = re.sub(r'^- ', '• ', body, flags=re.M)
-    return f"📝 {title.lstrip('# ').strip()}\n\n{body}\n\nNew episode every day 🦊 Save this!"[:990]
+    return (f"📝 {title.lstrip('# ').strip()}\n\n{body}"[:880] + f"\n\nAll notes: tech-explained.netlify.app/{ep.lower()}/\nNew episode every day 🦊")
 
 def send(comment_id, text):
     if DRY: print('  [dry] DM:', text.replace('\n', ' | ')); return True
