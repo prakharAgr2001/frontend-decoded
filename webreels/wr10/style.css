@@ -1,0 +1,14 @@
+.phone{position:absolute;width:520px;height:1000px;border-radius:64px;background:#f4f4f6;box-shadow:0 0 0 12px #232329,0 60px 120px rgba(0,0,0,.7);overflow:hidden;color:#222}
+.stat{position:absolute;left:110px;right:110px;height:230px;border-radius:26px;background:#16161a;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:34px 44px}
+.stat .v{font:800 110px/1 Roboto;color:var(--grn)}.stat .l{font:500 34px Roboto;color:var(--mute);margin-top:10px}
+.cmp{position:absolute;left:110px;right:110px}.cmp .l{font:700 40px Roboto;margin-bottom:14px;display:flex;justify-content:space-between}.cmp .t{height:44px;border-radius:22px;background:#2a2a31;overflow:hidden}.cmp .t i{display:block;height:100%;border-radius:22px}
+.stamp{position:absolute;padding:12px 30px;border:7px solid var(--red);border-radius:16px;font:900 64px Roboto;color:var(--red);transform:rotate(-8deg)}
+.edit{position:absolute;left:90px;right:90px;border-radius:22px;background:#0f0f12;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:28px 30px;font:500 34px/1.7 Mono;color:#ccc}
+.tap{position:absolute;width:90px;height:90px;border-radius:50%;border:6px solid rgba(255,59,59,.9)}
+.pcard{position:absolute;width:420px;border-radius:28px;background:#fff;color:#111;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.pcard .ph{height:360px;display:flex;align-items:center;justify-content:center;font:900 150px Roboto;color:#fff}
+.pcard .nm{padding:20px 26px;font:800 40px Roboto}.pcard .tg{margin:0 26px 24px;display:inline-block;padding:8px 18px;border-radius:20px;background:#111;color:#fff;font:700 24px Roboto;letter-spacing:2px}
+.medal{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a0,#d4a017 60%,#8a6500);box-shadow:0 0 60px rgba(255,210,63,.5);display:flex;align-items:center;justify-content:center;text-align:center;font:900 40px/1.1 Serif;color:#4a3500}
+.paper{position:absolute;left:150px;right:150px;top:380px;padding:50px;background:#f3efe4;color:#222;border-radius:8px;box-shadow:0 40px 90px rgba(0,0,0,.6);font:500 34px/1.4 Serif}
+.pn{position:absolute;width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 60px Roboto;color:#fff;box-shadow:0 0 0 6px #111,0 0 0 9px #3a3a42}
+.badge{position:absolute;padding:8px 18px;border-radius:14px;font:800 30px Roboto}
