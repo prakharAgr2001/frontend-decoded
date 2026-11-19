@@ -18,9 +18,3 @@
   for = "/style.css"
   [headers.values]
     Cache-Control = "public, max-age=86400"
-
-# old GitHub-Pages style paths and uppercase ids -> episode pages
-[[redirects]]
-  from = "/S:season/*"
-  to = "/s:season/:splat"
-  status = 301
