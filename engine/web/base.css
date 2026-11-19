@@ -1,0 +1,40 @@
+@font-face{font-family:Serif;src:url(fonts/instrument-serif-latin-400-normal.woff2)}
+@font-face{font-family:Serif;font-style:italic;src:url(fonts/instrument-serif-latin-400-italic.woff2)}
+@font-face{font-family:Roboto;font-weight:400;src:url(fonts/roboto-latin-400-normal.woff2)}
+@font-face{font-family:Roboto;font-weight:500;src:url(fonts/roboto-latin-500-normal.woff2)}
+@font-face{font-family:Roboto;font-weight:700;src:url(fonts/roboto-latin-700-normal.woff2)}
+@font-face{font-family:Mono;font-weight:400;src:url(fonts/jetbrains-mono-latin-400-normal.woff2)}
+@font-face{font-family:Mono;font-weight:700;src:url(fonts/jetbrains-mono-latin-700-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#f4f1ea;--ink:#0c0c0e;--yel:#ffd23f;--red:#ff3b3b;--grn:#3ddc84;--blue:#4c9dff;--mute:#9a9aa3;--card:#16161a;--line:rgba(255,255,255,.08)}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0c0c0e;color:var(--paper);font-family:Inter,system-ui,sans-serif}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 70% at 50% 42%,#1c1c21 0%,#0c0c0e 72%)}
+#glow{position:absolute;inset:0;pointer-events:none;transition:none;opacity:0}
+#grain{position:absolute;inset:-50%;opacity:.07;pointer-events:none;z-index:90;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#vig{position:absolute;inset:0;z-index:89;pointer-events:none;background:radial-gradient(90% 60% at 50% 45%,transparent 55%,rgba(0,0,0,.65) 100%)}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:95;pointer-events:none}
+.brand{position:absolute;top:92px;left:0;right:0;text-align:center;font:500 26px Roboto;letter-spacing:6px;color:#8d8d96;z-index:80}
+.brand b{color:var(--yel);font-weight:500}
+.scene{position:absolute;inset:0;display:none;transform-origin:50% 45%}
+/* type */
+.h{font-family:Serif;font-size:96px;line-height:1.02;letter-spacing:-1px;color:var(--paper)}
+.h i{color:#c8c4bb}
+.h2{font-family:Serif;font-size:76px;line-height:1.05;color:var(--paper)}
+.kick{font:600 26px Roboto;letter-spacing:5px;text-transform:uppercase;color:var(--yel)}
+.mono{font-family:Mono}
+.big{font:700 150px/1 Roboto;letter-spacing:-3px;font-variant-numeric:tabular-nums}
+.mark{position:relative;white-space:nowrap;color:var(--ink)}
+.mark::before{content:'';position:absolute;left:-8px;right:-8px;top:16%;bottom:6%;background:var(--yel);z-index:-1;transform-origin:left;transform:scaleX(var(--m,1));border-radius:6px}
+.card{background:var(--card);border-radius:26px;box-shadow:0 50px 110px rgba(0,0,0,.6),0 0 0 1px var(--line)}
+.abs{position:absolute}
+.center{left:0;right:0;text-align:center}
+/* captions */
+#cap{position:absolute;left:60px;right:60px;top:1590px;z-index:85;text-align:center;font:800 54px/1.25 Inter;letter-spacing:-.5px}
+#cap span{display:inline-block;margin:0 7px;color:#f4f1ea;text-shadow:0 3px 0 rgba(0,0,0,.6),0 0 24px rgba(0,0,0,.6)}
+#cap span.on{color:var(--yel)}
+#prog{position:absolute;left:0;bottom:0;height:8px;background:var(--yel);z-index:86}
+/* shared ending: "full system design series on my page" */
+.cta-grid{position:absolute;left:90px;right:90px;top:520px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-radius:22px;overflow:hidden;box-shadow:0 50px 110px rgba(0,0,0,.6),0 0 0 1px var(--line)}
+.cta-grid img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 12%;display:block}
+.cta-btn{display:inline-block;padding:22px 64px;border-radius:18px;background:var(--yel);color:#0c0c0e;font:800 44px Inter;box-shadow:0 20px 50px rgba(255,210,63,.35)}

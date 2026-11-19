@@ -1,0 +1,18 @@
+#s0,#s1,#s7,#s8{top:0;bottom:0}
+#s2,#s3,#s4,#s5,#s6{top:90px;bottom:-90px}
+.phone{position:absolute;width:520px;height:1000px;border-radius:64px;background:#0b0b0d;box-shadow:0 0 0 10px #232329,0 60px 120px rgba(0,0,0,.7);overflow:hidden}
+.field{position:absolute;left:0;right:0;top:0;height:330px;background:radial-gradient(80% 90% at 50% 40%,#3f9a4f,#1f5a2b)}
+.pitch{position:absolute;left:228px;top:50px;width:64px;height:240px;background:#d9c58f;border-radius:4px}
+.ball{position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}
+.live{position:absolute;left:20px;top:20px;padding:6px 14px;border-radius:8px;background:#e11;font:800 22px Inter;color:#fff}
+.watch{position:absolute;right:20px;top:20px;padding:6px 14px;border-radius:8px;background:rgba(0,0,0,.55);font:700 22px Inter;color:#fff}
+.panel{position:absolute;left:24px;right:24px;border-radius:18px;background:#1a1a1f;padding:18px 22px;font:600 28px Roboto;color:#ddd}
+.panel small{display:block;font:400 22px Roboto;color:#888;margin-top:6px}
+.rack{position:absolute;width:300px;height:110px;border-radius:14px;background:#26262c;box-shadow:inset 0 0 0 2px rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;padding-left:24px}
+.rack i{width:16px;height:16px;border-radius:50%;background:#444}
+.srv{display:inline-block;width:150px;height:66px;margin:9px;border-radius:10px;background:#26262c;box-shadow:inset 0 0 0 2px rgba(255,255,255,.07);position:relative}
+.srv::after{content:'';position:absolute;left:16px;top:25px;width:16px;height:16px;border-radius:50%;background:var(--c,#444);box-shadow:0 0 12px var(--c,transparent)}
+.edge{position:absolute;width:150px;height:150px;border-radius:50%;background:#1d1d23;box-shadow:0 0 0 3px #3a3a42;display:flex;align-items:center;justify-content:center;text-align:center;font:700 26px Roboto}
+.chunk{position:absolute;width:44px;height:30px;border-radius:6px;background:var(--yel)}
+.race{position:absolute;left:100px;right:100px;height:120px}
+.race .lab{font:700 40px Roboto;margin-bottom:16px}.race .tr{height:30px;border-radius:15px;background:#2a2a31;overflow:hidden}.race .tr i{display:block;height:100%;border-radius:15px}
