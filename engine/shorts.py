@@ -96,3 +96,26 @@ if __name__ == '__main__':
         if cmd == 'text': print(B.parse(load(epid)[1])[2]); print('---')
         elif cmd == 'check': B.cmd_check(epid)
         elif cmd == 'render': B.cmd_render(epid)
+
+# ---------------------------------------------------------------- fast-cut camera (shorts only)
+def frame(t, si, spans, scenes, W_, ep, total, chunks, sfxset):
+    """every cut: punch-in zoom 1.14 -> 1.0 in 0.2 s, a short shake, and a 1-frame white flash"""
+    t0, t1 = spans[si]
+    cv = Image.new('RGBA', (CW, CH), (0, 0, 0, 0))
+    words = [(w[0], w[1] - t0, w[2] - t0) for w in W_ if w[3] == si]
+    c = Ctx(Pen(cv, SS), cv, t - t0, words, t1 - t0, sfxset, t0)
+    scenes[si][0](c)
+    lt = t - t0
+    z = 1 + 0.14 * (1 - eo(lin(lt, 0, 0.2))) + 0.04 * lin(lt, 0.2, max(0.3, t1 - t0))
+    sh = 14 * (1 - lin(lt, 0, 0.18)) * SS
+    dx, dy = sh * math.sin(lt * 90), sh * math.cos(lt * 70)
+    cw, ch = CW / z, CH / z
+    x0 = min(max(0, (CW - cw) / 2 + dx), CW - cw); y0 = min(max(0, (CH - ch) / 2 + dy), CH - ch)
+    lay = cv.resize((W, H), Image.BOX, box=(x0, y0, x0 + cw, y0 + ch))
+    fr = B.papers()[int(t * FPS / 3) % 3].copy(); fr.alpha_composite(lay)
+    chrome(fr, t, ep, total, chunks)
+    if si > 0 and lt < 1.5 / FPS:
+        fr = Image.blend(fr, Image.new('RGBA', fr.size, (255, 255, 255, 255)), 0.55)
+    return fr.convert('RGB')
+
+B.frame = frame
