@@ -1,0 +1,11 @@
+.set{position:absolute;left:120px;right:120px;top:360px;border-radius:26px;background:#f4f4f6;color:#222;padding:30px 40px;box-shadow:0 50px 110px rgba(0,0,0,.6)}
+.set .r{display:flex;justify-content:space-between;align-items:center;font:600 38px Roboto;padding:18px 0;border-bottom:1px solid #ddd}
+.tg{width:110px;height:60px;border-radius:30px;background:#bbb;position:relative}.tg i{position:absolute;top:6px;left:6px;width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.site{position:absolute;width:420px;height:250px;border-radius:20px;background:#f5f5f5;color:#222;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55)}
+.site .bar{background:#dedede;padding:12px 16px;font:500 24px Roboto;color:#444}.site .bar span{display:block;background:#fff;border-radius:20px;padding:6px 16px}
+.site .bd{padding:22px 24px;font:700 30px Roboto}.site .bd small{display:block;font:400 22px Mono;color:#888;margin-top:8px}
+.node{position:absolute;flex-direction:column;border-radius:22px;background:#1d1d23;box-shadow:0 0 0 3px #3a3a42;display:flex;align-items:center;justify-content:center;text-align:center;font:700 32px Roboto}
+.edit{position:absolute;left:90px;right:90px;border-radius:22px;background:#0f0f12;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:28px 30px;font:500 34px/1.6 Mono;color:#ccc}
+.edit .ln{display:flex;gap:26px}.edit .ln b{color:#555;width:40px;text-align:right;font-weight:500}
+.grid100{position:absolute;left:190px;top:470px;width:700px;line-height:0}
+.grid100 i{display:inline-block;width:56px;height:56px;margin:7px;border-radius:12px;background:#3ddc84}
