@@ -52,10 +52,13 @@
  },
  {
   "id": "WR01",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR01.mp4",
   "cover": "covers/WR01.jpg",
-  "caption": "This number almost broke YouTube. 🤯\n\nIn 2014 one K-pop video hit 2,147,483,647 views, the biggest number its 32-bit view counter could hold. One more view and it would have flipped to −2,147,483,648. Engineers saw it coming and moved to 64 bits (limit: ~9.2 quintillion). Then they hid an easter egg that spun the counter negative anyway.\n\nFull system design series on my page. \n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "This number almost broke YouTube. 🤯\n\nIn 2014 one K-pop video hit 2,147,483,647 views, the biggest number its 32-bit view counter could hold. One more view and it would have flipped to −2,147,483,648. Engineers saw it coming and moved to 64 bits (limit: ~9.2 quintillion). Then they hid an easter egg that spun the counter negative anyway.\n\nFull system design series on my page. \n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18103390667639831",
+  "permalink": "https://www.instagram.com/reel/Df8GVWqAr5Z/",
+  "posted_at": "2026-11-19 21:58 UTC"
  },
  {
   "id": "WR02",
