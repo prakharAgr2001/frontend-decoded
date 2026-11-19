@@ -12,3 +12,11 @@
 .paper{position:absolute;left:150px;right:150px;top:380px;padding:50px;background:#f3efe4;color:#222;border-radius:8px;box-shadow:0 40px 90px rgba(0,0,0,.6);font:500 34px/1.4 Serif}
 .pn{position:absolute;width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 60px Roboto;color:#fff;box-shadow:0 0 0 6px #111,0 0 0 9px #3a3a42}
 .badge{position:absolute;padding:8px 18px;border-radius:14px;font:800 30px Roboto}
+.av{position:absolute;width:150px;height:150px;border-radius:50%;box-shadow:0 0 0 6px #111,0 20px 40px rgba(0,0,0,.5)}
+.av b{position:absolute;top:52px;width:16px;height:22px;border-radius:50%;background:#111}.av b.l{left:46px}.av b.r{right:46px}
+.av u{position:absolute;left:48px;top:88px;width:54px;height:26px;border:7px solid #111;border-top:0;border-radius:0 0 40px 40px}
+.av.sad u{top:96px;border:7px solid #111;border-bottom:0;border-radius:40px 40px 0 0}
+.av span{position:absolute;left:0;right:0;bottom:-58px;text-align:center;font:800 34px Roboto;color:var(--paper)}
+.bub{position:absolute;padding:12px 22px;border-radius:22px 22px 22px 6px;background:#fff;color:#111;font:800 32px Roboto;white-space:nowrap}
+.stack .pc2{position:absolute;left:290px;top:440px;width:500px;height:700px;border-radius:30px;box-shadow:0 30px 70px rgba(0,0,0,.6);overflow:hidden}
+.stack .pc2 div{position:absolute;left:0;right:0;bottom:0;padding:24px 30px;background:linear-gradient(transparent,rgba(0,0,0,.7));font:800 44px Roboto;color:#fff}

@@ -16,3 +16,10 @@
 .scan{position:absolute;left:0;right:0;height:8px;background:#3ddc84;box-shadow:0 0 30px #3ddc84}
 .act{display:inline-block;margin:0 10px;padding:22px 40px;border-radius:20px;font:800 40px Roboto}
 .box{position:absolute;border-radius:24px;background:#16161a;box-shadow:0 0 0 1px rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;font:700 34px Roboto}
+.lock{position:absolute;left:180px;width:720px;height:1000px;border-radius:50px;background:linear-gradient(160deg,#2b2440,#11101a);box-shadow:0 0 0 12px #232329,0 60px 120px rgba(0,0,0,.7);overflow:hidden}
+.lock .tm{position:absolute;left:0;right:0;top:110px;text-align:center;font:300 150px Inter;color:#fff}
+.notif{position:absolute;left:30px;right:30px;top:360px;padding:26px 30px;border-radius:30px;background:rgba(255,255,255,.88);color:#111;display:flex;gap:22px;align-items:center;font:600 32px Roboto}
+.notif i{width:80px;height:80px;border-radius:20px;background:#ffc629;flex:none;display:flex;align-items:center;justify-content:center;font-style:normal;font:900 46px Roboto}
+.gate{position:absolute;left:440px;top:560px;width:200px;height:700px;border-radius:30px;background:#1f2a22;box-shadow:0 0 0 5px var(--grn),0 0 50px rgba(61,220,132,.4);display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;font:900 54px Roboto;color:var(--grn);letter-spacing:8px}
+.tile{position:absolute;width:150px;height:150px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:80px;box-shadow:0 20px 40px rgba(0,0,0,.5);overflow:hidden}
+.ring{position:absolute;left:290px;top:420px;width:500px;height:500px}
