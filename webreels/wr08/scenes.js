@@ -3,13 +3,13 @@ const EMO = n => `<img src="../../brand/emoji/${n}.svg" style="width:1em;height:
 const PAGE = (top, id = 'pg') => `<div class="br" id="${id}" style="top:${top}px"><div class="bar"><span>netflix.com</span></div><div class="hero"><div class="t">Unlimited films,<br>series and more</div><div class="in"><span class="em"></span><b class="go">Get started ›</b></div></div></div>`;
 const tapAt = (S, el, at, period = .6) => { const u = ((S.t - at) / period) % 1; el.style.opacity = S.on(at) ? 1 - u : 0; el.style.transform = `scale(${.5 + u})`; if (S.on(at)) S.sfx(at + Math.floor((S.t - at) / period) * period, 'click'); };
 const SCENES = [
- { // 0 hook: 50% faster by throwing code away
-  html: `<div class="abs center big" id="f50" style="top:330px;font-size:150px;color:var(--grn)">50% faster</div>
-   <div class="abs center h2" id="by" style="top:560px;opacity:0">by throwing code <span class="mark">away</span></div>
-   <div class="can"></div>${['react.js', 'lodash.js', 'app.js'].map((n, i) => `<div class="file f" style="left:${200 + i * 240}px;top:720px">${n}</div>`).join('')}`,
-  draw(S) { const p = S.P(0, S.T('faster'), eo); S.$('#f50').textContent = Math.round(50 * p) + '% faster';
-    const ta = S.T('throwing'); S.$('#by').style.opacity = S.P(ta - .2, .2);
-    S.$$('.f').forEach((f, i) => { const q = S.P(ta + i * .15, .5, x => x * x); f.style.transform = `translate(${(480 - 200 - i * 240 - 60) * q}px,${300 * q}px) rotate(${q * (i - 1) * 40}deg) scale(${1 - .5 * q})`; f.style.opacity = 1 - clamp((q - .8) * 5); if (S.on(ta + i * .15)) S.sfx(ta + i * .15 + .4, 'thud'); }); }},
+ { // 0 hook: deleted React -> 50% faster
+  html: `<div class="edit" style="top:360px;font-size:40px"><div id="l0" style="color:#c792ea">import React from 'react';</div><div style="color:#888">// netflix.com homepage</div></div>
+   <div class="can" style="top:660px;left:400px;width:280px;height:260px"></div>
+   <div class="abs center big" id="f50" style="top:1030px;font-size:150px;color:var(--grn);opacity:0">50% faster</div>`,
+  draw(S) { const td = S.T('deleted'), p = S.P(td - .1, .5, x => x * x); const l = S.$('#l0');
+    l.style.transform = `translate(${-40 * p}px,${330 * p}px) rotate(${-25 * p}deg) scale(${1 - .5 * p})`; l.style.opacity = 1 - clamp((p - .8) * 5); l.style.color = p > 0 ? 'var(--red)' : '#c792ea'; l.style.textDecoration = p > 0 ? 'line-through' : '';
+    if (S.on(td)) S.sfx(td + .45, 'thud'); const tf = S.T('fifty'), o = S.P(tf - .2, .25, back); S.$('#f50').style.opacity = clamp(o); S.$('#f50').style.transform = `scale(${.8 + .2 * clamp(o)})`; if (S.on(tf - .2)) S.sfx(tf - .2, 'thud'); }},
  { // 1 page shows, button dead
   html: `${PAGE(380)}<div class="tap" id="tp" style="left:640px;top:670px"></div>
    <div class="abs center" id="dead" style="top:900px;font:800 46px Roboto;color:var(--red);opacity:0">👆 tap… nothing happens</div>`,
