@@ -89,10 +89,13 @@
  },
  {
   "id": "WR05",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR05.mp4",
   "cover": "covers/WR05.jpg",
-  "caption": "One customer changed one setting. Huge parts of the internet went down. 🌐💥\n\nOn 8 June 2021, Amazon, Reddit, the New York Times and gov.uk all showed errors. They shared one CDN: Fastly. A bug shipped in May lay dormant until a customer pushed a perfectly valid config change, and 85% of Fastly's network returned errors. Spotted in 1 minute, 95% back in 49.\n\nCDNs explained in S1E06 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "One customer changed one setting. Huge parts of the internet went down. 🌐💥\n\nOn 8 June 2021, Amazon, Reddit, the New York Times and gov.uk all showed errors. They shared one CDN: Fastly. A bug shipped in May lay dormant until a customer pushed a perfectly valid config change, and 85% of Fastly's network returned errors. Spotted in 1 minute, 95% back in 49.\n\nCDNs explained in S1E06 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18651035143010360",
+  "permalink": "https://www.instagram.com/reel/Df8HhAGDluq/",
+  "posted_at": "2026-11-19 22:08 UTC"
  },
  {
   "id": "WR06",
