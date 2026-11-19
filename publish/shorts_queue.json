@@ -140,9 +140,12 @@
  },
  {
   "id": "WR11",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR11.mp4",
   "cover": "covers/WR11.jpg",
-  "caption": "On Bumble, an AI looks at some photos before you do. 🛡️\n\nPrivate Detector (launched 2019) scans images sent in chat; if one looks explicit it arrives blurred, with a warning, and you choose to view, block or report. It was reported as 98% accurate in testing. Only ~0.1% of users send these, but Bumble's scale gave it a huge training set. In 2022 Bumble open-sourced it on GitHub (Apache-2.0).\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "On Bumble, an AI looks at some photos before you do. 🛡️\n\nPrivate Detector (launched 2019) scans images sent in chat; if one looks explicit it arrives blurred, with a warning, and you choose to view, block or report. It was reported as 98% accurate in testing. Only ~0.1% of users send these, but Bumble's scale gave it a huge training set. In 2022 Bumble open-sourced it on GitHub (Apache-2.0).\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18188348521423437",
+  "permalink": "https://www.instagram.com/reel/Df8ICAlDgwy/",
+  "posted_at": "2026-11-19 22:13 UTC"
  }
 ]
