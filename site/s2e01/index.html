@@ -1,17 +1,18 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>White screen first · cheat sheet · Tech, Explained</title><meta name="description" content="Cheat sheet: White screen first. Key ideas, DevTools tricks and interview traps."><meta property="og:title" content="White screen first · cheat sheet · Tech, Explained">
-<meta property="og:description" content="Cheat sheet: White screen first. Key ideas, DevTools tricks and interview traps."><meta property="og:image" content="../fox.png"><link rel="icon" href="../fox.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+<title>White screen first · S2 E1 · Tech, Explained cheat sheet</title><meta name="description" content="Every strategy answers one question: who builds the HTML, and when? Server (before sending) or browser (after arriving). Server-rendered: HTML has con"><meta name="theme-color" content="#F5F2EA">
+<meta property="og:title" content="White screen first · S2 E1 · Tech, Explained cheat sheet"><meta property="og:description" content="Every strategy answers one question: who builds the HTML, and when? Server (before sending) or browser (after arriving). Server-rendered: HTML has con"><meta property="og:image" content="../fox.png">
+<link rel="icon" href="../fox.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&family=Oswald:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
-<header><img src="../fox.png" alt=""><a class="brand" href="../">TECH, <b>EXPLAINED</b></a></header><span class="pill">S2 · E01 · Rendering strategies</span>
-<h1><span>White screen first</span></h1><p class="sub">Cheat sheet: key ideas, DevTools tricks and interview traps.</p>
+<div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 1 · Rendering strategies</span>
+<h1><span class="hl">White screen first</span></h1>
 <div class="sheet"><ul>
 <li>Every strategy answers one question: <strong>who builds the HTML, and when?</strong> Server (before sending) or browser (after arriving).</li>
 <li>Server-rendered: HTML has content → paint now, JS later. Client-rendered: empty HTML → download JS → run → fetch → paint.</li>
 <li>See it: DevTools → Performance → ✓ Screenshots, Network = Slow 4G → reload → filmstrip.</li>
 <li>Trap: a white screen isn't always the network. Big bundles take seconds to parse/run on cheap CPUs → throttle CPU (4x) too.</li>
 </ul></div>
+<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><span></span>
-<span><a href="../s2e02/">Client-side rendering (CSR) →</a></span></div>
-<div class="cta">🦊 Watch this one as a 90-second reel, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a> · <a href="../">all cheat sheets</a></div><footer>Short, visual explainers on how the web really works. New reel every day on Instagram:
-<a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<a class="r" href="../s2e02/"><small>NEXT →</small>Client-side rendering (CSR)</a></div>
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

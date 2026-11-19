@@ -1,0 +1,22 @@
+# AWS Amplify Hosting: static site, no backend, no build step (site/ is generated in the repo by publish.build_site)
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "static site, prebuilt in site/"
+  artifacts:
+    baseDirectory: site
+    files:
+      - '**/*'
+  cache:
+    paths: []
+  customHeaders:
+    - pattern: '**/*.html'
+      headers:
+        - key: Cache-Control
+          value: 'public, max-age=300'
+    - pattern: '**/*.{css,png,json}'
+      headers:
+        - key: Cache-Control
+          value: 'public, max-age=86400'
