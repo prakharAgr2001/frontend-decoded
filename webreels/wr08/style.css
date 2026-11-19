@@ -1,0 +1,15 @@
+.phone{position:absolute;width:520px;height:1000px;border-radius:64px;background:#f4f4f6;box-shadow:0 0 0 12px #232329,0 60px 120px rgba(0,0,0,.7);overflow:hidden;color:#222}
+.stat{position:absolute;left:110px;right:110px;height:230px;border-radius:26px;background:#16161a;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:34px 44px}
+.stat .v{font:800 110px/1 Roboto;color:var(--grn)}.stat .l{font:500 34px Roboto;color:var(--mute);margin-top:10px}
+.cmp{position:absolute;left:110px;right:110px}.cmp .l{font:700 40px Roboto;margin-bottom:14px;display:flex;justify-content:space-between}.cmp .t{height:44px;border-radius:22px;background:#2a2a31;overflow:hidden}.cmp .t i{display:block;height:100%;border-radius:22px}
+.stamp{position:absolute;padding:12px 30px;border:7px solid var(--red);border-radius:16px;font:900 64px Roboto;color:var(--red);transform:rotate(-8deg)}
+.edit{position:absolute;left:90px;right:90px;border-radius:22px;background:#0f0f12;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:28px 30px;font:500 34px/1.7 Mono;color:#ccc}
+.tap{position:absolute;width:90px;height:90px;border-radius:50%;border:6px solid rgba(255,59,59,.9)}
+.br{position:absolute;left:90px;right:90px;border-radius:24px;background:#111;overflow:hidden;box-shadow:0 50px 110px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.1)}
+.br .bar{background:#2a2a31;padding:16px 22px;font:500 28px Roboto;color:#aaa}.br .bar span{display:block;background:#1a1a1f;border-radius:24px;padding:8px 22px}
+.hero{padding:60px 50px;background:linear-gradient(180deg,#3a0b0e,#111);text-align:center}
+.hero .t{font:800 54px/1.15 Roboto;color:#fff}.hero .in{margin:36px auto 0;display:flex;gap:16px;justify-content:center}
+.hero .in span{width:380px;height:80px;border-radius:8px;background:#222;box-shadow:inset 0 0 0 2px #555}.hero .in b{padding:20px 34px;border-radius:8px;background:#e50914;font:800 34px Roboto;color:#fff}
+.box{position:absolute;width:420px;height:420px;border-radius:28px;background:#16161a;box-shadow:0 0 0 1px rgba(255,255,255,.08);padding:40px;text-align:center}
+.box .h3{font:800 46px Roboto;margin-bottom:20px}.box .d{font:500 32px/1.4 Roboto;color:var(--mute)}
+.kbk{display:inline-block;width:200px;height:80px;margin:8px;border-radius:12px;background:var(--yel);font:800 30px Mono;color:#111;line-height:80px;text-align:center}
