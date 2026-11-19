@@ -123,10 +123,13 @@
  },
  {
   "id": "WR09",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR09.mp4",
   "cover": "covers/WR09.jpg",
-  "caption": "You tap a link. The page jumps. You hit an ad. 😤\n\nYahoo! JAPAN News (22B+ page views a month) found its article pages jumping as late images pushed text down. The fix: reserve each image's space before it loads. Layout shift went from ~0.2 to ~0, and pages per session rose 15%, sessions got 13% longer (web.dev case study).\n\nLayout shift (CLS) explained in S3E04 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "You tap a link. The page jumps. You hit an ad. 😤\n\nYahoo! JAPAN News (22B+ page views a month) found its article pages jumping as late images pushed text down. The fix: reserve each image's space before it loads. Layout shift went from ~0.2 to ~0, and pages per session rose 15%, sessions got 13% longer (web.dev case study).\n\nLayout shift (CLS) explained in S3E04 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18173052460476119",
+  "permalink": "https://www.instagram.com/reel/Df8H3nPE9iS/",
+  "posted_at": "2026-11-19 22:11 UTC"
  },
  {
   "id": "WR10",
