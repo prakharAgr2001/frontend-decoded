@@ -79,10 +79,13 @@
  },
  {
   "id": "WR04",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR04.mp4",
   "cover": "covers/WR04.jpg",
-  "caption": "Facebook, Instagram, WhatsApp. Gone for ~6 hours. 📵\n\nOn 4 Oct 2021, a routine maintenance command cut Facebook's data centers off its backbone. Its DNS servers, built to go quiet when they can't reach the data centers, withdrew themselves from the internet, so no one could even find facebook.com. The tools to fix it depended on the same network, so engineers had to go on site.\n\nDNS is the internet's phone book (S1E02 on my page).\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "Facebook, Instagram, WhatsApp. Gone for ~6 hours. 📵\n\nOn 4 Oct 2021, a routine maintenance command cut Facebook's data centers off its backbone. Its DNS servers, built to go quiet when they can't reach the data centers, withdrew themselves from the internet, so no one could even find facebook.com. The tools to fix it depended on the same network, so engineers had to go on site.\n\nDNS is the internet's phone book (S1E02 on my page).\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18224842951345629",
+  "permalink": "https://www.instagram.com/reel/Df8HQ1zjULa/",
+  "posted_at": "2026-11-19 22:06 UTC"
  },
  {
   "id": "WR05",
