@@ -102,10 +102,13 @@
  },
  {
   "id": "WR06",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR06.mp4",
   "cover": "covers/WR06.jpg",
-  "caption": "A tenth of a second. That's all it takes. ⏱️💸\n\nAround 2006, Amazon engineers slowed pages on purpose and found every extra 100 ms cost about 1% of sales (Greg Linden). Google saw half a second slower → 20% fewer searches (Marissa Mayer). That's why Google now grades every site on Core Web Vitals: loading (LCP), responsiveness (INP), visual stability (CLS).\n\nWeb vitals explained in S3E01–S3E08 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "A tenth of a second. That's all it takes. ⏱️💸\n\nAround 2006, Amazon engineers slowed pages on purpose and found every extra 100 ms cost about 1% of sales (Greg Linden). Google saw half a second slower → 20% fewer searches (Marissa Mayer). That's why Google now grades every site on Core Web Vitals: loading (LCP), responsiveness (INP), visual stability (CLS).\n\nWeb vitals explained in S3E01–S3E08 on my page.\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18205572007385057",
+  "permalink": "https://www.instagram.com/reel/Df8IwtRgtzC/",
+  "posted_at": "2026-11-19 22:19 UTC"
  },
  {
   "id": "WR07",
