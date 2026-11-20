@@ -6,14 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 16 · Data fetching &amp; APIs</span>
 <h1><span class="hl">429 Too Many Requests</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Servers limit how many requests you can make: <strong>N per user, IP or API key per time window</strong>. Exceed it and you get <strong>429 Too Many Requests</strong>.</li>
+<li>A common algorithm is the <strong>token bucket</strong>: each request spends a token; tokens refill at a steady rate.</li>
+<li>On 429, read <strong><code>Retry-After</code></strong> and wait. Avoid hitting limits by debouncing, deduping and caching.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Rate limiting protects APIs from abuse and overload by capping requests per client in a time window, often using a token bucket that refills at a fixed rate and allows short bursts. When a client exceeds it, the server responds with 429 and usually a Retry-After header, plus headers showing the limit and remaining quota. A good client waits as instructed with backoff, and reduces request volume through debouncing, deduplication and caching. Limits per IP are risky because many users behind one office or mobile carrier NAT share an IP, so per-user or per-key limits are fairer.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A metro token machine at the gate: you need a token to enter, and the machine refills a few tokens every minute. A rush of people empties it, and the rest must wait for refills.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Bucket starts full</b><span>e.g. 60 tokens</span></li><li><b>Each request</b><span>spends 1 token</span></li><li><b>Tokens refill</b><span>e.g. 1 per minute (steady)</span></li><li><b>Bucket empty</b><span>server returns 429 + Retry-After</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">429</span> <span class="ne">Too Many Requests</span>
+<span class="na">Retry-After</span><span class="o">:</span> <span class="l">30</span>
+<span class="na">x-ratelimit-limit</span><span class="o">:</span> <span class="l">60</span>
+<span class="na">x-ratelimit-remaining</span><span class="o">:</span> <span class="l">0</span>
+<span class="na">x-ratelimit-reset</span><span class="o">:</span> <span class="l">1763640000</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Retrying immediately on 429</strong> makes it worse. Respect Retry-After.</li>
+<li><strong>Per-IP limits</strong> block entire offices or colleges behind one public IP. Prefer per-user or per-key limits.</li>
+<li><strong>Search-as-you-type without debounce</strong> can burn through a limit quickly.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open <code>https://api.github.com/users/torvalds</code> and check the response headers: <code>x-ratelimit-limit: 60</code> and <code>x-ratelimit-remaining</code> drop with each unauthenticated request.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does a 429 response mean?</summary>
+<p>Too Many Requests: you've exceeded the rate limit and should wait before retrying.</p>
+</details>
+<details>
+<summary>How does a token bucket allow bursts?</summary>
+<p>A full bucket can spend several tokens quickly; after that, requests are limited to the refill rate.</p>
+</details>
+<details>
+<summary>Three ways a client can avoid hitting rate limits?</summary>
+<p>Debounce input-driven requests, deduplicate concurrent requests, and cache responses.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Rate limits: N requests per user / IP / key per window. Token bucket: each request spends a token; tokens refill steadily.</li>
 <li>See it: <code>api.github.com</code> headers <code>x-ratelimit-limit: 60</code>, <code>x-ratelimit-remaining</code>, <code>x-ratelimit-reset</code> (unauthenticated).</li>
 <li>On 429: read <code>Retry-After</code> and wait. Be a good client: debounce, dedupe, cache.</li>
 <li>Trap: per-IP limits block whole offices behind one NAT → limit per user / API key.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e15/"><small>← PREVIOUS</small>Deduplication</a>
 <a class="r" href="../s5e17/"><small>NEXT →</small>Skeleton screens</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 8 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Infinite scroll vs pages</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Infinite scroll</strong> is great for browsing on phones, but the footer is unreachable, Back loses your place, and memory grows.</li>
+<li><strong>Numbered pages</strong> are better for hunting, sharing a "page 3" URL, and SEO. <strong>"Load more"</strong> is a good middle ground.</li>
+<li>Build infinite scroll with an <strong>IntersectionObserver</strong> on a sentinel element, not scroll listeners.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Infinite scroll suits casual browsing feeds on mobile, while pagination suits goal-oriented search where users compare, share or return to specific pages, and it's easier to crawl. A load-more button gives user control without losing the footer. I implement infinite scroll with an IntersectionObserver watching a sentinel near the end of the list, with a generous rootMargin to prefetch, virtualize very long lists, and preserve loaded pages and scroll position so Back returns users to where they were.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A buffet conveyor belt versus a menu with pages. The belt keeps food coming while you're snacking, but if you leave and come back, finding the dish you saw earlier is hard.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Infinite scroll</div><div class="dg-c">Casual browsing, social feeds</div><div class="dg-c">Footer unreachable</div><div class="dg-c">Back button can lose position</div><div class="dg-c">Memory grows as you scroll</div></div><div class="dg-col good"><div class="dg-h">Numbered pages</div><div class="dg-c">Searching, comparing, admin tables</div><div class="dg-c">Footer always reachable</div><div class="dg-c">&quot;Page 3&quot; is a shareable URL</div><div class="dg-c">Fixed memory per page</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Feed</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">fetchNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">hasNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">isFetchingNextPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useInfiniteQuery</span><span class="p">(</span><span class="cm">/* … */</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sentinel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRef</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">IntersectionObserver</span><span class="p">(([</span><span class="nx">e</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">isIntersecting</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">hasNextPage</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">isFetchingNextPage</span><span class="p">)</span><span class="w"> </span><span class="nx">fetchNextPage</span><span class="p">();</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">rootMargin</span><span class="o">:</span><span class="w"> </span><span class="s1">'600px'</span><span class="w"> </span><span class="p">});</span><span class="w">                 </span><span class="c1">// start loading before the user hits the bottom</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sentinel</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="nx">io</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">sentinel</span><span class="p">.</span><span class="nx">current</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">io</span><span class="p">.</span><span class="nx">disconnect</span><span class="p">();</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">hasNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">isFetchingNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">fetchNextPage</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;{</span><span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">pages</span><span class="p">.</span><span class="nx">flatMap</span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">items</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Post</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="na">...i</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;)}&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">ref</span><span class="o">=</span><span class="p">{</span><span class="nx">sentinel</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;&lt;/&gt;);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Back button sends users to the top</strong> and refetches from page 1. Keep loaded pages in a cache and restore scroll position.</li>
+<li><strong>Unreachable footer</strong> with important links. Move them elsewhere or use "Load more".</li>
+<li><strong>Thousands of DOM nodes</strong> after long scrolling. Virtualize.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Scroll far down Instagram or YouTube on the web, open a post, press Back: see whether your position is restored.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why use IntersectionObserver for infinite scroll?</summary>
+<p>It fires only when the sentinel nears the viewport, without running code on every scroll event or forcing layout.</p>
+</details>
+<details>
+<summary>When are numbered pages better?</summary>
+<p>For search and comparison, shareable/bookmarkable pages, a reachable footer, and SEO.</p>
+</details>
+<details>
+<summary>How do you preserve position on Back?</summary>
+<p>Keep the loaded pages (query cache or URL) and restore the scroll offset instead of refetching from page 1.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Infinite: great for browsing on phones; footer unreachable, back button loses place, memory grows. Pages: hunting, shareable "page 3" URL, crawlable. Middle: <strong>Load more</strong>.</li>
 <li>Build: <code>IntersectionObserver</code> on a sentinel with <code>rootMargin: '600px'</code>; long lists → virtualization (S3E25).</li>
 <li>Trap: back button → top of feed. Keep loaded pages + scroll position (query cache or URL) and restore; don't refetch from page 1.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e07/"><small>← PREVIOUS</small>Cursor pagination</a>
 <a class="r" href="../s5e09/"><small>NEXT →</small>IQ: pagination</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

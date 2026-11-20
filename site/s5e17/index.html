@@ -6,13 +6,62 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 17 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Skeleton screens</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Skeleton screens</strong> show the page's layout before the data arrives, which makes loading feel faster.</li>
+<li>The skeleton must <strong>match the real layout</strong>, or content jumps when it loads (CLS).</li>
+<li>Don't flash them: show a skeleton only if loading takes longer than about <strong>200 ms</strong>. Use skeletons for content, spinners for actions.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Skeletons replace blank screens or full-page spinners with placeholders shaped like the final content, which improves perceived performance and sets expectations. They must have the same dimensions as the real content to avoid layout shift. I show them only on the first load when there's no data, keep showing existing data during background refetches with a subtle indicator, and avoid flashing them for very fast responses by delaying them slightly. For user actions like saving, a spinner or disabled state on the button is more appropriate.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant that seats you and sets the plates and cutlery while the food cooks. You know exactly what's coming and where, so the wait feels shorter than standing at the door.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Skeleton</div><div class="dg-c">First load of content (lists, cards, profiles)</div><div class="dg-c">Shows the shape of what&#x27;s coming</div><div class="dg-c">Must match the final layout</div></div><div class="dg-col good"><div class="dg-h">Spinner</div><div class="dg-c">Actions: save, submit, pay</div><div class="dg-c">Shows that something is happening</div><div class="dg-c">Lives on the button that was pressed</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Orders</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">isPending</span><span class="p">,</span><span class="w"> </span><span class="nx">isFetching</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQuery</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'orders'</span><span class="p">],</span><span class="w"> </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="nx">getOrders</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isPending</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrderListSkeleton</span><span class="w"> </span><span class="na">rows</span><span class="o">=</span><span class="p">{</span><span class="mf">5</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">          </span><span class="c1">// same row height as real rows</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrderList</span><span class="w"> </span><span class="na">orders</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">}</span><span class="w"> </span><span class="na">refreshing</span><span class="o">=</span><span class="p">{</span><span class="nx">isFetching</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">    </span><span class="c1">// keep old data while refetching</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Skeleton sizes that don't match</strong> the real content cause layout shift.</li>
+<li><strong>Flashing skeletons</strong> on fast responses look glitchy; delay them ~200 ms.</li>
+<li><strong>Replacing existing data with a skeleton on refetch.</strong> Keep the old data and show a small indicator.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open YouTube with DevTools → <strong>Network</strong> → Slow 4G: grey thumbnail and title blocks appear in exactly the layout of the final video grid.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why must a skeleton match the real layout?</summary>
+<p>Otherwise content jumps when it loads, causing layout shift (CLS).</p>
+</details>
+<details>
+<summary>Skeleton or spinner for a Save button?</summary>
+<p>A spinner or disabled state on the button. Skeletons are for loading content.</p>
+</details>
+<details>
+<summary>What should you show during a background refetch?</summary>
+<p>The existing data, with at most a subtle refresh indicator.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Skeletons show layout before data → feels faster; must <strong>match</strong> the real layout or you get CLS (S3E04).</li>
 <li>Don't flash: show only if loading takes &gt; ~200 ms. Skeleton on first load (<code>isPending</code>); on refetch keep old data (<code>isFetching</code> → small spinner).</li>
 <li>See it: YouTube with Slow 4G. Trap: actions (saving) → spinner on the button; skeletons are for content.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e16/"><small>← PREVIOUS</small>429 Too Many Requests</a>
 <a class="r" href="../s5e18/"><small>NEXT →</small>Partial failure</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

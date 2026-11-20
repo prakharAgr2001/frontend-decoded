@@ -6,13 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 15 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Deduplication</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>When several components ask for the same data at the same moment, <strong>share the in-flight promise</strong> instead of sending duplicate requests.</li>
+<li>React Query does this automatically per query key.</li>
+<li><strong>Dedup ≠ cache</strong>: dedup shares a request <strong>while it's in flight</strong>; a cache keeps the answer <strong>afterwards</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Request deduplication makes concurrent callers for the same resource share one in-flight request. A simple implementation keeps a map from key to promise, returns the existing promise if one is pending, and removes it when it settles. Caching is different: it stores the result for later calls. Libraries like React Query and SWR do both by query key. In development, React StrictMode intentionally mounts components twice, so seeing a double fetch there is expected and doesn't happen in production.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Five people in a WhatsApp group asking "what time is the movie?" One person checks and replies to all, instead of five people calling the cinema.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">inFlight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Map</span><span class="p">();</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">url</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span><span class="w">           </span><span class="c1">// reuse the pending request</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="k">finally</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">inFlight</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">url</span><span class="p">));</span>
+<span class="w">  </span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">p</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Header, sidebar and page all ask at once → one network request</span>
+<span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Deduplication</div><div class="dg-c">Shares a request that&#x27;s still in flight</div><div class="dg-c">Gone as soon as the request settles</div><div class="dg-c">Prevents duplicate concurrent calls</div></div><div class="dg-col good"><div class="dg-h">Caching</div><div class="dg-c">Stores the result after it arrives</div><div class="dg-c">Lives until it expires or is evicted</div><div class="dg-c">Prevents repeat calls later</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Double fetch in development</strong> is React StrictMode (mount → unmount → mount), not a bug. Production fetches once.</li>
+<li><strong>Forgetting to delete the key</strong> on settle: later calls get the old promise forever (an accidental cache).</li>
+<li><strong>Different keys for the same data</strong> (<code>/api/me</code> vs <code>/api/me?</code>) defeat dedup.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Render three components that call <code>useQuery({ queryKey: ['me'] })</code> and check DevTools → <strong>Network</strong>: only one request for <code>/api/me</code>.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How do you dedupe concurrent requests by hand?</summary>
+<p>Store the pending promise in a Map by key, return it to later callers, and delete it when it settles.</p>
+</details>
+<details>
+<summary>Dedup vs cache?</summary>
+<p>Dedup shares a request while it's in flight; a cache keeps the response for later.</p>
+</details>
+<details>
+<summary>Why does my effect fetch twice in development?</summary>
+<p>React StrictMode mounts, unmounts and remounts components in development to surface bugs.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Several components ask for the same thing → share the <strong>in-flight promise</strong> (Map of key → promise, delete on settle).</li>
 <li>React Query dedups by query key. Dedup ≠ cache: dedup shares a request in flight; cache keeps the answer afterwards.</li>
 <li>Trap: double fetch in dev = React <strong>StrictMode</strong> (mount → unmount → mount). Production fetches once.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e14/"><small>← PREVIOUS</small>Retries + backoff</a>
 <a class="r" href="../s5e16/"><small>NEXT →</small>429 Too Many Requests</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

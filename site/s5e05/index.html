@@ -6,13 +6,45 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 5 · Data fetching &amp; APIs</span>
 <h1><span class="hl">IQ: API design</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>API design</strong>.</li>
+<li>Know which methods are idempotent and why retries care, the GraphQL N+1 problem, when to add a BFF, and when not to use GraphQL.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I design APIs around the clients: REST for broad, cacheable access, GraphQL for flexible screen-specific data, and a BFF when one screen needs data from many services. I care about idempotency so retries are safe, and I watch for N+1 query patterns.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which HTTP methods are idempotent, and why does it matter?</summary>
+<p>GET, PUT, DELETE (POST no, PATCH not guaranteed). Idempotent requests can be retried safely after a timeout; POSTs need an Idempotency-Key header so the server can recognise duplicates.</p>
+</details>
+<details>
+<summary>What's the GraphQL N+1 problem and the fix?</summary>
+<p>One query loads N posts, then the author resolver runs once per post = N more queries. Batch them with DataLoader so all authors load in one query.</p>
+</details>
+<details>
+<summary>A mobile screen needs data from 4 services. What do you build?</summary>
+<p>A BFF endpoint that calls the 4 services in parallel and returns one screen-shaped response.</p>
+</details>
+<details>
+<summary>When would you not choose GraphQL?</summary>
+<p>When CDN/HTTP caching is critical, the API is simple CRUD, or one TypeScript team owns both ends (tRPC fits better).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Idempotent: GET, PUT, DELETE (POST no, PATCH not guaranteed) → matters for retries; POST needs an <code>Idempotency-Key</code>.</li>
 <li>GraphQL N+1 (1 query for posts + 1 per author) → batch with <strong>DataLoader</strong>.</li>
 <li>Mobile screen needing 4 services → BFF. When not GraphQL: CDN caching critical, simple CRUD, one TS team (tRPC).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e04/"><small>← PREVIOUS</small>Backend for Frontend (BFF)</a>
 <a class="r" href="../s5e06/"><small>NEXT →</small>The offset bug</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

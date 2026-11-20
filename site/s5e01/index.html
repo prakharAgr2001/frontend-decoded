@@ -6,14 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 1 · Data fetching &amp; APIs</span>
 <h1><span class="hl">REST</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>In <strong>REST</strong>, everything is a <strong>resource</strong> with its own URL (<code>/users/42</code>, <code>/posts/7/comments</code>), and you act on it with HTTP verbs.</li>
+<li><strong>GET</strong> read · <strong>POST</strong> create · <strong>PUT</strong> replace the whole thing · <strong>PATCH</strong> change some fields · <strong>DELETE</strong> remove. Common status codes: 200 OK, 201 Created, 404 Not Found.</li>
+<li><code>fetch</code> does <strong>not</strong> throw on 404 or 500. Always check <code>res.ok</code>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>REST models data as resources identified by URLs and uses HTTP methods for operations: GET to read, POST to create, PUT to replace, PATCH to partially update and DELETE to remove, with status codes describing the result. GET, PUT and DELETE are idempotent, meaning repeating them has the same effect, while POST is not, which matters when retrying. Because it uses plain HTTP, REST works naturally with caching, CDNs and browser tooling. On the client, fetch only rejects on network failures, so I check response.ok for HTTP errors.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A library. Every book has its own shelf address (URL). You can <strong>read</strong> a book (GET), <strong>add</strong> a new one (POST), <strong>swap</strong> an entire book for a new edition (PUT), <strong>correct a page</strong> (PATCH), or <strong>remove</strong> it (DELETE).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Method</div><div class="dg-c">GET /users/42</div><div class="dg-c">POST /orders</div><div class="dg-c">PUT /users/42</div><div class="dg-c">PATCH /users/42</div><div class="dg-c">DELETE /users/42</div></div><div class="dg-col good"><div class="dg-h">Meaning (idempotent?)</div><div class="dg-c">Read user 42 (yes)</div><div class="dg-c">Create a new order (no)</div><div class="dg-c">Replace user 42 entirely (yes)</div><div class="dg-c">Change some fields (not guaranteed)</div><div class="dg-c">Remove user 42 (yes)</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getUser</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/users/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`HTTP </span><span class="si">${</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span><span class="w">   </span><span class="c1">// fetch doesn't throw on 404/500</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/orders'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Content-Type'</span><span class="o">:</span><span class="w"> </span><span class="s1">'application/json'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">itemId</span><span class="o">:</span><span class="w"> </span><span class="mf">7</span><span class="p">,</span><span class="w"> </span><span class="nx">qty</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}),</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Not checking <code>res.ok</code>.</strong> A 500 error page gets parsed as if it were data.</li>
+<li><strong>PUT vs POST is about idempotency.</strong> Five identical PUTs leave one user; five POSTs may create five orders.</li>
+<li><strong>Verbs in URLs</strong> (<code>/getUser</code>, <code>/createOrder</code>) aren't RESTful; the verb is the HTTP method.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open <code>https://api.github.com/users/torvalds</code> in a browser tab: a REST resource as JSON. DevTools → Network shows the GET and its 200 status.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which methods are idempotent?</summary>
+<p>GET, PUT, DELETE (also HEAD, OPTIONS). POST isn't; PATCH isn't guaranteed.</p>
+</details>
+<details>
+<summary>Does fetch throw on a 404?</summary>
+<p>No. It resolves with res.ok false; it only rejects on network errors.</p>
+</details>
+<details>
+<summary>PUT vs PATCH?</summary>
+<p>PUT replaces the whole resource; PATCH changes only the fields you send.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Everything is a <strong>resource</strong> with its own URL (<code>/users/42</code>, <code>/posts/7/comments</code>). Act on it with verbs.</li>
 <li>GET read · POST create · PUT replace whole · PATCH change some fields · DELETE remove. Status: 200 OK · 201 Created · 404 Not Found.</li>
 <li><code>fetch</code> does <strong>not</strong> throw on 404/500 → always check <code>res.ok</code>. Try: open <code>api.github.com/users/torvalds</code> in a tab.</li>
 <li>Trap: PUT vs POST is about <strong>idempotency</strong> — 5× PUT = one user, 5× POST = maybe 5 orders.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s5e02/"><small>NEXT →</small>GraphQL</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 12 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Race conditions</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Responses arrive in <strong>network order</strong>, not request order. A slow old response can arrive <strong>after</strong> a newer one and <strong>overwrite</strong> it.</li>
+<li>Classic case: searching "re" then "react". The "re" results arrive last and replace the "react" results.</li>
+<li>Fix in React: ignore stale responses with a cleanup flag, or cancel them with AbortController.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A race condition in data fetching happens when multiple requests are in flight and an older one resolves after a newer one, overwriting fresh data with stale results. In a React effect I guard against it with a flag set in the cleanup function, so only the latest effect's response updates state, or I abort the previous request. Debouncing reduces the number of requests but doesn't solve the race. Libraries like React Query avoid it by keying data by query, so each response is stored under its own key.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Two couriers. You order a red shirt, change your mind and order blue. The red one gets stuck in traffic and arrives last, so now red is the shirt in your hands.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Type &quot;re&quot;</b><span>request A starts (slow)</span></li><li><b>Type &quot;react&quot;</b><span>request B starts (fast)</span></li><li><b>B returns</b><span>show results for &quot;react&quot;</span></li><li><b>A returns later</b><span>overwrites with results for &quot;re&quot; (bug)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">ignore</span><span class="p">)</span><span class="w"> </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// only the latest effect wins</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w">                       </span><span class="c1">// runs when query changes</span>
+<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">]);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Debounce fixes it."</strong> It reduces requests, but two can still overlap.</li>
+<li><strong>Updating state after unmount</strong> from a slow response: the same cleanup flag prevents it.</li>
+<li><strong>Tabs or filters switching quickly</strong> have the same race, not just search boxes.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Throttle the network to <strong>Slow 3G</strong>, type quickly in a search box without race handling, and watch the results flicker to an older query.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why can an older response overwrite a newer one?</summary>
+<p>Responses complete in network order; a slower earlier request can finish last.</p>
+</details>
+<details>
+<summary>How does the `ignore` flag fix it?</summary>
+<p>The cleanup of the previous effect sets its flag to true when the query changes, so its late response is ignored.</p>
+</details>
+<details>
+<summary>Does debounce prevent race conditions?</summary>
+<p>No. It reduces how many requests are sent, but overlapping requests can still resolve out of order.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Responses arrive in <strong>network order</strong>, not request order → an old, slow response can overwrite a newer one.</li>
 <li>React fix: <code>let ignore = false; … if (!ignore) setX(d); return () =&gt; { ignore = true; }</code>.</li>
 <li>Trap: debounce doesn't fix races (S3E23) — ignore or cancel stale requests; React Query keys data by query.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e11/"><small>← PREVIOUS</small>Parallel requests</a>
 <a class="r" href="../s5e13/"><small>NEXT →</small>AbortController</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

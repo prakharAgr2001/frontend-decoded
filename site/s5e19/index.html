@@ -6,13 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 19 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Suspense boundaries</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A suspending component shows the <strong>nearest <code>&lt;Suspense fallback&gt;</code></strong> until everything inside it is ready.</li>
+<li><strong>One boundary</strong> for the whole page waits for the <strong>slowest</strong> part. <strong>One per component</strong> causes "popcorn" loading and jumps.</li>
+<li>Group sensibly: critical content first, its own boundary for heavy parts, below-the-fold content together. Pair each Suspense boundary with an ErrorBoundary.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Suspense boundaries define loading states: when any component inside suspends, React shows the nearest boundary's fallback until all its children are ready. With streaming SSR each boundary can be sent separately, and with selective hydration each hydrates independently. Boundary placement is a design decision. One large boundary delays everything until the slowest request finishes, while too many tiny boundaries make the page pop in piece by piece with layout shifts. I group related content and place error boundaries alongside. Fetching in useEffect never suspends, so I use framework loaders, the use API or suspense-enabled query hooks.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Serving a wedding meal. One big curtain until every dish is ready means everyone waits for dessert. Serving each item the moment it's ready means plates landing randomly. Serving by course is the sweet spot.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">Layout</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">ProductHeader</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                                  </span><span class="p">{</span><span class="cm">/* critical, fast */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">ErrorBoundary</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">ReviewsError</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">ReviewsSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Reviews</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                                    </span><span class="p">{</span><span class="cm">/* slow, own boundary */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">ErrorBoundary</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">BelowFoldSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">SimilarProducts</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">RecentlyViewed</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">            </span><span class="p">{</span><span class="cm">/* below the fold, grouped */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Layout</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Boundary layout</div><div class="dg-c">One for the whole page</div><div class="dg-c">One per component</div><div class="dg-c">Grouped by section</div></div><div class="dg-col good"><div class="dg-h">Effect</div><div class="dg-c">Waits for the slowest request</div><div class="dg-c">Popcorn loading, layout jumps</div><div class="dg-c">Fast critical content, calm loading</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>useEffect</code> fetching never triggers Suspense.</strong> Use <code>use(promise)</code>, a framework loader, or <code>useSuspenseQuery</code>.</li>
+<li><strong>Suspense without an error boundary</strong>: a failed request has nowhere to go.</li>
+<li><strong>Fallbacks with different sizes</strong> than the content cause layout shift.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In a Next.js app, add a <code>loading.js</code> (a Suspense boundary) to a route and throttle the network: the fallback shows, then content streams into place.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does a Suspense boundary wait for?</summary>
+<p>All suspended components inside it; it shows its fallback until they're all ready.</p>
+</details>
+<details>
+<summary>What's the downside of one boundary per component?</summary>
+<p>Content pops in piece by piece, causing visual noise and layout shifts.</p>
+</details>
+<details>
+<summary>Why doesn't my useEffect fetch show the Suspense fallback?</summary>
+<p>Effects run after render and don't suspend; Suspense needs data read during render via a suspense-enabled source.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>A suspending component shows the nearest <code>&lt;Suspense fallback&gt;</code> until everything inside is ready. Streaming (S2E13) sends the shell then each boundary; selective hydration (S2E11).</li>
 <li>One boundary = waits for the slowest; one per component = popcorn + jumps. Group: critical first, own boundary for heavy parts, below-the-fold together.</li>
 <li>Pair each Suspense boundary with an ErrorBoundary. Trap: <code>useEffect</code> fetching never suspends → use <code>use(promise)</code>, a framework loader, or <code>useSuspenseQuery</code>.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e18/"><small>← PREVIOUS</small>Partial failure</a>
 <a class="r" href="../s5e20/"><small>NEXT →</small>IQ: async edge cases</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

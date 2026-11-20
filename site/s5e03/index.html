@@ -6,13 +6,58 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 3 · Data fetching &amp; APIs</span>
 <h1><span class="hl">REST vs GraphQL vs tRPC</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>REST</strong>: best for many different clients, public APIs and simple caching.</li>
+<li><strong>GraphQL</strong>: best when many screens need different slices of related data.</li>
+<li><strong>tRPC</strong>: best when <strong>one TypeScript team owns both client and server</strong> (monorepo): end-to-end types, no schema or codegen.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I choose by clients and team structure. REST is the default for public APIs and many independent consumers, and it benefits fully from HTTP caching. GraphQL suits products with many screens and clients that need different shapes of interconnected data, at the cost of more server work and caching complexity. tRPC fits a single team writing both frontend and backend in TypeScript, giving type-safe function calls without a schema layer, but it couples the client to the server and isn't meant for public APIs.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Three ways to order food: a <strong>printed menu</strong> anyone can read (REST), a <strong>build-your-own bowl counter</strong> (GraphQL), and <strong>cooking at home</strong> where you're both the chef and the eater (tRPC).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Choose</div><div class="dg-c">REST</div><div class="dg-c">GraphQL</div><div class="dg-c">tRPC</div></div><div class="dg-col good"><div class="dg-h">When</div><div class="dg-c">Public API, many unknown clients, CDN caching matters, simple CRUD</div><div class="dg-c">Many screens/apps need different fields from connected data</div><div class="dg-c">One TypeScript team, monorepo, internal API, fast iteration</div></div></div></figure>
+
+<ul>
+<li>In the wild: GitHub offers both REST and GraphQL; Shopify's Storefront API is GraphQL; many TypeScript startups use tRPC internally.</li>
+</ul>
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"GraphQL is always better."</strong> It adds server complexity and makes caching harder.</li>
+<li><strong>tRPC for a public API.</strong> It's designed for clients that share your TypeScript code.</li>
+<li><strong>Choosing by hype.</strong> Decide by who calls the API and who maintains it.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Compare <code>https://api.github.com/users/torvalds</code> (REST) with the same data in GitHub's GraphQL Explorer: note the different shapes and request counts.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>When is REST the best choice?</summary>
+<p>Public APIs, many different clients, simple resources and when HTTP/CDN caching is important.</p>
+</details>
+<details>
+<summary>What does tRPC give you?</summary>
+<p>End-to-end type safety between a TypeScript client and server without writing a schema or generating code.</p>
+</details>
+<details>
+<summary>Why might GraphQL be slower?</summary>
+<p>A single complex query can trigger many expensive resolvers, and responses are harder to cache.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>REST: many clients, public APIs, simplest caching. GraphQL: many screens picking their own fields. tRPC: one TypeScript team owns client + server (monorepo), end-to-end types, no schema/codegen.</li>
 <li>In the wild: GitHub (REST + GraphQL), Shopify Storefront (GraphQL), T3-stack apps (tRPC).</li>
 <li>Trap: GraphQL is not "faster" — fewer round trips, but careless queries are slow and you lose easy caching. Choose by clients + teams.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e02/"><small>← PREVIOUS</small>GraphQL</a>
 <a class="r" href="../s5e04/"><small>NEXT →</small>Backend for Frontend (BFF)</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

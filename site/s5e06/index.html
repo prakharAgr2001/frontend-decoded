@@ -6,13 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 6 · Data fetching &amp; APIs</span>
 <h1><span class="hl">The offset bug</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Offset pagination</strong>: <code>?limit=10&amp;offset=10</code> → <code>LIMIT 10 OFFSET 10</code>.</li>
+<li>If a new item is added at the top while you're reading, everything shifts down and you see <strong>duplicates</strong>. If an item is deleted, you <strong>skip</strong> one.</li>
+<li>Deep offsets are slow: the database still reads and throws away every skipped row.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Offset pagination asks for a number of rows after skipping N rows. On a list that changes while the user pages through it, inserts at the top shift rows down so page 2 repeats items from page 1, and deletes shift rows up so items are skipped. Performance also degrades with deep offsets because the database must scan and discard all skipped rows. Offsets are fine for mostly static data or admin tables that need jump-to-page, but feeds should use cursor pagination.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Reading page 2 of a notice board while someone pins a new notice at the very top. Everything slides down one spot, and the first notice on "page 2" is one you already read on page 1.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Load page 1</b><span>items 1–10</span></li><li><b>A new post arrives at the top</b><span>old item 10 becomes item 11</span></li><li><b>Load page 2 (offset 10)</b><span>starts with item 11, which you already saw</span></li><li><b>Result</b><span>a duplicate in the feed</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">-- Page 1000 still makes the database walk past 9,990 rows</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">OFFSET</span><span class="w"> </span><span class="mi">9990</span><span class="p">;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Fast-changing feeds</strong> (social, chat, notifications) get duplicates and gaps.</li>
+<li><strong>Deep pages get slower and slower.</strong></li>
+<li><strong>Offset isn't always wrong</strong>: admin tables, search results and "jump to page 7" UIs often need it.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Paginate a list with offsets in your app, insert a row at the top between page 1 and page 2, and compare the first item of page 2 with the last of page 1.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why do duplicates appear with offset pagination?</summary>
+<p>New items inserted at the top shift every row down, so the next offset starts at an item you already loaded.</p>
+</details>
+<details>
+<summary>Why are deep offsets slow?</summary>
+<p>The database must read and discard all skipped rows before returning the page.</p>
+</details>
+<details>
+<summary>When is offset pagination fine?</summary>
+<p>For mostly static data, admin tables or UIs that need to jump to a specific page number.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>?limit=10&amp;offset=10</code> → <code>LIMIT 10 OFFSET 10</code>. New item on top shifts rows → <strong>duplicates</strong>; deletes shift up → <strong>skipped</strong> items.</li>
 <li>Deep offsets are slow: DB still reads and discards every skipped row.</li>
 <li>Trap: offset is fine for rarely-changing data and jump-to-page UIs (admin tables, search results). It breaks on fast-changing feeds.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e05/"><small>← PREVIOUS</small>IQ: API design</a>
 <a class="r" href="../s5e07/"><small>NEXT →</small>Cursor pagination</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

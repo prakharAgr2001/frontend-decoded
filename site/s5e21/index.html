@@ -6,12 +6,53 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 21 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Finale: one search page</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>One search page brings Season 5 together: <strong>API → pagination → requests → resilience → loading states</strong>.</li>
+<li>REST endpoint (or BFF) → cursor pagination with infinite scroll → debounce + AbortController → parallel requests, no waterfalls → retries with jitter, dedup, Retry-After → matching skeletons, isolated failures, grouped Suspense.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For a search page I'd expose a search endpoint, through a BFF if it aggregates services, with cursor pagination for stable infinite scroll via IntersectionObserver. The input is debounced and each request is aborted when the query changes, so results never go stale. Independent data like filters and suggestions loads in parallel. Transient failures retry with exponential backoff and jitter, respecting Retry-After, and concurrent identical requests are deduplicated by a query cache. Loading uses skeletons matching the result cards, and each section has its own error boundary.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A well-run railway enquiry counter: one window for everything (BFF), answers given page by page without repeats (cursor), stops answering an old question the moment you ask a new one (abort), and politely asks you to wait when it's overloaded (429).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>API</b><span>GET /search?q=&amp;after= (REST, or a BFF that fans out)</span></li><li><b>Pagination</b><span>cursor + IntersectionObserver infinite scroll</span></li><li><b>Typing</b><span>debounce 300 ms + abort the previous request</span></li><li><b>Requests</b><span>filters, suggestions and results in parallel</span></li><li><b>Resilience</b><span>retry with backoff + jitter, dedupe, respect Retry-After</span></li><li><b>Loading and errors</b><span>matching skeletons, error boundaries, grouped Suspense</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Offset pagination on live results</strong> shows duplicates.</li>
+<li><strong>No cancellation</strong> lets stale results overwrite new ones.</li>
+<li><strong>One spinner for the whole page</strong> and one error that blanks everything.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Search on a big e-commerce site with DevTools → Network open: watch cancelled requests while typing, the cursor parameter on later pages, and parallel requests for filters.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why cursor pagination for search results with infinite scroll?</summary>
+<p>Results can change while users scroll; cursors avoid duplicates and gaps and stay fast deep into the list.</p>
+</details>
+<details>
+<summary>What two techniques together keep a search box correct and efficient?</summary>
+<p>Debounce (fewer requests) plus cancelling/ignoring stale requests (no races).</p>
+</details>
+<details>
+<summary>How should a 429 be handled on the search page?</summary>
+<p>Wait for Retry-After, back off, and reduce requests via debounce, dedup and caching.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>REST + BFF → cursor pagination + infinite scroll → debounce + AbortController (no races) → parallel, no waterfalls → retries/jitter, dedup, Retry-After → matching skeletons, isolated failures, grouped Suspense.</li>
 <li>Next: Season 6 · Real-time (polling → SSE → WebSockets → CRDTs).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e20/"><small>← PREVIOUS</small>IQ: async edge cases</a>
 </div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

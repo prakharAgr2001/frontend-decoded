@@ -6,14 +6,72 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 7 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Cursor pagination</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Cursor pagination</strong> asks for "10 items <strong>after this one</strong>" instead of "skip 10".</li>
+<li>The response has <code>items</code> plus an opaque <code>nextCursor</code>; the client sends <code>?after=&lt;cursor&gt;</code>. <code>nextCursor: null</code> means the end.</li>
+<li>With an index, page 1000 is about as fast as page 1, and inserts don't cause duplicates.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Cursor pagination returns a pointer to the last item, and the next request asks for items after that pointer, using an indexed WHERE clause instead of OFFSET. Inserts and deletes elsewhere don't shift the window, so there are no duplicates or gaps, and performance stays constant at any depth. To avoid skipping rows that share the same sort value, the cursor includes a unique tiebreaker like (created_at, id). The trade-off is that users can't jump directly to page 50.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A bookmark instead of a page number. Even if someone adds pages at the front of the book, your bookmark still sits exactly where you stopped.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>GET /posts?limit=10</b><span>→ items + nextCursor &quot;2026-11-20T10:00Z_981&quot;</span></li><li><b>GET /posts?after=&lt;cursor&gt;</b><span>→ the 10 items older than that one</span></li><li><b>Repeat</b><span>until nextCursor is null</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">-- Compound cursor (created_at, id) avoids skipping rows with equal timestamps</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(:</span><span class="n">cursor_time</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">cursor_id</span><span class="p">)</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Client with React Query</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">fetchNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">hasNextPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useInfiniteQuery</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'feed'</span><span class="p">],</span>
+<span class="w">  </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">pageParam</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/posts?after=</span><span class="si">${</span><span class="nx">pageParam</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
+<span class="w">  </span><span class="nx">initialPageParam</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">getNextPageParam</span><span class="o">:</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">last</span><span class="p">.</span><span class="nx">nextCursor</span><span class="p">,</span><span class="w">      </span><span class="c1">// null → no more pages</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Ties on the sort key</strong>: two posts with the same timestamp → one gets skipped. Use <code>(created_at, id)</code>.</li>
+<li><strong>Exposing raw cursor values</strong> that clients start depending on. Encode them (e.g. base64) and treat them as opaque.</li>
+<li><strong>No jump-to-page.</strong> Cursor pagination can't go directly to page 50.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open <code>https://www.reddit.com/r/javascript.json</code>: the response has <code>"after": "t3_…"</code>, a cursor for the next page.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why doesn't cursor pagination produce duplicates on new inserts?</summary>
+<p>It asks for items after a specific item, not after N rows, so new items at the top don't shift the window.</p>
+</details>
+<details>
+<summary>Why include the id in the cursor?</summary>
+<p>As a tiebreaker for rows with the same timestamp, so none are skipped or repeated.</p>
+</details>
+<details>
+<summary>What can't cursor pagination do easily?</summary>
+<p>Jump straight to an arbitrary page number.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>"10 items older than this one": response has <code>items</code> + opaque <code>nextCursor</code>; client sends <code>?after=&lt;cursor&gt;</code>; <code>null</code> = end.</li>
 <li>Server: <code>WHERE created_at &lt; :cursor ORDER BY created_at DESC LIMIT 10</code> — with an index, page 1000 ≈ page 1.</li>
 <li>See it: <code>reddit.com/r/javascript.json</code> → <code>"after": "t3_…"</code>.</li>
 <li>Trap: ties on the sort key skip rows → sort by <code>(created_at, id)</code> and put both in the cursor. Cost: no jump to page 50.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e06/"><small>← PREVIOUS</small>The offset bug</a>
 <a class="r" href="../s5e08/"><small>NEXT →</small>Infinite scroll vs pages</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

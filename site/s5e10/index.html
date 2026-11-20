@@ -6,13 +6,65 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 10 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Waterfalls</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A <strong>request waterfall</strong> is when request 2 can't start until request 1 finishes. In DevTools it looks like a staircase.</li>
+<li>Each step costs a full round trip (often 100–300 ms on mobile).</li>
+<li>The classic React cause is <strong>fetch-on-render</strong>: the parent fetches, renders the child, and only then does the child start its fetch.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A waterfall happens when requests run one after another even though they don't need to, often because components fetch in effects: the parent's data must arrive before the child renders and starts its own fetch. Each level adds a round trip. I fix it by starting requests as early as possible, in route loaders, by hoisting fetches to the route level, or by prefetching, so it becomes fetch-then-render. When a request truly depends on another, I move that join to the server, in a single endpoint or BFF, where round trips are cheap.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A relay race where each runner waits for the previous one to finish before even standing up. If the legs don't depend on each other, everyone should run at the same time.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Fetch-on-render (waterfall)</div><div class="dg-c">Page renders → fetches user</div><div class="dg-c">User arrives → renders &lt;Orders&gt; → fetches orders</div><div class="dg-c">Orders arrive → renders &lt;Offers&gt; → fetches offers</div><div class="dg-c">3 round trips in a row</div></div><div class="dg-col good"><div class="dg-h">Fetch-then-render</div><div class="dg-c">Route loader starts user, orders and offers together</div><div class="dg-c">All requests in flight at once</div><div class="dg-c">Render when data is ready</div><div class="dg-c">~1 round trip</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// React Router: start all requests before rendering the route</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loader</span><span class="p">({</span><span class="w"> </span><span class="nx">params</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">user</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span>
+<span class="w">    </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/users/</span><span class="si">${</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
+<span class="w">    </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/users/</span><span class="si">${</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/orders`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
+<span class="w">  </span><span class="p">]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">user</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Nested components each fetching in useEffect</strong>: hidden waterfalls.</li>
+<li><strong>Lazy-loaded component that then fetches data</strong>: chunk download + data fetch in sequence. Prefetch both.</li>
+<li><strong>Real dependencies</strong> (need the user id first): join on the server in one endpoint.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → reload a slow page → look at the waterfall column: a staircase of requests that start only when the previous one ends.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does a waterfall look like in DevTools?</summary>
+<p>A staircase: each request starts only after the previous one finishes.</p>
+</details>
+<details>
+<summary>What's fetch-on-render?</summary>
+<p>Components start fetching only after they render, so nested components wait for their parents' data first.</p>
+</details>
+<details>
+<summary>How do you fix a true data dependency?</summary>
+<p>Move the join to the server (one endpoint or BFF) so the dependent calls happen close to the data.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Request 2 waits for request 1 → staircase in the Network waterfall; each step costs a round trip (~100–300 ms on mobile).</li>
 <li>React: parent fetches in an effect → renders child → child fetches = <strong>fetch-on-render</strong>. Fix: start early (route loader, hoist, prefetch) = fetch-then-render.</li>
 <li>Trap: true dependency (needs user id) → move the join to the server (one endpoint / BFF) so it happens next to the DB.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e09/"><small>← PREVIOUS</small>IQ: pagination</a>
 <a class="r" href="../s5e11/"><small>NEXT →</small>Parallel requests</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

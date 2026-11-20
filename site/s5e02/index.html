@@ -6,14 +6,75 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 2 · Data fetching &amp; APIs</span>
 <h1><span class="hl">GraphQL</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>GraphQL</strong> has <strong>one endpoint</strong> (<code>POST /graphql</code>). You send a query <strong>shaped like the answer you want</strong>, and the response mirrors it.</li>
+<li>A <strong>schema</strong> defines all types and fields. It fixes <strong>over-fetching</strong> (too much data per call) and <strong>under-fetching</strong> (too many calls).</li>
+<li>Costs: no free HTTP/CDN caching (one URL, POST), and deeply nested queries can be expensive. Errors often come back as <strong>200 OK with an <code>errors</code> array</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>GraphQL exposes a typed schema through a single endpoint, and clients send queries specifying exactly the fields and nested relations they need, so one request returns exactly that shape. It solves over-fetching and under-fetching and lets different screens evolve independently. The trade-offs are that standard HTTP caching doesn't work out of the box since queries are POSTed to one URL, expensive nested queries need depth and complexity limits or persisted queries, and errors are often returned in an errors array with a 200 status, so clients must check for them.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A buffet versus a set meal. REST endpoints are set meals: you get the whole plate even if you only wanted the dal. GraphQL is a buffet: you take exactly what you want, in one trip.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">query</span><span class="w"> </span><span class="nf">ProfileScreen</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">user</span><span class="p">(</span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">name</span>
+<span class="w">    </span><span class="n">avatarUrl</span>
+<span class="w">    </span><span class="n">posts</span><span class="p">(</span><span class="n">first</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="n">likes</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Riya"</span><span class="p">,</span><span class="w"> </span><span class="nt">"avatarUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"…"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"posts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello"</span><span class="p">,</span><span class="w"> </span><span class="nt">"likes"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/graphql'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Content-Type'</span><span class="o">:</span><span class="w"> </span><span class="s1">'application/json'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">42</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}),</span>
+<span class="p">});</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">errors</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">errors</span><span class="o">?</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="nx">errors</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">message</span><span class="p">);</span><span class="w">   </span><span class="c1">// 200 OK can still contain errors</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Ignoring the <code>errors</code> array</strong> because the status was 200.</li>
+<li><strong>Unbounded nested queries</strong> (friends of friends of friends) can overload the server. Add depth and complexity limits.</li>
+<li><strong>"GraphQL is faster."</strong> It saves round trips, but careless queries can be slow, and caching takes more work.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open instagram.com → DevTools → <strong>Network</strong> → filter <code>graphql</code>: requests carry a query (or query id) and variables, and responses mirror the requested shape.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What problems does GraphQL solve?</summary>
+<p>Over-fetching (getting fields you don't need) and under-fetching (needing several requests for one screen).</p>
+</details>
+<details>
+<summary>Why is CDN caching harder with GraphQL?</summary>
+<p>Queries are usually POSTs to a single URL, so the URL doesn't identify the data. Persisted queries over GET help.</p>
+</details>
+<details>
+<summary>A GraphQL response is 200 OK. Did it succeed?</summary>
+<p>Not necessarily. Check the errors array; partial data with errors is common.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>One endpoint (<code>POST /graphql</code>); the query is shaped like the answer; the response mirrors it. A schema defines types + fields.</li>
 <li>Fixes over-fetching (too much per call) and under-fetching (too many calls).</li>
 <li>Costs: one URL + POST → no free HTTP/CDN caching; deeply nested queries can be very expensive (add depth/complexity limits).</li>
 <li>See it: instagram.com → Network → filter <code>graphql</code>. Trap: errors often arrive as <strong>200 OK</strong> with an <code>errors</code> array → check it.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e01/"><small>← PREVIOUS</small>REST</a>
 <a class="r" href="../s5e03/"><small>NEXT →</small>REST vs GraphQL vs tRPC</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

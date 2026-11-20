@@ -6,13 +6,67 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 13 · Data fetching &amp; APIs</span>
 <h1><span class="hl">AbortController</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>AbortController</strong> really <strong>cancels</strong> a fetch: <code>controller.abort()</code> stops the request and rejects the promise with an <code>AbortError</code>.</li>
+<li>In React effects, <strong>abort in the cleanup</strong>, and ignore <code>AbortError</code> (a cancel isn't a failure).</li>
+<li><code>AbortSignal.timeout(5000)</code> gives you a built-in timeout.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>AbortController lets me cancel in-flight work. I pass its signal to fetch, and calling abort stops the network request and rejects the promise with an AbortError. In an effect I abort in the cleanup, which both prevents races and saves bandwidth when the component unmounts or the query changes, and I treat AbortError as expected rather than showing an error. AbortSignal.timeout creates a signal that aborts after a delay. Aborting a POST doesn't undo it if the server already received it, so mutations need idempotency keys.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Cancelling a cab booking. The driver turns around instead of just being ignored when they arrive. But if they've already dropped your parcel off, cancelling doesn't bring it back.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AbortController</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">setResults</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'AbortError'</span><span class="p">)</span><span class="w"> </span><span class="nx">setError</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// a cancel isn't an error</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span><span class="w">                                       </span><span class="c1">// new query or unmount → cancel</span>
+<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">]);</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Timeout after 5 s</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/report'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">AbortSignal</span><span class="p">.</span><span class="nx">timeout</span><span class="p">(</span><span class="mf">5000</span><span class="p">)</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Showing an error toast for AbortError.</strong> It's expected when users type quickly.</li>
+<li><strong>Thinking abort undoes a POST.</strong> The server may have processed it. Use an idempotency key and check the status.</li>
+<li><strong>Reusing one controller</strong> after it's aborted. Create a new one per request.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → type quickly in a search box that uses AbortController: earlier requests show <strong>(canceled)</strong> in red.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What error does an aborted fetch reject with?</summary>
+<p>A DOMException named AbortError.</p>
+</details>
+<details>
+<summary>Where should you call abort in a React effect?</summary>
+<p>In the effect's cleanup function.</p>
+</details>
+<details>
+<summary>Does aborting a POST guarantee the server didn't process it?</summary>
+<p>No. The request may already have reached the server; use idempotency keys and status checks.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>const c = new AbortController(); fetch(url, { signal: c.signal }); c.abort();</code> → really stops the request.</li>
 <li>In effects: abort in the cleanup; ignore <code>AbortError</code> (a cancel isn't a failure). <code>AbortSignal.timeout(5000)</code> for timeouts.</li>
 <li>See it: Network shows aborted requests as <strong>(canceled)</strong>. Trap: abort doesn't undo a POST already on the server → idempotency key + status check.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s5e12/"><small>← PREVIOUS</small>Race conditions</a>
 <a class="r" href="../s5e14/"><small>NEXT →</small>Retries + backoff</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>
