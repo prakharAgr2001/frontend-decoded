@@ -239,9 +239,12 @@
  },
  {
   "id": "WR23",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR23.mp4",
   "cover": "covers/WR23.jpg",
-  "caption": "Ghost 8 people on Hinge and it stops you from matching. 👻\n\nHinge's 'Your Turn Limits' (tested May 2024, global Sept 2024): once 8+ matches are waiting on your reply, you must reply or end a chat before matching again. Hinge said 44% of daters call unresponsive matches a top problem, and the test raised responsiveness on the app by 20%.\n\nSystem design view: it's a rate limiter on your attention. Cap the in-flight work, and everything in the queue gets served.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "Ghost 8 people on Hinge and it stops you from matching. 👻\n\nHinge's 'Your Turn Limits' (tested May 2024, global Sept 2024): once 8+ matches are waiting on your reply, you must reply or end a chat before matching again. Hinge said 44% of daters call unresponsive matches a top problem, and the test raised responsiveness on the app by 20%.\n\nSystem design view: it's a rate limiter on your attention. Cap the in-flight work, and everything in the queue gets served.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18133002220696776",
+  "permalink": "https://www.instagram.com/reel/Df9r0SskSqh/",
+  "posted_at": "2026-11-20 12:45 UTC"
  }
 ]
