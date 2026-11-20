@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 22 · State management</span>
 <h1><span class="hl">IQ: URL · forms · machines · Immer</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>URL state, forms, state machines and Immer</strong>.</li>
+<li>Know what belongs in the URL, controlled vs uncontrolled inputs (and the focus-loss bug), replacing boolean flags with a status machine, and how Immer mutates safely.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Shareable and navigable state goes in the URL, form state is handled with uncontrolled inputs and a form library where possible, async flows use a single status with explicit transitions instead of several booleans, and Immer lets me write readable updates while keeping state immutable.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What belongs in the URL, and what doesn't?</summary>
+<p>In: search, filters, sort, page, selected tab, opened item ID. Out: secrets/tokens/personal data, huge objects, temporary UI like hover or open dropdowns.</p>
+</details>
+<details>
+<summary>Controlled vs uncontrolled, and why might an input lose focus on every keystroke?</summary>
+<p>Controlled: React state holds the value; uncontrolled: the DOM does. Focus loss happens when the input's component is defined inside another component (new type every render) or has an unstable key, so it remounts.</p>
+</details>
+<details>
+<summary>Your component has isLoading and isError both true. How do you fix the design?</summary>
+<p>Replace the booleans with one status ('idle' | 'loading' | 'success' | 'error') and explicit transitions, so impossible combinations can't exist.</p>
+</details>
+<details>
+<summary>How does Immer let you "mutate" state safely?</summary>
+<p>It gives you a Proxy draft, records your changes, copies only the changed paths, shares the rest, and returns a new frozen object.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>What goes in the URL (and what doesn't) · controlled vs uncontrolled (+ focus-loss bug) · isLoading &amp;&amp; isError → status machine · how Immer mutates safely.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e21/"><small>← PREVIOUS</small>Immer</a>
 <a class="r" href="../s4e23/"><small>NEXT →</small>Finale: one food order</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 7 · State management</span>
 <h1><span class="hl">Redux Toolkit</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Redux Toolkit (RTK)</strong> is the official way to write Redux today. <code>createSlice</code> generates action types and action creators for you.</li>
+<li>Inside <code>createSlice</code> reducers you can "mutate" (<code>state.items.push(x)</code>) because <strong>Immer</strong> gives you a draft and produces a new immutable state.</li>
+<li><code>configureStore</code> wires DevTools and adds dev checks for accidental mutation and non-serializable values. <strong>RTK Query</strong> adds a server-state cache.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Redux Toolkit removes Redux boilerplate. createSlice defines the initial state and reducers together and generates the action creators. Reducers are written with mutating syntax, but Immer records the changes on a draft and returns a new immutable state, so the Redux rules still hold. configureStore sets up DevTools and development checks. RTK Query handles fetching and caching server data. Redux is still a good fit for large apps with many writers and a need for logged, replayable changes, but it's often overkill for small apps.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Plain Redux is building furniture from raw planks. Redux Toolkit is the same furniture as a well-designed flat-pack kit: same result, far fewer screws and mistakes.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createSlice</span><span class="p">,</span><span class="w"> </span><span class="nx">configureStore</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@reduxjs/toolkit'</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">cartSlice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSlice</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'cart'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">initialState</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">reducers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">added</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">payload</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w">           </span><span class="c1">// Immer makes this safe</span>
+<span class="w">    </span><span class="nx">removed</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">payload</span><span class="p">);</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">removed</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cartSlice</span><span class="p">.</span><span class="nx">actions</span><span class="p">;</span><span class="w">     </span><span class="c1">// generated action creators</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">configureStore</span><span class="p">({</span><span class="w"> </span><span class="nx">reducer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">cart</span><span class="o">:</span><span class="w"> </span><span class="nx">cartSlice</span><span class="p">.</span><span class="nx">reducer</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
+
+<span class="c1">// In a component: dispatch(added({ id: 7, name: 'Shoes' }))</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Mutation is allowed everywhere now."</strong> Only inside <code>createSlice</code> / <code>createReducer</code>. Elsewhere you still must not mutate state.</li>
+<li><strong>Putting Dates, class instances or functions in state</strong> triggers serializability warnings and breaks DevTools.</li>
+<li><strong>Using Redux for server data by hand.</strong> Use RTK Query or React Query instead.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open Redux DevTools on an RTK app: action types look like <code>cart/added</code>, generated from the slice name and reducer name.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How can RTK reducers use `push` without breaking immutability?</summary>
+<p>Immer gives the reducer a draft proxy, records the changes, and produces a new immutable state object.</p>
+</details>
+<details>
+<summary>What does configureStore add over createStore?</summary>
+<p>DevTools setup, good default middleware (thunk), and dev checks for mutations and non-serializable values.</p>
+</details>
+<details>
+<summary>Is Redux still worth using?</summary>
+<p>For large apps with many contributors and complex shared state that benefits from a predictable, logged update flow, yes. For small apps, lighter stores or local state are simpler.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Official way today. <code>createSlice</code> generates action types + creators; reducers can "mutate" because <strong>Immer</strong> gives a draft.</li>
 <li><code>configureStore</code>: DevTools wired, dev checks for mutation + non-serializable values (Dates, functions).</li>
 <li>RTK Query = server-state cache inside Redux. Is Redux dead? No — big apps, many writers, logged/replayable changes. Overkill for small apps.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e06/"><small>← PREVIOUS</small>Redux from scratch</a>
 <a class="r" href="../s4e08/"><small>NEXT →</small>Zustand · Jotai · MobX</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,14 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 13 · State management</span>
 <h1><span class="hl">Cache invalidation</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>After a mutation (add, edit, delete), cached data is wrong. <strong>Invalidate</strong> it: <code>queryClient.invalidateQueries({ queryKey: ['addresses'] })</code> marks matching queries stale and refetches active ones.</li>
+<li>Query keys work like <strong>folders</strong>: <code>['addresses']</code> also matches <code>['addresses', 7]</code>. Use <code>exact: true</code> for one key.</li>
+<li>Or update the cache directly with <strong><code>setQueryData</code></strong> using the server's response and skip a round trip.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>After a mutation succeeds I invalidate the queries whose data it affected. invalidateQueries matches by key prefix, so a hierarchical key structure lets me refresh a whole group, or a single query with exact. When the server returns the updated entity, I can write it straight into the cache with setQueryData to avoid an extra request. Invalidating too little leaves screens showing wrong data, too much refetches everything. Other tabs stay fresh through refetch on window focus, BroadcastChannel or server push.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Crossing out outdated entries in a notebook so you know to recheck them. Label pages by topic so you can cross out "Addresses" in one go instead of hunting for every address entry.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useMutation</span><span class="p">,</span><span class="w"> </span><span class="nx">useQueryClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@tanstack/react-query'</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">useAddAddress</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">qc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQueryClient</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">useMutation</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">mutationFn</span><span class="o">:</span><span class="w"> </span><span class="nx">addr</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/addresses'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">addr</span><span class="p">)</span><span class="w"> </span><span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
+<span class="w">    </span><span class="nx">onSuccess</span><span class="o">:</span><span class="w"> </span><span class="nx">saved</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">qc</span><span class="p">.</span><span class="nx">setQueryData</span><span class="p">([</span><span class="s1">'addresses'</span><span class="p">,</span><span class="w"> </span><span class="nx">saved</span><span class="p">.</span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="nx">saved</span><span class="p">);</span><span class="w">               </span><span class="c1">// write what we already know</span>
+<span class="w">      </span><span class="nx">qc</span><span class="p">.</span><span class="nx">invalidateQueries</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'addresses'</span><span class="p">]</span><span class="w"> </span><span class="p">});</span><span class="w">             </span><span class="c1">// refetch the list(s)</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">invalidateQueries</div><div class="dg-c">Marks stale and refetches active queries</div><div class="dg-c">Always correct (server is the truth)</div><div class="dg-c">One more round trip</div></div><div class="dg-col good"><div class="dg-h">setQueryData</div><div class="dg-c">Writes data directly into the cache</div><div class="dg-c">No extra request</div><div class="dg-c">Must match the server&#x27;s shape exactly</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Too little invalidation</strong>: the list still shows the deleted item.</li>
+<li><strong>Too much</strong>: invalidating everything after every mutation refetches the world.</li>
+<li><strong>Other tabs and devices</strong> don't know about your mutation; rely on focus refetch, BroadcastChannel or real-time updates.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React Query Devtools → perform a mutation → watch the matching queries turn stale and refetch.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Does invalidating ['addresses'] affect ['addresses', 7]?</summary>
+<p>Yes, matching is by prefix unless you pass <code>exact: true</code>.</p>
+</details>
+<details>
+<summary>When would you use setQueryData instead of invalidating?</summary>
+<p>When the mutation response contains the updated data, so you can update the cache without another request.</p>
+</details>
+<details>
+<summary>How can another open tab learn about the change?</summary>
+<p>Refetch on window focus, a BroadcastChannel message between tabs, or server push (WebSockets/SSE).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>After a mutation: <code>qc.invalidateQueries({ queryKey: ['addresses'] })</code> → marks matching queries stale, refetches active ones.</li>
 <li>Keys are folders: prefix match (<code>['addresses']</code> hits <code>['addresses', 7]</code>); <code>exact: true</code> for one key.</li>
 <li>Or <code>setQueryData</code> with the server's response (skip a round trip). Too little = screens lie; too much = refetch the world.</li>
 <li>Other tabs: refetch on window focus; <code>BroadcastChannel</code>; server push (S6).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e12/"><small>← PREVIOUS</small>React Query</a>
 <a class="r" href="../s4e14/"><small>NEXT →</small>Normalization</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,11 +6,53 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 23 · State management</span>
 <h1><span class="hl">Finale: one food order</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>One food-delivery app uses <strong>every kind of state</strong>, each in the right home.</li>
+<li>URL for search and filters, local state for dropdowns, a server cache for the menu, a store with selectors for the cart, context for theme and user, a form library for the address, a state machine for payment.</li>
+<li>Plus normalized orders, optimistic likes with rollback, and Immer for updates.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>In a food-ordering app I'd keep search and filters in the URL so results are shareable, small UI toggles in local state, the menu and restaurant data in a server-state cache, the cart in a lightweight store with selectors for the badge and derived totals, and app-wide values like theme and user in context. The address form uses a form library with schema validation and invalidates the address query on save. Payment is a state machine so double submits are impossible, orders are normalized by ID, favourites use optimistic updates with rollback, and nested updates use Immer.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant kitchen where every ingredient has its place: spices by the stove, vegetables in the fridge, today's specials on the board at the door. Things go wrong when everything is dumped in one cupboard.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Feature</div><div class="dg-c">Search text, cuisine filter, sort</div><div class="dg-c">&quot;Sort by&quot; dropdown open</div><div class="dg-c">Restaurants and menu</div><div class="dg-c">Cart items, badge count, total</div><div class="dg-c">Theme, logged-in user</div><div class="dg-c">Delivery address form</div><div class="dg-c">Payment flow</div><div class="dg-c">Past orders</div><div class="dg-c">Favourite a restaurant</div></div><div class="dg-col good"><div class="dg-h">Where its state lives</div><div class="dg-c">URL (?q=biryani&amp;veg=1&amp;sort=rating)</div><div class="dg-c">Local useState</div><div class="dg-c">React Query cache</div><div class="dg-c">Zustand / Redux store + selectors</div><div class="dg-c">Context</div><div class="dg-c">React Hook Form + zod, invalidate [&#x27;addresses&#x27;] on save</div><div class="dg-c">State machine: idle → paying → success / failed</div><div class="dg-c">Normalized by id</div><div class="dg-c">Optimistic update + rollback</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Putting the menu in the cart store.</strong> Server data in a client store goes stale.</li>
+<li><strong>Booleans for payment</strong> (<code>isPaying</code>, <code>isPaid</code>, <code>hasError</code>): use a machine.</li>
+<li><strong>Cart total in state</strong> instead of derived with a selector.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open Swiggy or Zomato on the web: change filters and watch the URL, add to cart and refresh, and notice which data survives where.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Where does the restaurant menu live, and why?</summary>
+<p>In a server-state cache: it's owned by the server, can change, and should be cached and refetched when stale.</p>
+</details>
+<details>
+<summary>How should the cart badge get its count?</summary>
+<p>Through a selector on the cart store, so it re-renders only when the count changes and the count is derived, not stored.</p>
+</details>
+<details>
+<summary>Why model payment as a state machine?</summary>
+<p>To make impossible states unrepresentable and ignore repeated "Pay" events during processing, preventing double charges (along with an idempotency key on the server).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>URL (search + filters) · local (dropdown) · server cache (menu) · store + selectors (cart, badge, derived total) · context (theme, user) · form library (address) + invalidation · state machine (payment) · normalized orders · optimistic like + rollback · Immer updates.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e22/"><small>← PREVIOUS</small>IQ: URL · forms · machines · Immer</a>
 </div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

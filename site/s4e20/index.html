@@ -6,13 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 20 · State management</span>
 <h1><span class="hl">State machines</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Boolean soup</strong>: <code>isLoading</code>, <code>isError</code>, <code>isSuccess</code> = 8 combinations, but only about 4 are valid. Bugs live in the impossible ones.</li>
+<li>Replace them with <strong>one <code>status</code></strong> and explicit <strong>transitions</strong>: which events are allowed in which state.</li>
+<li>Events that aren't allowed in the current state are <strong>ignored</strong>: a second "Pay" click during <code>submitting</code> does nothing.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Instead of several booleans that can combine into impossible states, I model UI flows as a finite state machine: a single status value and a table of allowed transitions for each event. This makes impossible states unrepresentable and invalid events harmless, for example a submit event is ignored while already submitting. For simple flows a reducer with a status field is enough; for complex flows with nested or parallel states, guards and timers, XState provides a full statechart implementation with visual tooling.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A traffic signal. It can only be red, yellow or green, and it moves through them in a fixed order. It can never be "red and green at the same time", and pressing the pedestrian button during green doesn't break it.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>idle</b><span>SUBMIT → submitting</span></li><li><b>submitting</b><span>SUCCESS → success, FAIL → error (SUBMIT ignored)</span></li><li><b>error</b><span>RETRY → submitting</span></li><li><b>success</b><span>final state</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">machine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">idle</span><span class="o">:</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="nx">SUBMIT</span><span class="o">:</span><span class="w"> </span><span class="s1">'submitting'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">submitting</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SUCCESS</span><span class="o">:</span><span class="w"> </span><span class="s1">'success'</span><span class="p">,</span><span class="w"> </span><span class="nx">FAIL</span><span class="o">:</span><span class="w"> </span><span class="s1">'error'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">error</span><span class="o">:</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">RETRY</span><span class="o">:</span><span class="w"> </span><span class="s1">'submitting'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">success</span><span class="o">:</span><span class="w">    </span><span class="p">{},</span>
+<span class="p">};</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">transition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">machine</span><span class="p">[</span><span class="nx">status</span><span class="p">][</span><span class="nx">event</span><span class="p">]</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">status</span><span class="p">;</span><span class="w">   </span><span class="c1">// unknown event → stay</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="nx">transition</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>isLoading &amp;&amp; isError</code> both true</strong> after a forgotten reset: the classic boolean-soup bug.</li>
+<li><strong>Double payment</strong>: guard with the machine (ignore SUBMIT while submitting), disable the button, and send an <strong>idempotency key</strong> to the server.</li>
+<li><strong>Using XState for a simple toggle.</strong> A reducer with a status field is often enough.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Paste a machine definition into the <strong>Stately (XState) visual editor</strong> and click through events: invalid events simply do nothing.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why are multiple booleans risky for async UI?</summary>
+<p>They allow impossible combinations (loading and error at once), which cause bugs that are hard to reproduce.</p>
+</details>
+<details>
+<summary>How does a state machine prevent double submission?</summary>
+<p>In the submitting state there's no transition for SUBMIT, so the event is ignored.</p>
+</details>
+<details>
+<summary>When would you reach for XState?</summary>
+<p>For complex flows with nested or parallel states, guards, delays/timers, or when visualising the flow helps the team.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Boolean soup: 3 booleans = 8 combos, ~4 valid. Use one <code>status</code> + explicit transitions.</li>
 <li><code>machine = { idle: { SUBMIT: 'submitting' }, submitting: { OK, FAIL }, error: { RETRY } }</code>; unknown events are ignored.</li>
 <li>XState for complex flows (nested/parallel states, guards, timers, visual editor). Double payment: machine ignores SUBMIT + disable button + idempotency key.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e19/"><small>← PREVIOUS</small>Form state</a>
 <a class="r" href="../s4e21/"><small>NEXT →</small>Immer</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

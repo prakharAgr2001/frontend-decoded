@@ -6,13 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 14 · State management</span>
 <h1><span class="hl">Normalization</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Normalization</strong>: store each entity <strong>once, keyed by id</strong>, and reference it by id everywhere else: <code>users.byId[7]</code>, <code>posts.byId[101].author = 7</code>.</li>
+<li>Wins: <strong>one source of truth</strong>, updates in one place, O(1) lookups, no deep nested spreads.</li>
+<li>Tools: RTK <code>createEntityAdapter</code>; Apollo and Relay normalize automatically. React Query caches per query, so you invalidate instead.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Normalizing client state means storing entities in flat lookup tables keyed by ID, with relationships expressed as IDs instead of nested copies. If a user's name changes, I update one record and every post, comment and list that references that ID shows the new name. It also makes lookups constant time and updates simpler. Redux Toolkit's createEntityAdapter provides this shape and helpers, GraphQL clients like Apollo normalize their caches automatically, while query-based caches like React Query keep data per query and rely on invalidation.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A school's student register. Each student is written once with a roll number. Class lists, sports teams and the exam seating chart just list roll numbers. When a student changes their surname, you correct one line in the register, not every list.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Nested (denormalized)</div><div class="dg-c">posts: [{ id: 101, author: { id: 7, name: &#x27;Riya&#x27; } }]</div><div class="dg-c">The same user copied into every post</div><div class="dg-c">Rename = update every copy</div><div class="dg-c">Find a post = loop through arrays</div></div><div class="dg-col good"><div class="dg-h">Normalized</div><div class="dg-c">users: { byId: { 7: { id: 7, name: &#x27;Riya&#x27; } } }</div><div class="dg-c">posts: { byId: { 101: { id: 101, author: 7 } } }</div><div class="dg-c">Rename = update users.byId[7]</div><div class="dg-c">Find a post = posts.byId[101]</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createEntityAdapter</span><span class="p">,</span><span class="w"> </span><span class="nx">createSlice</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@reduxjs/toolkit'</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createEntityAdapter</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">usersSlice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSlice</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'users'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">initialState</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">getInitialState</span><span class="p">(),</span><span class="w">        </span><span class="c1">// { ids: [], entities: {} }</span>
+<span class="w">  </span><span class="nx">reducers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">userUpdated</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">updateOne</span><span class="p">,</span><span class="w"> </span><span class="nx">usersReceived</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">setAll</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Copies drifting apart</strong>: the same user shows two different names on one screen.</li>
+<li><strong>Over-normalizing simple data</strong> that's only used in one place adds complexity for nothing.</li>
+<li><strong>Forgetting to denormalize for display</strong>: write selectors that join ids back into objects.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open Redux DevTools on an app using entity adapters: state looks like <code>{ ids: [...], entities: { 7: {...} } }</code>.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does a normalized state shape look like?</summary>
+<p>Separate tables per entity type, each with entities keyed by id (and often an ids array for order); relations stored as ids.</p>
+</details>
+<details>
+<summary>Why does normalization prevent inconsistent UI?</summary>
+<p>Each entity exists once, so every view reading it by id sees the same, latest data.</p>
+</details>
+<details>
+<summary>Does React Query normalize data?</summary>
+<p>No. It caches per query key; you keep related queries correct through invalidation or setQueryData.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Store each entity once, keyed by id; everything else references the id: <code>users.byId[7]</code>, <code>posts.byId[101].author = 7</code>.</li>
 <li>Wins: one source of truth, updates in one place, O(1) lookups, no deep spreads.</li>
 <li>Tools: RTK <code>createEntityAdapter</code>; Apollo/Relay normalize automatically (<code>__typename</code> + id). React Query caches per query (invalidate instead).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e13/"><small>← PREVIOUS</small>Cache invalidation</a>
 <a class="r" href="../s4e15/"><small>NEXT →</small>Optimistic UI</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

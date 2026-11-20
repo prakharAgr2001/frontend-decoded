@@ -6,7 +6,47 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 2 · State management</span>
 <h1><span class="hl">The 5 types of state</span></h1>
-<div class="meta"></div><div class="sheet"><table>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>There are <strong>five kinds of state</strong>, and each has a natural home:</li>
+<li><strong>Local UI</strong> (open, active tab) → <code>useState</code>. <strong>Shared client</strong> (cart, theme, user) → context or a store. <strong>Server</strong> (products, orders) → a server cache like React Query. <strong>URL</strong> (search, filters, page) → the address bar. <strong>Form</strong> (values, errors) → a form library.</li>
+<li>Most state bugs come from putting state in the <strong>wrong home</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I classify state before choosing a tool. Local UI state stays in useState. Client state shared across distant components goes in context or a lightweight store. Data that comes from the server is server state and belongs in a server-cache library like React Query, which handles caching, refetching and staleness. Anything that should survive a refresh or be shareable goes in the URL. Complex form state goes in a form library. A common mistake is copying server data into a global store and hand-writing loading flags and refetch logic.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Organising a kitchen: spices near the stove (local), the fridge for shared ingredients (shared client), the market for fresh produce you can't store forever (server), the recipe card you can hand to a friend (URL), and the order pad for what a customer is writing down (form).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Does it come from the server?</b><span>→ server cache (React Query, SWR, RTK Query)</span></li><li><b>Should it survive refresh or be shareable?</b><span>→ URL (path or query string)</span></li><li><b>Do distant components need it?</b><span>→ context or a store</span></li><li><b>Is it a form?</b><span>→ form library</span></li><li><b>Otherwise</b><span>→ local useState</span></li></ol></figure>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">State</div><div class="dg-c">isOpen, activeTab, hovered</div><div class="dg-c">cart, theme, logged-in user</div><div class="dg-c">products, orders, prices</div><div class="dg-c">?q=shoes&amp;sort=price&amp;page=2</div><div class="dg-c">values, touched, errors</div></div><div class="dg-col good"><div class="dg-h">Home</div><div class="dg-c">useState</div><div class="dg-c">context or store (Zustand, Redux)</div><div class="dg-c">React Query / SWR / RTK Query</div><div class="dg-c">URL search params</div><div class="dg-c">React Hook Form or similar</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Server data in Redux/Context</strong> means rewriting caching, loading flags and refetching by hand.</li>
+<li><strong>Filters in useState</strong> are lost on refresh and can't be shared. Put them in the URL.</li>
+<li><strong>Everything global</strong> makes every update re-render too much and couples unrelated features.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open any shopping site, apply filters, then refresh or copy the URL to another tab. If the filters survive, they're in the URL.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Where should a list of products fetched from an API live?</summary>
+<p>In a server-state cache (React Query, SWR, RTK Query), not copied into a global client store.</p>
+</details>
+<details>
+<summary>What state belongs in the URL?</summary>
+<p>Anything that should survive a refresh, be shareable/bookmarkable or work with Back: search, filters, sort, pagination, selected tab.</p>
+</details>
+<details>
+<summary>What three questions decide where state goes?</summary>
+<p>Does it come from the server? Should it survive refresh or be shared? Do distant components need it?</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><table>
 <thead>
 <tr>
 <th>Type</th>
@@ -45,9 +85,13 @@
 <ul>
 <li>3 questions: from the server? → cache. Survive refresh/share? → URL. Distant components? → context/store. Otherwise local.</li>
 <li>Classic mistake: server data copied into a global store = hand-written loading flags, refetching, cache rules.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e01/"><small>← PREVIOUS</small>What is state</a>
 <a class="r" href="../s4e03/"><small>NEXT →</small>Colocation</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,65 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 9 · State management</span>
 <h1><span class="hl">Selectors</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A <strong>selector</strong> picks just the slice of store state a component needs. After every update, the store re-runs it, and the component re-renders <strong>only if the result changed</strong> (<code>===</code>).</li>
+<li>Selectors that build new arrays or objects (<code>filter</code>, <code>map</code>, <code>{...}</code>) return <strong>new references every time</strong>, so the component always re-renders.</li>
+<li>Fix with <strong>memoized selectors</strong> (<code>createSelector</code>), separate selectors, or shallow comparison.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A selector maps store state to the data a component needs. Libraries like React Redux and Zustand run selectors after each update and compare the result with the previous one by reference, so components re-render only when their slice changes. Selectors that derive new arrays or objects return a new reference each time and defeat this, so I memoize them with createSelector, which recomputes only when inputs change, or use shallow equality. Selectors are also the natural place for derived data like totals and filtered lists.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A newspaper subscription for just the sports page. You only get a delivery when the sports page changes, unless the printer reprints a fresh copy every day even when nothing changed (a new reference), and then you get a delivery every day anyway.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Re-renders every time</div><div class="dg-c">s =&gt; s.todos.filter(t =&gt; t.done)</div><div class="dg-c">s =&gt; ({ name: s.user.name, age: s.user.age })</div></div><div class="dg-col good"><div class="dg-h">Re-renders only when needed</div><div class="dg-c">createSelector([s =&gt; s.todos], todos =&gt; todos.filter(t =&gt; t.done))</div><div class="dg-c">two selectors, or useShallow / shallowEqual</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createSelector</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@reduxjs/toolkit'</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">selectTodos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">selectDoneTodos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSelector</span><span class="p">([</span><span class="nx">selectTodos</span><span class="p">],</span><span class="w"> </span><span class="nx">todos</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">todos</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">done</span><span class="p">));</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">selectDoneCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSelector</span><span class="p">([</span><span class="nx">selectDoneTodos</span><span class="p">],</span><span class="w"> </span><span class="nx">done</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">done</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+
+<span class="c1">// Component</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">doneCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useSelector</span><span class="p">(</span><span class="nx">selectDoneCount</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Inline filtering in <code>useSelector</code></strong> returns a new array each time: constant re-renders.</li>
+<li><strong>One memoized selector shared by components with different arguments</strong> keeps recomputing; create one per instance.</li>
+<li><strong>Selecting the whole state</strong> (<code>s =&gt; s</code>) re-renders on any change.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → <strong>Highlight updates</strong>: a component with a non-memoized filter selector flashes on every store update, even unrelated ones.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How does a store decide whether to re-render a component?</summary>
+<p>It re-runs the component's selector after each update and compares the new result to the previous one by reference.</p>
+</details>
+<details>
+<summary>Why does `s =&gt; s.items.filter(...)` re-render every time?</summary>
+<p>filter returns a new array reference on every call, so the comparison always sees a change.</p>
+</details>
+<details>
+<summary>What does createSelector do?</summary>
+<p>Memoizes a derived value: it recomputes only when its input selectors return new values.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Selector picks the slice a component needs; component re-renders only when the result changes (<code>===</code> after every dispatch).</li>
 <li>Trap: <code>filter</code>/<code>map</code>/object literals return new references every time → always re-render. Use <code>createSelector</code> (memoized), separate selectors, or <code>shallowEqual</code> / <code>useShallow</code>.</li>
 <li>Selectors are where derived data lives (totals, counts, filtered lists).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e08/"><small>← PREVIOUS</small>Zustand · Jotai · MobX</a>
 <a class="r" href="../s4e10/"><small>NEXT →</small>IQ: Redux &amp; stores</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

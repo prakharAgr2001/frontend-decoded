@@ -6,14 +6,78 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 6 · State management</span>
 <h1><span class="hl">Redux from scratch</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Redux has three ideas: <strong>one store</strong>, <strong>actions describe what happened</strong> (<code>{ type: 'cart/added', item }</code>), and <strong>reducers are pure functions</strong> <code>(state, action) → newState</code>.</li>
+<li>A minimal <code>createStore</code> is about 10 lines: keep state, run the reducer on dispatch, notify subscribers.</li>
+<li>Data flows <strong>one way</strong>: UI → dispatch → reducer → new state → subscribers re-render.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Redux keeps application state in a single store. Components dispatch plain action objects that describe events, and a pure reducer computes the next state from the current state and the action without mutating anything. After each dispatch the store notifies subscribers, which re-render with the new state. Because updates are pure and serializable, you get predictable behaviour and tooling like Redux DevTools with an action log and time-travel debugging.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A bank ledger. You never erase a balance; you write a new transaction (action), and the accountant (reducer) calculates the new balance from the old one. Anyone can replay the ledger to see how you got here.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span><span class="w"> </span><span class="nx">initialState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">initialState</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">subscribers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Set</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">getState</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">state</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">subscribe</span><span class="o">:</span><span class="w"> </span><span class="nx">fn</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">subscribers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">fn</span><span class="p">),</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">subscribers</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">fn</span><span class="p">)),</span>
+<span class="w">    </span><span class="nx">dispatch</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">);</span><span class="w">         </span><span class="c1">// pure: returns a new object</span>
+<span class="w">      </span><span class="nx">subscribers</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">fn</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fn</span><span class="p">());</span><span class="w">        </span><span class="c1">// notify the UI</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">cartReducer</span><span class="p">(</span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s1">'cart/added'</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[...</span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">item</span><span class="p">]</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s1">'cart/removed'</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">state</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<figure class="dg"><ol class="dg-steps"><li><b>UI</b><span>dispatch({ type: &#x27;cart/added&#x27;, item })</span></li><li><b>Reducer</b><span>(state, action) → new state object</span></li><li><b>Store saves it</b><span>and notifies subscribers</span></li><li><b>UI re-renders</b><span>with the new state</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Mutating state in a reducer</strong> and returning the same object: <code>Object.is(prev, next)</code> is true, so the UI never updates and time travel breaks.</li>
+<li><strong>Side effects in reducers</strong> (API calls, random IDs). Reducers must be pure; do effects in thunks or middleware.</li>
+<li><strong>Everything in Redux.</strong> Server data belongs in a query cache.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Install <strong>Redux DevTools</strong> and open any app that uses Redux: you'll see every action, the state diff, and a slider to time-travel.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What makes a reducer "pure"?</summary>
+<p>Same inputs always give the same output, no side effects, and it never mutates its arguments.</p>
+</details>
+<details>
+<summary>Why doesn't the UI update if the reducer mutates state?</summary>
+<p>The returned state is the same reference, so subscribers comparing references see no change.</p>
+</details>
+<details>
+<summary>Describe Redux's data flow.</summary>
+<p>UI dispatches an action → reducer computes new state → store saves it and notifies subscribers → UI re-renders.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>3 ideas: one store · actions describe what happened (<code>{ type: 'cart/added', item }</code>) · reducers are pure <code>(state, action) → newState</code>.</li>
 <li><code>createStore</code> ≈ 10 lines: <code>state</code>, <code>subs</code>, <code>getState</code>, <code>subscribe</code>, <code>dispatch</code> (run reducer → save → notify).</li>
 <li>One-way flow: UI → dispatch → reducer → new state → subscribers re-render. Redux DevTools = action log + time travel.</li>
 <li>Trap: mutate + return same reference → <code>Object.is(prev, next)</code> true → UI never updates, time travel breaks.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e05/"><small>← PREVIOUS</small>IQ: state basics</a>
 <a class="r" href="../s4e07/"><small>NEXT →</small>Redux Toolkit</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

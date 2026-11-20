@@ -6,13 +6,73 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 3 · State management</span>
 <h1><span class="hl">Colocation</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Colocation</strong>: keep state <strong>as close as possible to where it's used</strong>, and no higher.</li>
+<li>When two components need the same state, lift it only to their <strong>closest common parent</strong>.</li>
+<li>State placed too high makes <strong>every update re-render a large part of the tree</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I colocate state with the components that use it. If siblings need to share it, I lift it to their nearest common parent rather than to the top of the app. State that's too high causes unnecessary re-renders of everything below it and makes components harder to move or delete. Only genuinely app-wide values like the current user, theme or locale go global, and even those are split by concern rather than kept in one big object.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Keeping your toothbrush in the bathroom, not in a central storeroom in the basement. You only move it somewhere shared if two people actually need it, and even then, to the nearest shared bathroom.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">State too high</div><div class="dg-c">search text in &lt;App&gt;</div><div class="dg-c">Typing re-renders the whole page</div><div class="dg-c">Deleting a feature leaves unused state behind</div></div><div class="dg-col good"><div class="dg-h">Colocated</div><div class="dg-c">search text in &lt;SearchBox&gt;</div><div class="dg-c">Typing re-renders only the search box</div><div class="dg-c">Deleting the component deletes its state</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Two siblings need it → lift to the nearest common parent, not to App</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">ProductPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">size</span><span class="p">,</span><span class="w"> </span><span class="nx">setSize</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">'M'</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">SizePicker</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">size</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">setSize</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">AddToCart</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="p">{</span><span class="nx">size</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">&lt;/&gt;);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Heavy parts as children don't re-render when the wrapper's state changes</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">Collapsible</span><span class="p">({</span><span class="w"> </span><span class="nx">children</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">open</span><span class="p">,</span><span class="w"> </span><span class="nx">setOpen</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;</span><span class="nt">section</span><span class="p">&gt;&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setOpen</span><span class="p">(</span><span class="nx">o</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">o</span><span class="p">)}&gt;</span><span class="nx">Toggle</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;{</span><span class="nx">open</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">children</span><span class="p">}&lt;/</span><span class="nt">section</span><span class="p">&gt;);</span>
+<span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">Collapsible</span><span class="p">&gt;&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;&lt;/</span><span class="nt">Collapsible</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Put it in global state just in case."</strong> You pay for it in re-renders and complexity.</li>
+<li><strong>Lifting too far</strong> instead of to the closest common parent.</li>
+<li><strong>One giant global object.</strong> Split by concern (user, theme, cart).</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → enable <strong>Highlight updates</strong> → type in a search box. If the whole page flashes, the state is too high.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Where do you lift state that two siblings need?</summary>
+<p>To their closest common parent.</p>
+</details>
+<details>
+<summary>What's the performance cost of state that's too high?</summary>
+<p>Every update re-renders that component and all its descendants.</p>
+</details>
+<details>
+<summary>How does passing children help?</summary>
+<p>Children elements are created by the parent above, so they aren't re-rendered when the wrapper's own state changes.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Keep state as close as possible to where it's used — and no higher. Lift only to the <strong>closest common parent</strong>.</li>
 <li>State at the top → every update re-renders from the top (S3·E27). Move it down, or pass heavy parts as <code>children</code>.</li>
 <li>Bonus: delete a component and its state goes too. Global only for truly app-wide values (user, theme, locale) — and even then, not one giant object.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e02/"><small>← PREVIOUS</small>The 5 types of state</a>
 <a class="r" href="../s4e04/"><small>NEXT →</small>The context trap</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

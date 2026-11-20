@@ -6,14 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 1 · State management</span>
 <h1><span class="hl">What is state</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>State</strong> = data your UI remembers right now that can change while the page is open. If it changes and the screen must show it, it's state.</li>
+<li>React's core idea: <strong>UI = f(state)</strong>. You don't edit the screen; you change state with <code>setX</code>, and React re-renders and updates only what differs.</li>
+<li><strong>Don't store what you can compute.</strong> Derive totals, counts and filtered lists during render.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>State is data that changes over time and affects what's rendered, like an input's value, whether a modal is open, or the items in a cart. In React the UI is a function of state: I update state through its setter, React re-runs the component, and it applies only the necessary DOM changes. I keep state minimal and derive everything that can be computed from it, because duplicated state gets out of sync.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A scoreboard at a cricket match. The <strong>state</strong> is the runs, wickets and overs. Nobody repaints the board by hand; you update the numbers, and the board shows them. The run rate isn't stored separately, it's calculated from runs and overs.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Initial state</b><span>const [count, setCount] = useState(0)</span></li><li><b>Event</b><span>user clicks &quot;+&quot;</span></li><li><b>Update</b><span>setCount(c =&gt; c + 1)</span></li><li><b>Re-render</b><span>React calls the component again with count = 1</span></li><li><b>Commit</b><span>only the changed text node updates in the DOM</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Cart</span><span class="p">({</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">coupon</span><span class="p">,</span><span class="w"> </span><span class="nx">setCoupon</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span><span class="w">                  </span><span class="c1">// state: changes, shown on screen</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">sum</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">sum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">price</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// derived: computed, not stored</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">Total</span><span class="o">:</span><span class="w"> </span><span class="err">₹</span><span class="p">{</span><span class="nx">total</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">coupon</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="sb">`(code </span><span class="si">${</span><span class="nx">coupon</span><span class="si">}</span><span class="sb">)`</span><span class="p">}&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Storing derived values in state</strong> (<code>useState(total)</code>) creates two sources of truth that drift apart.</li>
+<li><strong>Mutating state directly</strong> (<code>items.push(x)</code>) keeps the same reference, so React may not re-render.</li>
+<li><strong>Using state for values that don't affect the UI</strong> (timer IDs, previous values). Use <code>useRef</code> instead.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → <strong>Components</strong> → select a component → the <strong>hooks</strong> panel shows its live state; edit a value there and the UI updates.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What makes something "state"?</summary>
+<p>It changes over time while the page is open and the UI must reflect it.</p>
+</details>
+<details>
+<summary>Why not keep `total` in useState next to `items`?</summary>
+<p>It duplicates information. If items change and you forget to update total, the UI shows wrong data. Compute it during render.</p>
+</details>
+<details>
+<summary>Where should a value go that changes but doesn't affect rendering?</summary>
+<p>In a ref (<code>useRef</code>), which persists across renders without triggering re-renders.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>State = data your UI remembers right now that can change while the page is open. Rule: if it changes and the screen must show it, it's state.</li>
 <li>React's idea: <strong>UI = f(state)</strong>. Don't edit the screen; change state (<code>setX</code>) and React re-renders, touching only what differs in the DOM.</li>
 <li>Trap: don't store what you can compute. <code>const total = items.reduce(...)</code>, not <code>useState(total)</code> → two sources of truth drift.</li>
 <li>See it: React DevTools → Components → select a component → hooks panel shows live state.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s4e02/"><small>NEXT →</small>The 5 types of state</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 10 · State management</span>
 <h1><span class="hl">IQ: Redux &amp; stores</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>Redux and stores</strong>.</li>
+<li>Know Redux's data flow, why RTK can <code>push</code>, when to choose context vs Zustand vs Redux, and why a filter selector re-renders.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Redux flows one way from dispatched actions through pure reducers to a new state that subscribers render. Redux Toolkit uses Immer so reducers can use mutating syntax safely. I choose context for rarely changing values, a light store like Zustand for shared client state, and Redux Toolkit for large teams that need strict structure, while server data always goes in a query cache.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Explain the Redux data flow.</summary>
+<p>A component dispatches an action → the reducer computes new state purely → the store saves it and notifies subscribers → components whose selected data changed re-render.</p>
+</details>
+<details>
+<summary>Why can RTK reducers call push?</summary>
+<p>Immer passes a draft; it records the mutations and produces a new immutable state. This only works inside createSlice/createReducer.</p>
+</details>
+<details>
+<summary>Context vs Zustand vs Redux: when would you use each?</summary>
+<p>Context for rarely changing app-wide values (theme, user, locale). Zustand for shared client state with little boilerplate and selector-based subscriptions. Redux Toolkit for large apps and teams wanting strict conventions, middleware and DevTools. Server data in a query cache in all cases.</p>
+</details>
+<details>
+<summary>A selector filtering a list re-renders on every update. Why and how to fix it?</summary>
+<p>It returns a new array each time. Memoize with createSelector or compare with shallow equality.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Redux flow · why RTK can <code>push</code> (Immer draft → new immutable copy; only in createSlice/createReducer) · context vs Zustand vs Redux (rarely-changing / low boilerplate / big teams; server data → query cache) · filter selector re-renders (new array → memoize/shallow).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e09/"><small>← PREVIOUS</small>Selectors</a>
 <a class="r" href="../s4e11/"><small>NEXT →</small>Server state</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

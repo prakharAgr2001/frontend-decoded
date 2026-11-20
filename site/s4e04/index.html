@@ -6,15 +6,71 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 4 · State management</span>
 <h1><span class="hl">The context trap</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><code>useContext</code> subscribes to the <strong>whole</strong> context value. <strong>Any change re-renders every consumer.</strong></li>
+<li>Trap 1: <code>value={{ user, cart }}</code> creates a <strong>new object every render</strong>, so consumers re-render even if nothing changed. Wrap it in <code>useMemo</code>.</li>
+<li>Trap 2: one big context. <strong>Split by concern</strong>, and split state from dispatch. <code>React.memo</code> does <strong>not</strong> stop context re-renders.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Context is a delivery mechanism, not a state manager. Every component that reads a context re-renders when the provider's value changes, and since the comparison is by reference, passing a new object literal each render re-renders all consumers. I memoize the value, split contexts by concern so unrelated updates don't fan out, and separate the state and dispatch contexts. For frequently changing shared state I use a store with selectors, since React.memo can't block context updates.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A WhatsApp group with the whole building. Every message, even "lift is working again", pings everyone. Separate groups per topic mean people only get the messages they care about.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Context trap</div><div class="dg-c">value={{ user, cart }} (new object each render)</div><div class="dg-c">One AppContext with everything</div><div class="dg-c">Consumers needing only dispatch re-render on state changes</div><div class="dg-c">High-frequency state in context</div></div><div class="dg-col good"><div class="dg-h">Better</div><div class="dg-c">value={useMemo(() =&gt; ({ user, cart }), [user, cart])}</div><div class="dg-c">UserContext, ThemeContext, CartContext</div><div class="dg-c">Separate StateContext and DispatchContext</div><div class="dg-c">Store with selectors (Zustand, Redux)</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">CartState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">CartDispatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">CartProvider</span><span class="p">({</span><span class="w"> </span><span class="nx">children</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">cart</span><span class="p">,</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useReducer</span><span class="p">(</span><span class="nx">cartReducer</span><span class="p">,</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">CartDispatch</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">dispatch</span><span class="p">}&gt;</span><span class="w">        </span><span class="p">{</span><span class="cm">/* dispatch never changes */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">CartState</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">cart</span><span class="p">}&gt;{</span><span class="nx">children</span><span class="p">}&lt;/</span><span class="nt">CartState</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">CartDispatch</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// A button that only adds items reads CartDispatch, so it doesn't re-render when the cart changes.</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>React.memo</code> on a consumer</strong> doesn't help: context changes bypass memo.</li>
+<li><strong>Putting fast-changing state</strong> (mouse position, form input) in context re-renders many components on every change.</li>
+<li><strong>Context isn't a global variable replacement</strong> for everything. Use it for rarely-changing, app-wide values.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools <strong>Profiler</strong> → record → click a re-rendered component → "Why did this render?" shows <strong>"Context changed"</strong>.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does `value={{ a, b }}` cause extra re-renders?</summary>
+<p>A new object is created on every provider render, so the reference always changes and all consumers re-render.</p>
+</details>
+<details>
+<summary>Can React.memo prevent a re-render caused by context?</summary>
+<p>No. Context updates re-render consumers regardless of memo.</p>
+</details>
+<details>
+<summary>When is a store better than context?</summary>
+<p>For frequently changing shared state where components should subscribe to only the slice they use (selectors).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>useContext</code> subscribes to the <strong>whole</strong> value. Any change → every consumer re-renders.</li>
 <li>Trap 1: <code>value={{ user, cart }}</code> is a new object every render → <code>useMemo</code> it.</li>
 <li>Trap 2: one big context → split by concern (UserCtx, ThemeCtx, CartCtx) and split state from dispatch.</li>
 <li><code>React.memo</code> does NOT stop context re-renders. Context = delivery, not a state manager; hot state → store with selectors.</li>
 <li>See it: React Profiler → "Why did this render? Context changed".</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e03/"><small>← PREVIOUS</small>Colocation</a>
 <a class="r" href="../s4e05/"><small>NEXT →</small>IQ: state basics</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

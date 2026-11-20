@@ -6,14 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 12 · State management</span>
 <h1><span class="hl">React Query</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><code>useQuery({ queryKey, queryFn })</code> returns <code>data</code>, <code>isPending</code> and <code>error</code>. The <strong>query key is the cache address</strong>: same key = one shared request.</li>
+<li>It uses <strong>stale-while-revalidate</strong>: show cached data immediately, refetch in the background, swap in new data if it changed.</li>
+<li><strong><code>staleTime</code></strong> = how long data counts as fresh (default 0). <strong><code>gcTime</code></strong> = how long unused data stays in memory (default 5 minutes).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>React Query caches server data by query key. When a component calls useQuery, cached data is returned immediately if present, and if it's stale a background refetch runs and updates the cache. staleTime controls how long data is considered fresh, which prevents refetches, and gcTime controls how long inactive data is kept before being garbage collected. It refetches automatically on window focus, network reconnect and mount when data is stale. I use isPending for the initial loading skeleton and isFetching only for subtle background indicators.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A newspaper on your table. <strong>staleTime</strong>: how long you trust today's paper before you want a new one. <strong>gcTime</strong>: how long an old paper sits on the table after you stop reading it before it goes in the recycling.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useQuery</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@tanstack/react-query'</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">Orders</span><span class="p">({</span><span class="w"> </span><span class="nx">page</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">isPending</span><span class="p">,</span><span class="w"> </span><span class="nx">isFetching</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQuery</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'orders'</span><span class="p">,</span><span class="w"> </span><span class="nx">page</span><span class="p">],</span><span class="w">                       </span><span class="c1">// cache address</span>
+<span class="w">    </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/orders?page=</span><span class="si">${</span><span class="nx">page</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
+<span class="w">    </span><span class="nx">staleTime</span><span class="o">:</span><span class="w"> </span><span class="mf">30</span><span class="nx">_000</span><span class="p">,</span><span class="w">                                </span><span class="c1">// fresh for 30 s → no refetch on remount</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isPending</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrdersSkeleton</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">           </span><span class="c1">// no data yet</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">ErrorState</span><span class="w"> </span><span class="p">/&gt;;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrderList</span><span class="w"> </span><span class="na">orders</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">}</span><span class="w"> </span><span class="na">refreshing</span><span class="o">=</span><span class="p">{</span><span class="nx">isFetching</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">   </span><span class="c1">// background refresh indicator</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<figure class="dg"><ol class="dg-steps"><li><b>First mount</b><span>no cache → fetch → isPending true</span></li><li><b>Data cached</b><span>shown instantly on later mounts</span></li><li><b>Becomes stale</b><span>after staleTime</span></li><li><b>Trigger (focus, mount, reconnect)</b><span>background refetch, old data stays visible</span></li><li><b>Unused for gcTime</b><span>removed from memory</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>isPending</code> vs <code>isFetching</code>.</strong> Showing a full spinner on <code>isFetching</code> flashes on every background refetch.</li>
+<li><strong>staleTime 0 by default</strong> means lots of refetches; tune it per query.</li>
+<li><strong>Non-unique keys</strong> (forgetting <code>page</code> in the key) mix up cached data.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Add the <strong>React Query Devtools</strong> component and watch queries move between fresh, stale, fetching and inactive as you navigate and switch tabs.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>staleTime vs gcTime?</summary>
+<p>staleTime: how long data is fresh (no automatic refetch). gcTime: how long unused cached data is kept in memory.</p>
+</details>
+<details>
+<summary>Two components call useQuery with the same key at the same time. How many requests?</summary>
+<p>One. Requests are deduplicated by key.</p>
+</details>
+<details>
+<summary>When should you show a full loading skeleton?</summary>
+<p>When isPending is true (no data yet), not on background fetches.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>useQuery({ queryKey, queryFn })</code> → <code>data</code>, <code>isPending</code>, <code>error</code>. Key = cache address; same key = one request (dedupe).</li>
 <li>Stale-while-revalidate: show cache now, refetch in background, swap if changed.</li>
 <li><code>staleTime</code> (fresh window, default 0) vs <code>gcTime</code> (unused data kept, default 5 min). Refetch on focus, reconnect, mount-when-stale.</li>
 <li>Trap: <code>isPending</code> (no data yet → skeleton) vs <code>isFetching</code> (any request incl. background → don't flash a spinner).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e11/"><small>← PREVIOUS</small>Server state</a>
 <a class="r" href="../s4e13/"><small>NEXT →</small>Cache invalidation</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

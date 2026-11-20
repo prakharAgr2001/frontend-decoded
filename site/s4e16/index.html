@@ -6,12 +6,56 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 16 · State management</span>
 <h1><span class="hl">Rollback</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Rollback has three steps: <strong><code>onMutate</code></strong> snapshots the previous data and returns it, <strong><code>onError</code></strong> restores it and shows a toast with Retry, <strong><code>onSettled</code></strong> refetches so the server's truth wins.</li>
+<li>Fast repeated taps (like → unlike → like) can arrive <strong>out of order</strong> and restore a stale snapshot.</li>
+<li>Fix: send <strong>intent</strong> (<code>PUT { liked: true }</code>, idempotent) instead of "toggle", and always settle with a refetch.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For optimistic updates I snapshot the cache in onMutate and return it as context. If the mutation fails, onError writes the snapshot back and shows a message with a retry option. onSettled invalidates the query so the final state always matches the server. To handle rapid toggles, I send the desired end state rather than a toggle, which makes requests idempotent and order-independent, and I can serialize mutations per item. The final refetch corrects any remaining inconsistency.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Writing in pencil with an eraser handy. You write the expected answer straight away, keep a note of what was there before, and erase back to it if the teacher says you're wrong. At the end of the class you copy the teacher's final answer.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>onMutate</b><span>snapshot prev → write optimistic value → return { prev }</span></li><li><b>Request fails</b><span>onError restores ctx.prev + toast &quot;Couldn&#x27;t save. Retry?&quot;</span></li><li><b>Request finishes either way</b><span>onSettled invalidates → refetch the truth</span></li></ol></figure>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Toggle request (fragile)</div><div class="dg-c">POST /like/toggle</div><div class="dg-c">Order of arrival changes the result</div><div class="dg-c">Two fast taps can end in the wrong state</div></div><div class="dg-col good"><div class="dg-h">Intent request (safe)</div><div class="dg-c">PUT /like { liked: true }</div><div class="dg-c">Same request twice = same result</div><div class="dg-c">Last intent wins</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Restoring a stale snapshot</strong> after several quick mutations. Settle with a refetch.</li>
+<li><strong>No user feedback on failure.</strong> Always tell users and offer retry.</li>
+<li><strong>Non-idempotent endpoints.</strong> Retrying a "toggle" or "add 1" request can double-apply.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In DevTools → <strong>Network</strong> set throttling to Slow 3G and block the like endpoint, then tap like repeatedly on your own app: the UI should end in the correct state with an error message.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What do onMutate, onError and onSettled each do in a rollback?</summary>
+<p>onMutate snapshots and applies the optimistic update; onError restores the snapshot and notifies; onSettled refetches to sync with the server.</p>
+</details>
+<details>
+<summary>Why send "liked: true" instead of "toggle"?</summary>
+<p>It's idempotent: repeated or reordered requests always produce the same final state.</p>
+</details>
+<details>
+<summary>Why refetch even after success?</summary>
+<p>To make sure the cache matches the server, including changes from other users or reordered requests.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>onMutate</code>: snapshot <code>prev</code> and return it · <code>onError</code>: restore <code>ctx.prev</code> + toast with Retry · <code>onSettled</code>: invalidate (server truth wins).</li>
 <li>Races: like/unlike/like out of order → stale snapshot. Fix: send intent (<code>PUT { liked: true }</code>, idempotent) not toggle, serialize per item, always settle with a refetch.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e15/"><small>← PREVIOUS</small>Optimistic UI</a>
 <a class="r" href="../s4e17/"><small>NEXT →</small>IQ: server state</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,14 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 15 · State management</span>
 <h1><span class="hl">Optimistic UI</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Optimistic UI</strong>: update the screen <strong>as if the request already succeeded</strong>, send it, and <strong>fix things only if it fails</strong>.</li>
+<li>It makes actions feel instant even on slow networks.</li>
+<li>Use it for likes, toggles, reordering and chat messages. <strong>Not</strong> for payments or anything where a false "success" would hurt the user.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>With optimistic updates I immediately apply the expected result to the UI or cache, then send the mutation in the background. If it fails, I roll back and inform the user. In React Query that's done in onMutate: cancel in-flight queries for that key, snapshot the current data, and write the optimistic value with setQueryData. React 19 also has useOptimistic for showing a temporary value while an action is running. It's ideal for high-success, low-risk actions, and I avoid it for payments, inventory-limited purchases or anything with serious consequences.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A waiter who writes "coffee: served" on your bill the moment you order, because the café almost never runs out. If the machine breaks, they come back, apologise and fix the bill.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>User taps Like</b><span>heart turns red instantly (cache updated)</span></li><li><b>Request sent</b><span>in the background</span></li><li><b>Success</b><span>nothing visible changes</span></li><li><b>Failure</b><span>roll back the heart and show &quot;Couldn&#x27;t like, try again&quot;</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">qc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQueryClient</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">like</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMutation</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">mutationFn</span><span class="o">:</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/posts/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">/like`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'PUT'</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">  </span><span class="nx">onMutate</span><span class="o">:</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">cancelQueries</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]</span><span class="w"> </span><span class="p">});</span><span class="w">            </span><span class="c1">// stop old data overwriting ours</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">getQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]);</span>
+<span class="w">    </span><span class="nx">qc</span><span class="p">.</span><span class="nx">setQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">liked</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">likes</span><span class="o">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">likes</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">onError</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">setQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">prev</span><span class="p">),</span><span class="w">   </span><span class="c1">// rollback (next episode)</span>
+<span class="w">  </span><span class="nx">onSettled</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">invalidateQueries</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]</span><span class="w"> </span><span class="p">}),</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Not cancelling in-flight refetches</strong>: an older response arrives and overwrites the optimistic value.</li>
+<li><strong>Optimistic payments or orders.</strong> False success is worse than a short wait.</li>
+<li><strong>No failure message.</strong> Silent rollbacks confuse users.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On Instagram or X, turn on airplane mode and tap Like: the heart fills instantly, then reverts or shows an error when the request fails.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the first thing to do in onMutate?</summary>
+<p>Cancel in-flight queries for that key so they can't overwrite the optimistic update.</p>
+</details>
+<details>
+<summary>Give two good and two bad use cases.</summary>
+<p>Good: likes, toggles, reordering, sending chat messages. Bad: payments, buying the last item in stock.</p>
+</details>
+<details>
+<summary>What does React 19's useOptimistic do?</summary>
+<p>Shows a temporary optimistic value while an async action runs, automatically reverting to the real state when it finishes.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Update the UI as if success, send the request, fix on failure. Feels instant on slow networks.</li>
 <li>React Query: <code>onMutate</code> → <code>cancelQueries</code> → <code>setQueryData</code>. React 19: <code>useOptimistic</code> (value lives while the action runs).</li>
 <li>Use for likes, toggles, reorder, chat. Not for payments, last-item stock, anything where false success costs the user.</li>
 <li>Trap: cancel in-flight refetches first, or an old response overwrites your optimistic value.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e14/"><small>← PREVIOUS</small>Normalization</a>
 <a class="r" href="../s4e16/"><small>NEXT →</small>Rollback</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 17 · State management</span>
 <h1><span class="hl">IQ: server state</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>server state</strong>.</li>
+<li>Know server vs client state, <code>staleTime</code> vs <code>gcTime</code>, how to keep data in sync after mutations, and how to build an optimistic like with rollback.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I treat server data as a cached snapshot managed by a server-state library: it caches by key, dedupes, refetches stale data and garbage-collects unused entries. After mutations I invalidate or update the affected keys, and for fast-feeling actions I update optimistically with a snapshot to roll back on error and a refetch to settle.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Server state vs client state?</summary>
+<p>Server state is owned remotely, async, shared and can go stale (products, orders). Client state is owned by the UI (modal open, theme, draft input).</p>
+</details>
+<details>
+<summary>staleTime vs gcTime?</summary>
+<p>staleTime: how long data is considered fresh, so no automatic refetch. gcTime: how long inactive data stays cached before being removed.</p>
+</details>
+<details>
+<summary>How do you keep the UI in sync after a mutation?</summary>
+<p>Invalidate related queries by key prefix, or write the response with setQueryData; other tabs sync via refetch on focus, BroadcastChannel or server push.</p>
+</details>
+<details>
+<summary>Walk through an optimistic like with rollback.</summary>
+<p>onMutate: cancel queries for that key → snapshot → set the optimistic value → return snapshot. onError: restore snapshot + show an error with retry. onSettled: invalidate to refetch the truth. Send intent (liked: true), not toggle.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Server vs client state · <code>staleTime</code> vs <code>gcTime</code> · syncing after mutations (invalidate by prefix / setQueryData / focus / BroadcastChannel) · optimistic like with rollback (cancel → snapshot → write → onError restore → onSettled refetch).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e16/"><small>← PREVIOUS</small>Rollback</a>
 <a class="r" href="../s4e18/"><small>NEXT →</small>URL state</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

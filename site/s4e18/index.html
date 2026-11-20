@@ -6,13 +6,77 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 18 · State management</span>
 <h1><span class="hl">URL state</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>If state should be <strong>shareable, bookmarkable or reachable with Back</strong>, put it in the <strong>URL</strong>: search, filters, sort, page, selected tab.</li>
+<li>Read and write it with <code>useSearchParams</code>, and treat the URL as the <strong>single source of truth</strong> (don't copy it into <code>useState</code>).</li>
+<li>Use <strong><code>replace</code></strong> while typing and <strong><code>push</code></strong> for committed choices. Never put secrets or personal data in the URL.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>State that a user should be able to share, bookmark, refresh or navigate back to belongs in the URL, typically search queries, filters, sorting, pagination and selected tabs. I read it from the URL on every render instead of mirroring it in component state, which avoids sync bugs. While the user is typing I replace the history entry so Back isn't cluttered, and I push on committed changes. URL values are strings, so I parse and validate them, and I never put tokens or personal data there because URLs end up in logs, history and referrers.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A Google Maps link. Send it to a friend and they see exactly the same place, zoom and route. That only works because everything is in the URL, not in your phone's memory.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useSearchParams</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-router-dom'</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">ProductFilters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">params</span><span class="p">,</span><span class="w"> </span><span class="nx">setParams</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useSearchParams</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'q'</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">'price'</span><span class="p">,</span><span class="w"> </span><span class="s1">'rating'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">))</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'rating'</span><span class="p">;</span><span class="w">  </span><span class="c1">// validate</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">page</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'page'</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">update</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">URLSearchParams</span><span class="p">(</span><span class="nx">params</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">value</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">key</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'page'</span><span class="p">)</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="s1">'page'</span><span class="p">);</span><span class="w">           </span><span class="c1">// new filter → back to page 1</span>
+<span class="w">    </span><span class="nx">setParams</span><span class="p">(</span><span class="nx">next</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">replace</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">q</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">update</span><span class="p">(</span><span class="s1">'q'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">   </span><span class="p">{</span><span class="cm">/* replace while typing */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">select</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">sort</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">update</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}&gt;</span><span class="w">    </span><span class="p">{</span><span class="cm">/* push on commit */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">option</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">"rating"</span><span class="p">&gt;</span><span class="nx">Top</span><span class="w"> </span><span class="nx">rated</span><span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;&lt;</span><span class="nt">option</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">"price"</span><span class="p">&gt;</span><span class="nx">Price</span><span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/&gt;);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Copying URL params into useState</strong> creates two sources of truth that drift.</li>
+<li><strong>Pushing on every keystroke</strong> fills history: Back goes through every letter.</li>
+<li><strong>Secrets or personal data in the URL</strong> leak via logs, browser history, referrer headers and screenshots.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On Amazon or Flipkart, apply filters, then copy the URL into a private window: the same results appear. Press Back to see how they handle history.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What kind of state should live in the URL?</summary>
+<p>Anything shareable, bookmarkable or reachable with Back: search, filters, sort, page, selected tab, open item ID.</p>
+</details>
+<details>
+<summary>When do you use replace instead of push?</summary>
+<p>For transient updates like typing, so each keystroke doesn't create a history entry.</p>
+</details>
+<details>
+<summary>What should never go in a URL?</summary>
+<p>Secrets, tokens, passwords and personal data, plus huge objects and purely ephemeral UI state.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>If it should be shareable, bookmarkable, or reachable with Back → put it in the URL (path + query).</li>
 <li><code>useSearchParams</code>: read from and write to the URL; it's the single source of truth (no useState copy).</li>
 <li><code>replace</code> while typing, <code>push</code> for committed choices. Not in the URL: secrets/PII (logs, history, referrers), huge objects, ephemeral UI. Values are strings → parse + validate.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e17/"><small>← PREVIOUS</small>IQ: server state</a>
 <a class="r" href="../s4e19/"><small>NEXT →</small>Form state</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,14 +6,75 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 19 · State management</span>
 <h1><span class="hl">Form state</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Controlled</strong> inputs keep their value in React state (<code>value</code> + <code>onChange</code>): a re-render on every keystroke. <strong>Uncontrolled</strong> inputs let the DOM hold the value; you read it on submit with <code>FormData</code> or refs.</li>
+<li>Form state = values, touched, dirty, errors, isSubmitting. Libraries like <strong>React Hook Form</strong> use refs and only re-render what subscribes.</li>
+<li>Validation UX: validate on <strong>blur or submit first</strong>, then on change once there's an error ("reward early, punish late").</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Controlled inputs store the value in React state, which makes it easy to transform or validate on every change but re-renders on each keystroke. Uncontrolled inputs keep the value in the DOM and read it on submit, which is lighter. For non-trivial forms I use React Hook Form with a schema validator like zod: it registers inputs via refs, tracks touched, dirty and error state, and re-renders only subscribed fields. I validate on blur or submit first and switch to validating on change once a field has an error. React 19 also adds form actions and useActionState.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Filling a paper form at a bank. A <strong>controlled</strong> form is a clerk reading every letter as you write. An <strong>uncontrolled</strong> form is the clerk reading the whole form when you hand it in. Good clerks don't shout "wrong!" while you're still writing your PIN code.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Controlled</div><div class="dg-c">value={name} onChange={e =&gt; setName(e.target.value)}</div><div class="dg-c">Re-render per keystroke</div><div class="dg-c">Instant formatting / live validation</div></div><div class="dg-col good"><div class="dg-h">Uncontrolled</div><div class="dg-c">defaultValue + read on submit</div><div class="dg-c">No re-render while typing</div><div class="dg-c">Simpler, faster for big forms</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useForm</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-hook-form'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zodResolver</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@hookform/resolvers/zod'</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'zod'</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span><span class="w"> </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">string</span><span class="p">().</span><span class="nx">email</span><span class="p">(),</span><span class="w"> </span><span class="nx">pincode</span><span class="o">:</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">string</span><span class="p">().</span><span class="nx">regex</span><span class="p">(</span><span class="sr">/^\d{6}$/</span><span class="p">)</span><span class="w"> </span><span class="p">});</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">AddressForm</span><span class="p">({</span><span class="w"> </span><span class="nx">onSave</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">register</span><span class="p">,</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="p">,</span><span class="w"> </span><span class="nx">formState</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">errors</span><span class="p">,</span><span class="w"> </span><span class="nx">isSubmitting</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="nx">useForm</span><span class="p">({</span><span class="w"> </span><span class="nx">resolver</span><span class="o">:</span><span class="w"> </span><span class="nx">zodResolver</span><span class="p">(</span><span class="nx">schema</span><span class="p">),</span><span class="w"> </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="s1">'onTouched'</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// validate on blur, then on change</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">form</span><span class="w"> </span><span class="na">onSubmit</span><span class="o">=</span><span class="p">{</span><span class="nx">handleSubmit</span><span class="p">(</span><span class="nx">onSave</span><span class="p">)}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="p">{</span><span class="na">...register</span><span class="err">('</span><span class="na">email</span><span class="err">')</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">email</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">Enter</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">valid</span><span class="w"> </span><span class="nx">email</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="p">{</span><span class="na">...register</span><span class="err">('</span><span class="na">pincode</span><span class="err">')</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">pincode</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="mf">6</span><span class="o">-</span><span class="nx">digit</span><span class="w"> </span><span class="nx">pincode</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">isSubmitting</span><span class="p">}&gt;</span><span class="nx">Save</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Input loses focus on every keystroke</strong>: a component defined <em>inside</em> another component gets a new type each render, so React remounts it. Define components outside.</li>
+<li><strong>Errors shown while the user is still typing</strong> for the first time feel aggressive.</li>
+<li><strong>Validating only on the client.</strong> The server must validate too.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → <strong>Highlight updates</strong> → type in a controlled form vs a React Hook Form form: the controlled one flashes on every key.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Controlled vs uncontrolled input?</summary>
+<p>Controlled: React state is the source of truth and the input re-renders on change. Uncontrolled: the DOM holds the value; you read it when needed (FormData/refs).</p>
+</details>
+<details>
+<summary>Why does an input lose focus on every keystroke?</summary>
+<p>Its component is defined inside another component (or has an unstable key), so React sees a new component type each render and remounts it.</p>
+</details>
+<details>
+<summary>What's "reward early, punish late"?</summary>
+<p>Don't show errors until the user leaves the field or submits; once an error is shown, clear it as soon as the input becomes valid.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Controlled (<code>value</code> + <code>onChange</code>, a render per keystroke) vs uncontrolled (DOM holds value, <code>FormData</code> / refs on submit).</li>
 <li>Form state = values, touched, dirty, errors, isSubmitting. React Hook Form: <code>register</code> (refs), schema resolver (zod), subscribe-only re-renders.</li>
 <li>Errors: validate on blur/submit first, then on change ("reward early, punish late"). React 19: <code>useActionState</code>, <code>&lt;form action&gt;</code>.</li>
 <li>Trap: input loses focus each keystroke → component defined inside another (new type every render). Define outside, stable keys.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s4e18/"><small>← PREVIOUS</small>URL state</a>
 <a class="r" href="../s4e20/"><small>NEXT →</small>State machines</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>
