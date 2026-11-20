@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 14 · Rendering strategies</span>
 <h1><span class="hl">React Server Components (RSC)</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gTlkjcZA/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gTlkjcZA/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
 <li>Run only on the server; can be <code>async</code> and read the DB; their code never ships. Only output (RSC payload) does.</li>
 <li>Interactive parts = <code>'use client'</code> components; only those ship JS.</li>
 <li>See it: nextjs.org → Network → <code>?_rsc=</code> requests on navigation.</li>
 <li>RSC ≠ SSR: SSR = HTML for first load, then everything hydrates. RSC never hydrates, refetchable on navigation. Frameworks use both.</li>
 <li>Trap: no <code>useState</code>/<code>onClick</code> in server components → pass data as props to a client component.</li>
 </ul></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e13/"><small>← PREVIOUS</small>Streaming SSR</a>
 <a class="r" href="../s2e15/"><small>NEXT →</small>Server Actions</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

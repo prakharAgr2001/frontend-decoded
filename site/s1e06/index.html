@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 6 · How the browser really works</span>
 <h1><span class="hl">CDNs</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DkN9AuIR/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 3 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DkN9AuIR/" target="_blank" rel="noopener">Watch the reel</a><span>3 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>A <strong>CDN</strong> (Content Delivery Network) keeps <strong>copies of your files on servers close to users</strong> ("edges").</li>
 <li><strong>Cache hit:</strong> the edge already has the file, so it's fast. <strong>Cache miss:</strong> the edge fetches it once from your server (the "origin"), then serves everyone nearby.</li>
 <li>The real win is <strong>distance</strong>: fewer milliseconds per round trip, and your origin doesn't melt under traffic.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>A CDN is a network of edge servers around the world that cache copies of content close to users. A request goes to the nearest edge. On a hit, it's served directly with low latency; on a miss, the edge fetches from the origin, caches it based on the Cache-Control headers, and serves it. This reduces latency and offloads the origin. The main challenge is invalidation, which is usually solved with content-hashed filenames and long cache lifetimes, plus purges for HTML.</p>
 </blockquote>
@@ -34,11 +34,11 @@
 <li>CDNs also terminate TLS close to the user, so the handshakes are shorter too.</li>
 <li>Response headers like <code>x-cache: HIT</code>, <code>cf-cache-status: HIT</code> and <code>age: 1200</code> tell you whether you got a cached copy.</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>"Users see the old version after deploy."</strong> Classic cache-invalidation bug. Fix: hashed filenames (<code>app.3f9a1c.js</code>) for assets, <code>no-cache</code> for HTML, and purge on deploy.</li>
-<li>⚠️ <strong>Caching personalized pages.</strong> If a response depends on cookies or login, a shared CDN cache can show one user's page to another. Use <code>Cache-Control: private</code> or vary correctly.</li>
-<li>⚠️ <strong>Single point of failure.</strong> If the CDN breaks, every site on it breaks (see the Fastly outage in our reels).</li>
+<li><strong>"Users see the old version after deploy."</strong> Classic cache-invalidation bug. Fix: hashed filenames (<code>app.3f9a1c.js</code>) for assets, <code>no-cache</code> for HTML, and purge on deploy.</li>
+<li><strong>Caching personalized pages.</strong> If a response depends on cookies or login, a shared CDN cache can show one user's page to another. Use <code>Cache-Control: private</code> or vary correctly.</li>
+<li><strong>Single point of failure.</strong> If the CDN breaks, every site on it breaks (see the Fastly outage in our reels).</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>DevTools → <strong>Network</strong> → click a JS or image file → <strong>Headers</strong> → look for <code>x-cache</code>, <code>cf-cache-status</code> or <code>age</code>. Reload a few times and watch MISS turn into HIT.</p>
@@ -59,12 +59,12 @@
 <li>Copies of files on edge servers near users; hit = fast, miss = fetch once from origin then cache.</li>
 <li>Headers: <code>x-cache</code>, <code>cf-cache-status</code>, <code>age</code>.</li>
 <li>Trap: users see old assets after deploy → versioned (hashed) file names + purge.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e05/"><small>← PREVIOUS</small>HTTP/1.1 vs 2 vs 3</a>
 <a class="r" href="../s1e08/"><small>NEXT →</small>DOM &amp; CSSOM</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

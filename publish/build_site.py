@@ -58,12 +58,12 @@ footer{margin-top:44px;color:var(--mute);font-size:14px}
 .deep{margin-top:18px}.deep h2{font:700 26px/1.15 Oswald,Impact,sans-serif;text-transform:uppercase;margin:38px 0 10px;scroll-margin-top:16px}
 .deep h2::before{content:'';display:inline-block;width:12px;height:22px;background:var(--yel);margin-right:10px;vertical-align:-2px;border:2px solid var(--ink)}
 .deep h3{font-size:19px;margin:24px 0 6px}.deep p,.deep li{font-size:17px}.deep li{margin:6px 0}
-.deep h2#in-one-line+p{font:600 20px/1.45 Inter,sans-serif;background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:16px 18px;box-shadow:5px 5px 0 var(--ink)}
-.deep h2#say-it-in-the-interview+blockquote{margin:12px 0;background:var(--ink);color:#fff;border-radius:16px;padding:16px 18px 16px 52px;position:relative;font-size:16.5px}
-.deep h2#say-it-in-the-interview+blockquote::before{content:'🎤';position:absolute;left:16px;top:16px;font-size:22px}
-.deep h2#say-it-in-the-interview+blockquote code{background:#2c2f38;color:#ffe58a}
-.deep h2#traps-interviewers-love+ul li::marker{content:'⚠️ '}
-.deep h2#tldr+ul{background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:14px 18px 14px 36px;box-shadow:5px 5px 0 var(--ink)}
+.deep h2#unused-one-line+p{font:600 20px/1.45 Inter,sans-serif;background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:16px 18px;box-shadow:5px 5px 0 var(--ink)}
+.deep h2#interview-answer+blockquote{margin:12px 0;background:var(--ink);color:#fff;border-radius:16px;padding:36px 18px 16px 18px;position:relative;font-size:16.5px}
+.deep h2#interview-answer+blockquote::before{content:'SAY THIS';position:absolute;left:18px;top:14px;font:800 11px Inter,sans-serif;letter-spacing:1.5px;color:var(--yel)}
+.deep h2#interview-answer+blockquote code{background:#2c2f38;color:#ffe58a}
+.deep h2#common-traps+ul{list-style:none;padding-left:0}.deep h2#common-traps+ul li{border-left:4px solid var(--red);padding:2px 0 2px 14px;margin:12px 0}
+.deep h2#key-points+ul{background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:14px 18px 14px 36px;box-shadow:5px 5px 0 var(--ink)}
 .deep pre{background:#15171C;color:#e8e6df;border-radius:14px;padding:16px 18px;overflow-x:auto;font-size:14px;line-height:1.55}
 .deep pre code{background:none;padding:0;color:inherit;font-size:14px}
 .deep pre.mermaid{background:#fff;border:2px solid var(--ink);color:var(--ink);text-align:center;padding:18px 8px}
@@ -201,7 +201,7 @@ def _steps(body, loop=False):
     rows = [l.split('|', 1) for l in body.strip().splitlines() if l.strip()]
     h = ''.join(f'<li><b>{html.escape(t.strip())}</b>{"<span>" + html.escape(d.strip()) + "</span>" if len(r) > 1 and (d := r[1]) else ""}</li>'
                 for r in rows for t in [r[0]])
-    return f'<ol class="dg-steps{" loop" if loop else ""}">{h}</ol>' + ('<div class="dg-loopback">↺ back to step 1, forever</div>' if loop else '')
+    return f'<ol class="dg-steps{" loop" if loop else ""}">{h}</ol>' + ('<div class="dg-loopback">Then back to step 1, forever</div>' if loop else '')
 
 def _chat(body):
     out = []
@@ -209,7 +209,7 @@ def _chat(body):
         l = l.strip()
         if not l: continue
         if l.lower().startswith('note:'):
-            out.append(f'<div class="dg-note">📌 {html.escape(l[5:].strip())}</div>'); continue
+            out.append(f'<div class="dg-note">{html.escape(l[5:].strip())}</div>'); continue
         m = re.match(r'(.+?)\s*(->|<-)\s*(.+?):\s*(.*)', l)
         a, arrow, b, msg = m.groups(); reply = arrow == '<-'
         out.append(f'<div class="dg-msg{" reply" if reply else ""}"><div class="who">{html.escape(a)} <i>{"←" if reply else "→"}</i> {html.escape(b)}</div><div class="say">{html.escape(msg)}</div></div>')
@@ -229,9 +229,9 @@ def medium_card(eid=None):
     art = (LINKS.get('episodes') or {}).get(eid) if eid else None
     prof = LINKS.get('medium_profile')
     if art:
-        return f'<a class="medium" href="{html.escape(art)}" target="_blank" rel="noopener"><b>✍️ Go deeper on Medium</b><span>Interview questions, follow-ups and design breakdowns for this topic →</span></a>'
+        return f'<a class="medium" href="{html.escape(art)}" target="_blank" rel="noopener"><b>Go deeper on Medium</b><span>Interview questions, follow-ups and design breakdowns for this topic →</span></a>'
     if prof:
-        return f'<a class="medium" href="{html.escape(prof)}" target="_blank" rel="noopener"><b>✍️ Interview prep on Medium</b><span>System design and frontend interview questions, explained step by step →</span></a>'
+        return f'<a class="medium" href="{html.escape(prof)}" target="_blank" rel="noopener"><b>Interview prep on Medium</b><span>System design and frontend interview questions, explained step by step →</span></a>'
     return ''
 
 def render_deep(md_text):
@@ -271,21 +271,21 @@ def ep_page(ep, prev, nxt):
     p += f"""<span class="pill">Season {ep['s']} · Episode {ep['e']} · {html.escape(ep['season'])}</span>
 <h1><span class="hl">{t}</span></h1>
 {deep_block(ep)}
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({{title:document.title,url:location.href}}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({{title:document.title,url:location.href}}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav">{f'<a href="{slug(prev)}"><small>← PREVIOUS</small>{html.escape(prev["title"])}</a>' if prev else '<span></span>'}
 {f'<a class="r" href="{slug(nxt)}"><small>NEXT →</small>{html.escape(nxt["title"])}</a>' if nxt else ''}</div>
 {medium_card(ep['id'])}
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="{IG}">follow @tech.explained.dev</a></div>"""
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="{IG}">follow @tech.explained.dev</a></div>"""
     return p + FOOT.format(js=DEEP_JS if ep.get('deep') else '')
 
 def deep_block(ep):
-    reel = f'<a class="reel" href="{ep["reel"]}" target="_blank" rel="noopener">▶ Watch the reel</a>' if ep.get('reel') else ''
+    reel = f'<a class="reel" href="{ep["reel"]}" target="_blank" rel="noopener">Watch the reel</a>' if ep.get('reel') else ''
     if not ep.get('deep'):
         return f'<div class="meta">{reel}</div><div class="sheet">{ep["html"]}</div>'
-    return f'''<div class="meta">{reel}<span>📖 {ep["mins"]} min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+    return f'''<div class="meta">{reel}<span>{ep["mins"]} min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
 <div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul>{ep["toc"]}</ul></details><div class="deep">{ep["deep"]}</div></div>
-<div class="pane" id="sheet"><div class="sheet">{ep["html"]}</div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>'''
+<div class="pane" id="sheet"><div class="sheet">{ep["html"]}</div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>'''
 
 DEEP_JS = '''<script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
@@ -358,7 +358,7 @@ def build():
     js = APP_JS.replace('__DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/')).replace('__SEASONS__', json.dumps(SEASONS))
     open('site/index.html', 'w').write(idx + FOOT.format(js=js))
     open('site/404.html', 'w').write(HEAD.format(title='Not found · Tech, Explained', desc='', root='/') +
-                                     '<h1><span class="hl">Not found</span></h1><p><a class="btn" href="/">🔎 Search all notes</a></p>' + FOOT.format(js=''))
+                                     '<h1><span class="hl">Not found</span></h1><p><a class="btn" href="/">Search all notes</a></p>' + FOOT.format(js=''))
     print('site/:', len(eps), 'episode pages')
 
 if __name__ == '__main__':

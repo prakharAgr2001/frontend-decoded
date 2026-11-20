@@ -6,13 +6,13 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 3 · Rendering strategies</span>
 <h1><span class="hl">Client-side routing</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eeFCAMyt/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eeFCAMyt/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
 <li>JS intercepts link clicks, <code>history.pushState()</code> updates the URL, fetches data, swaps part of the page. <code>popstate</code> = Back button.</li>
 <li>See it: YouTube → Network → Doc filter: no new document on video click; Fetch/XHR shows JSON (<code>next?…</code>, <code>player?…</code>).</li>
 <li>Trap: refreshing <code>/products/42</code> → 404, because the server only has <code>index.html</code>. Fix: rewrite all routes to <code>index.html</code> (<code>try_files $uri /index.html;</code>).</li>
 </ul></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e02/"><small>← PREVIOUS</small>Client-side rendering (CSR)</a>
 <a class="r" href="../s2e04/"><small>NEXT →</small>Server-side rendering (SSR)</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

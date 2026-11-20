@@ -6,12 +6,12 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 13 · Web performance</span>
 <h1><span class="hl">Lazy routes</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z_T4jXgU/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z_T4jXgU/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
 <li><code>const Orders = lazy(() =&gt; import('./pages/Orders'))</code> inside <code>&lt;Suspense fallback&gt;</code>. Hide the delay: prefetch on hover / in viewport (Next.js <code>&lt;Link&gt;</code> does this in production).</li>
 <li>Rules: never lazy-load the landing route; fallbacks must hold layout. Trap: after a deploy, old tabs hit <code>ChunkLoadError</code> → keep old chunks, catch + reload.</li>
 </ul></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e12/"><small>← PREVIOUS</small>Code splitting</a>
 <a class="r" href="../s3e14/"><small>NEXT →</small>Tree shaking</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

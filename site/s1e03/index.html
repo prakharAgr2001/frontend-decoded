@@ -6,33 +6,33 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 3 · How the browser really works</span>
 <h1><span class="hl">TCP handshake</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DNjpjZig/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DNjpjZig/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>Before any data moves, TCP does a <strong>three-way handshake</strong>: <strong>SYN → SYN-ACK → ACK</strong>.</li>
 <li>It costs <strong>one full round trip</strong> before the first request can even be sent.</li>
 <li>TCP promises data arrives <strong>complete and in order</strong>, which is great, until one lost packet holds up everything behind it.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>TCP is a reliable, ordered connection protocol. To open a connection the client sends SYN, the server replies SYN-ACK, and the client sends ACK, which costs one round trip before any HTTP data. TCP then numbers every packet, retransmits lost ones and delivers them in order. That reliability causes head-of-line blocking, where one lost packet stalls everything behind it, which is a key reason HTTP/3 moved to QUIC over UDP.</p>
 </blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>A phone call. You dial (<strong>SYN</strong>), they pick up and say "hello?" (<strong>SYN-ACK</strong>), you say "hi, it's me" (<strong>ACK</strong>). Only now does the real conversation start. And if a word gets garbled, you ask "sorry, say that again?" before moving on.</p>
 <h2 id="how-it-works">How it works</h2>
-<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">SYN · &quot;Can we talk? My sequence starts at 1000&quot;</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">SYN-ACK · &quot;Yes. Got your 1000, mine starts at 5000&quot;</div></div><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">ACK · &quot;Got your 5000. Let&#x27;s go&quot;</div></div><div class="dg-note">📌 One round trip gone. Now the HTTP request can be sent.</div></div></figure>
+<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">SYN · &quot;Can we talk? My sequence starts at 1000&quot;</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">SYN-ACK · &quot;Yes. Got your 1000, mine starts at 5000&quot;</div></div><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">ACK · &quot;Got your 5000. Let&#x27;s go&quot;</div></div><div class="dg-note">One round trip gone. Now the HTTP request can be sent.</div></div></figure>
 
 <ul>
 <li><strong>Sequence numbers</strong> let the receiver put packets back in order and spot gaps.</li>
 <li><strong>ACKs</strong> confirm what arrived. If an ACK doesn't come back, the sender <strong>retransmits</strong>.</li>
 <li><strong>Keep-alive</strong> reuses an open connection for the next request, so you don't pay the handshake again. In DevTools, reused connections show 0 ms "Initial connection".</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>Head-of-line blocking.</strong> TCP must deliver in order, so if packet 3 is lost, packets 4–10 wait in the buffer even though they arrived fine.</li>
-<li>⚠️ <strong>HTTPS isn't one handshake.</strong> It's TCP first, then TLS on top: up to 2 round trips before the request (TLS 1.3 needs one).</li>
-<li>⚠️ <strong>"TCP is slow, UDP is fast."</strong> UDP just skips the guarantees. QUIC (HTTP/3) builds its own reliability on top of UDP without TCP's ordering problem.</li>
+<li><strong>Head-of-line blocking.</strong> TCP must deliver in order, so if packet 3 is lost, packets 4–10 wait in the buffer even though they arrived fine.</li>
+<li><strong>HTTPS isn't one handshake.</strong> It's TCP first, then TLS on top: up to 2 round trips before the request (TLS 1.3 needs one).</li>
+<li><strong>"TCP is slow, UDP is fast."</strong> UDP just skips the guarantees. QUIC (HTTP/3) builds its own reliability on top of UDP without TCP's ordering problem.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>DevTools → <strong>Network</strong> → any request → <strong>Timing</strong> → <strong>Initial connection</strong>. Reload: the second time it's usually 0 because the connection was reused.</p>
@@ -53,12 +53,12 @@
 <li>SYN → SYN-ACK → ACK = 1 round trip before any data (e.g. ~200 ms India ↔ US).</li>
 <li>Keep-alive reuses connections; later requests show 0 ms "Initial connection".</li>
 <li>Trap: TCP guarantees order, so one lost packet blocks everything behind it (head-of-line blocking) → why HTTP/3 exists.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e02/"><small>← PREVIOUS</small>DNS</a>
 <a class="r" href="../s1e04/"><small>NEXT →</small>HTTPS &amp; the padlock</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 22 · How the browser really works</span>
 <h1><span class="hl">Memory leaks</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FtPQALc5/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FtPQALc5/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>JavaScript frees memory automatically with <strong>garbage collection (GC)</strong>: anything that can no longer be reached from the "roots" (globals, the current stack) is removed.</li>
 <li>A <strong>memory leak</strong> is memory you don't need anymore but that's <strong>still reachable</strong>, so GC can't free it.</li>
 <li>Usual suspects: <strong>listeners not removed, intervals still running, caches that only grow, detached DOM nodes, closures holding big data.</strong></li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>JavaScript uses mark-and-sweep garbage collection: starting from roots like the global object and the call stack, it marks everything reachable and frees the rest. A leak happens when something unneeded stays reachable, typically an event listener or interval that's never cleaned up, a global or module-level cache that keeps growing, or a closure or data structure that still references removed DOM nodes. In React I clean up subscriptions and timers in the useEffect cleanup function, and I find leaks by comparing heap snapshots in the Memory panel.</p>
 </blockquote>
@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Roots</b><span>window/globalThis, the current call stack, active timers and listeners</span></li><li><b>Mark</b><span>follow every reference from the roots and mark what&#x27;s reachable</span></li><li><b>Sweep</b><span>everything not marked is freed</span></li><li><b>Leak</b><span>something you forgot about still points to the old data, so it&#x27;s always &quot;reachable&quot;</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// ❌ Leaks: interval + listener keep running after the component unmounts</span>
+<div class="hl-code"><pre><span></span><code><span class="c1">// Bad: Leaks: interval + listener keep running after the component unmounts</span>
 <span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
 <span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
 <span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
 
-<span class="c1">// ✅ Cleanup function removes them</span>
+<span class="c1">// Good: Cleanup function removes them</span>
 <span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
 <span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
@@ -44,11 +44,11 @@
 <li><strong>Detached DOM nodes:</strong> removed from the page but still referenced from a JS variable or array, so the whole subtree stays in memory.</li>
 <li><code>WeakMap</code>/<code>WeakRef</code> hold keys without preventing their collection: handy for caches attached to objects.</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>"JS has GC, so there are no leaks."</strong> GC only frees <em>unreachable</em> memory. Leaks are reachable by mistake.</li>
-<li>⚠️ <strong>Anonymous listeners can't be removed.</strong> <code>removeEventListener</code> needs the exact same function reference.</li>
-<li>⚠️ <strong>Closures keep their outer variables alive.</strong> A tiny callback can keep a huge array in memory.</li>
+<li><strong>"JS has GC, so there are no leaks."</strong> GC only frees <em>unreachable</em> memory. Leaks are reachable by mistake.</li>
+<li><strong>Anonymous listeners can't be removed.</strong> <code>removeEventListener</code> needs the exact same function reference.</li>
+<li><strong>Closures keep their outer variables alive.</strong> A tiny callback can keep a huge array in memory.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>DevTools → <strong>Memory</strong> → take a <strong>heap snapshot</strong>, use the page (open/close a modal 10 times), take another → choose <strong>Comparison</strong>. Filter by "Detached" to find removed DOM nodes that are still held.</p>
@@ -69,12 +69,12 @@
 <li>GC frees what's unreachable from roots; a leak is unneeded but still reachable memory.</li>
 <li>Suspects: listeners not removed, intervals after unmount, ever-growing caches, detached DOM nodes. Use useEffect cleanup, WeakMap.</li>
 <li>Memory panel: compare heap snapshots, filter "Detached". Closures keep captured variables alive.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e21/"><small>← PREVIOUS</small>Event delegation</a>
 <a class="r" href="../s1e23/"><small>NEXT →</small>Observers</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

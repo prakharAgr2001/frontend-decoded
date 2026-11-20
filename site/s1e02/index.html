@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 2 · How the browser really works</span>
 <h1><span class="hl">DNS</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DF4WmWFp/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#why-frontend-engineers-should-care">Why frontend engineers should care</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DF4WmWFp/" target="_blank" rel="noopener">Watch the reel</a><span>5 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#why-frontend-engineers-should-care">Why frontend engineers should care</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>Computers talk using <strong>IP addresses</strong> (<code>142.250.183.14</code>), humans type <strong>names</strong> (<code>google.com</code>). DNS turns one into the other.</li>
 <li>Your browser asks a <strong>resolver</strong>, which walks a chain of servers: <strong>root → TLD (.com) → the domain's own name server</strong>.</li>
 <li>Every answer comes with a <strong>TTL</strong> (time to live). Everyone along the way caches it until it expires. That is why DNS is fast most of the time, and why changes take time to reach everyone.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>DNS converts a domain name into an IP address. The browser first checks its own cache and the OS cache, then asks a recursive resolver. On a miss, the resolver asks a root server, then the TLD server like <code>.com</code>, then the domain's authoritative name server, and caches the answer for its TTL. For performance I keep third-party domains few and use <code>dns-prefetch</code> or <code>preconnect</code> for the ones I can't avoid.</p>
 </blockquote>
@@ -29,7 +29,7 @@
 <li><strong>The recursive resolver.</strong> Usually run by your ISP (Jio, Airtel) or a public one like <code>8.8.8.8</code> (Google) or <code>1.1.1.1</code> (Cloudflare). This server does the legwork for you.</li>
 </ol>
 <p>If the resolver doesn't have the answer cached, it walks the tree:</p>
-<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Resolver</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> Root server</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> Root server</div><div class="say">No idea, but ask the .com servers</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> .com TLD</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> .com TLD</div><div class="say">Ask ns1.example.com, it&#x27;s in charge</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> ns1.example.com</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> ns1.example.com</div><div class="say">93.184.215.14 (keep it for 3600 s)</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Resolver</div><div class="say">93.184.215.14</div></div><div class="dg-note">📌 The resolver caches every answer, so the next lookup skips most of this</div></div></figure>
+<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Resolver</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> Root server</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> Root server</div><div class="say">No idea, but ask the .com servers</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> .com TLD</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> .com TLD</div><div class="say">Ask ns1.example.com, it&#x27;s in charge</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> ns1.example.com</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> ns1.example.com</div><div class="say">93.184.215.14 (keep it for 3600 s)</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Resolver</div><div class="say">93.184.215.14</div></div><div class="dg-note">The resolver caches every answer, so the next lookup skips most of this</div></div></figure>
 
 <ul>
 <li><strong>Root servers</strong> know who runs every top-level domain (<code>.com</code>, <code>.in</code>, <code>.org</code>). There are 13 named root server identities, each copied to hundreds of locations worldwide.</li>
@@ -129,12 +129,12 @@
 <li>Phonebook of the internet: domain → IP address.</li>
 <li>Resolver walks root → TLD (.com) → authoritative name servers. Answers carry a <strong>TTL</strong>; cached until it expires.</li>
 <li>Try: <code>nslookup google.com</code>. Trap: after a server move some users hit the old IP until TTL expires → lower TTL before migrating.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e01/"><small>← PREVIOUS</small>URL to pixels</a>
 <a class="r" href="../s1e03/"><small>NEXT →</small>TCP handshake</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

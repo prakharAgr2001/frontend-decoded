@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 4 · Web performance</span>
 <h1><span class="hl">CLS</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yubfk4QQ/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#the-usual-culprits-and-their-fixes">The usual culprits and their fixes</a></li><li><a href="#measure-it-in-code">Measure it in code</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yubfk4QQ/" target="_blank" rel="noopener">Watch the reel</a><span>5 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#the-usual-culprits-and-their-fixes">The usual culprits and their fixes</a></li><li><a href="#measure-it-in-code">Measure it in code</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li><strong>CLS (Cumulative Layout Shift)</strong> measures how much visible content <strong>moves unexpectedly</strong> while someone uses the page.</li>
 <li><strong>Good ≤ 0.1, poor &gt; 0.25.</strong> It's one of Google's three Core Web Vitals, with LCP (loading) and INP (responsiveness).</li>
 <li>Almost every shift has the same fix: <strong>reserve the space before the content arrives.</strong></li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>CLS measures how much visible content moves unexpectedly. Each shift scores impact fraction times distance fraction, shifts are grouped into bursts, and the worst burst is the CLS. Good is 0.1 or less. The main causes are images without dimensions, ads and embeds without reserved space, injected banners and font swaps, and the fix is always to reserve space before the content arrives.</p>
 </blockquote>
@@ -30,7 +30,7 @@
 <p><strong>Example:</strong> an article covers 50% of the screen. A banner loads above it and pushes it down by 25% of the screen height. The article now touches 75% of the viewport (old + new area), so impact = 0.75, distance = 0.25 → <strong>score 0.19</strong>. One banner, and you're already in "needs improvement".</p>
 <h3 id="bursts-not-totals">Bursts, not totals</h3>
 <p>Shifts that happen close together are grouped into a <strong>session window</strong> (gaps under 1 second, the window capped at 5 seconds). Your page's CLS is the score of its <strong>worst window</strong>, so one bad moment decides the number, no matter how long the user stays.</p>
-<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ No space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Image arrives late, pushes everything down ⬇</div><div class="dg-c">The button jumps under your thumb</div><div class="dg-c">CLS goes up</div></div><div class="dg-col good"><div class="dg-h">✅ Space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Empty box the exact size of the image waits for it</div><div class="dg-c">The button never moves</div><div class="dg-c">CLS stays 0</div></div></div></figure>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">No space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Image arrives late, pushes everything down</div><div class="dg-c">The button jumps under your thumb</div><div class="dg-c">CLS goes up</div></div><div class="dg-col good"><div class="dg-h">Space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Empty box the exact size of the image waits for it</div><div class="dg-c">The button never moves</div><div class="dg-c">CLS stays 0</div></div></div></figure>
 
 <h2 id="the-usual-culprits-and-their-fixes">The usual culprits and their fixes</h2>
 <p><strong>1. Images and videos without dimensions.</strong> The browser doesn't know how tall they'll be until they load.</p>
@@ -108,12 +108,12 @@
 <li>Sum of unexpected shifts; each = impact × distance; grouped into bursts (session windows); your worst burst = CLS.</li>
 <li>Culprits: images without width/height, ads/embeds without reserved space, injected banners, font swaps. Fix: reserve space (<code>width/height</code>, <code>aspect-ratio</code>, <code>min-height</code>).</li>
 <li>See it: Rendering → Layout Shift Regions. Trap: shifts within 500 ms of a tap/keypress are excluded; <code>transform</code> animations never shift layout.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e03/"><small>← PREVIOUS</small>LCP</a>
 <a class="r" href="../s3e05/"><small>NEXT →</small>INP</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

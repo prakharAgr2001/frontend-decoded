@@ -6,22 +6,22 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 12 · How the browser really works</span>
 <h1><span class="hl">Smooth animation</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EYXzD35G/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EYXzD35G/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>Smooth = <strong>60 frames a second</strong>, about <strong>16.7 ms per frame</strong>, including your JS, style, layout and paint.</li>
 <li>Animate <strong><code>transform</code> and <code>opacity</code></strong>. They run on the compositor (GPU) and skip layout and paint.</li>
 <li><code>will-change: transform</code> promotes an element to its own layer ahead of time. Use it sparingly: every layer costs GPU memory.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>For smooth 60 fps animation each frame has about 16 ms, so I avoid animating properties that cause layout or paint, like width, top or box-shadow. I animate transform and opacity, which can be handled by the compositor thread on the GPU, often even when the main thread is busy. I use CSS transitions or the Web Animations API, or requestAnimationFrame for JS-driven motion, and will-change only on elements that are about to animate.</p>
 </blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>A flipbook. Each page must be drawn in time or the motion stutters. Animating <code>left</code> is like <strong>redrawing the whole page</strong> for every flip. Animating <code>transform</code> is like <strong>sliding a cut-out sticker</strong> across the same page: much faster.</p>
 <h2 id="how-it-works">How it works</h2>
-<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ Janky</div><div class="dg-c">left: 0 → 300px</div><div class="dg-c">width / height growth</div><div class="dg-c">box-shadow change</div><div class="dg-c">layout + paint every frame</div></div><div class="dg-col good"><div class="dg-h">✅ Smooth</div><div class="dg-c">transform: translateX(300px)</div><div class="dg-c">transform: scale(…)</div><div class="dg-c">opacity on a pseudo-element with the shadow</div><div class="dg-c">composite only, can run on GPU</div></div></div></figure>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Janky</div><div class="dg-c">left: 0 → 300px</div><div class="dg-c">width / height growth</div><div class="dg-c">box-shadow change</div><div class="dg-c">layout + paint every frame</div></div><div class="dg-col good"><div class="dg-h">Smooth</div><div class="dg-c">transform: translateX(300px)</div><div class="dg-c">transform: scale(…)</div><div class="dg-c">opacity on a pseudo-element with the shadow</div><div class="dg-c">composite only, can run on GPU</div></div></div></figure>
 
 <div class="hl-code"><pre><span></span><code><span class="p">.</span><span class="nc">card</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">transform</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease</span><span class="p">,</span><span class="w"> </span><span class="k">opacity</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">.</span><span class="nc">card</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">transform</span><span class="p">:</span><span class="w"> </span><span class="nb">translateY</span><span class="p">(</span><span class="mi">-4</span><span class="kt">px</span><span class="p">)</span><span class="w"> </span><span class="nb">scale</span><span class="p">(</span><span class="mf">1.02</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
@@ -34,11 +34,11 @@
 <li>CSS transitions and animations on <code>transform</code>/<code>opacity</code> can keep running smoothly even if JavaScript blocks the main thread for a moment.</li>
 <li>For JS-driven motion, use <code>requestAnimationFrame</code> and base movement on time, not on frame count.</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong><code>will-change</code> on everything.</strong> Creates many layers, eats GPU memory, and can make things slower, especially on phones.</li>
-<li>⚠️ <strong>"<code>translateZ(0)</code> hack."</strong> It forces a layer like <code>will-change</code>, with the same costs. Know why it works before using it.</li>
-<li>⚠️ <strong>120 Hz screens.</strong> The budget is about 8.3 ms per frame, so heavy JS hurts even more on modern phones.</li>
+<li><strong><code>will-change</code> on everything.</strong> Creates many layers, eats GPU memory, and can make things slower, especially on phones.</li>
+<li><strong>"<code>translateZ(0)</code> hack."</strong> It forces a layer like <code>will-change</code>, with the same costs. Know why it works before using it.</li>
+<li><strong>120 Hz screens.</strong> The budget is about 8.3 ms per frame, so heavy JS hurts even more on modern phones.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>DevTools → <strong>Rendering</strong> → tick <strong>Frame Rendering Stats</strong> (live FPS meter) and <strong>Layer borders</strong>. Compare animating <code>left</code> vs <code>transform</code> on the same element.</p>
@@ -59,12 +59,12 @@
 <li>Animate <code>transform</code>/<code>opacity</code> (compositor, GPU layer) not <code>left/top/width</code> (layout every frame).</li>
 <li><code>will-change: transform</code> hints a layer — each layer costs GPU memory, don't overuse.</li>
 <li>Check: Rendering → Frame Rendering Stats.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e11/"><small>← PREVIOUS</small>Layout thrashing</a>
 <a class="r" href="../s1e14/"><small>NEXT →</small>One-chef kitchen</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

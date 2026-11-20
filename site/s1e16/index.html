@@ -6,22 +6,22 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 16 · How the browser really works</span>
 <h1><span class="hl">Microtasks vs tasks</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4E7htmsGV/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4E7htmsGV/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>There are two queues. <strong>Tasks</strong> (macrotasks): <code>setTimeout</code>, <code>setInterval</code>, clicks, network events. <strong>Microtasks</strong>: promise <code>.then</code>/<code>await</code> continuations, <code>queueMicrotask</code>.</li>
 <li>After <strong>every task</strong>, the browser runs <strong>all</strong> microtasks, including new ones added along the way, <strong>before</strong> it renders or takes the next task.</li>
 <li>So promises always beat timers.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>The event loop takes one task from the task queue and runs it. As soon as the call stack is empty, it drains the entire microtask queue, which holds promise reactions and queueMicrotask callbacks, including any microtasks queued during that drain. Only then can it render and move to the next task. That's why a resolved promise's then runs before a setTimeout of 0, and why an endless chain of microtasks can freeze the page.</p>
 </blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>A doctor's clinic. <strong>Tasks</strong> are patients in the waiting room, seen one at a time. <strong>Microtasks</strong> are "one quick follow-up question" from the patient who's already in the room. The doctor answers <em>all</em> follow-ups before calling the next patient, even follow-ups to follow-ups.</p>
 <h2 id="how-it-works">How it works</h2>
-<figure class="dg"><ol class="dg-steps loop"><li><b>Take ONE task</b><span>e.g. a timer callback or a click handler</span></li><li><b>Run it to the end</b><span>the call stack is empty again</span></li><li><b>Drain ALL microtasks</b><span>promise callbacks, await continuations, new ones added along the way</span></li><li><b>Maybe render</b><span>if a frame is due: rAF → style → layout → paint</span></li></ol><div class="dg-loopback">↺ back to step 1, forever</div></figure>
+<figure class="dg"><ol class="dg-steps loop"><li><b>Take ONE task</b><span>e.g. a timer callback or a click handler</span></li><li><b>Run it to the end</b><span>the call stack is empty again</span></li><li><b>Drain ALL microtasks</b><span>promise callbacks, await continuations, new ones added along the way</span></li><li><b>Maybe render</b><span>if a frame is due: rAF → style → layout → paint</span></li></ol><div class="dg-loopback">Then back to step 1, forever</div></figure>
 
 <div class="hl-code"><pre><span></span><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span><span class="w">          </span><span class="c1">// task</span>
@@ -31,11 +31,11 @@
 </code></pre></div>
 
 <p>1 and 4 are synchronous. Then the microtask (3) runs, then the next task: the timer (2).</p>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong><code>await</code> = microtask.</strong> The code <em>after</em> an <code>await</code> continues as a microtask, not right away.</li>
-<li>⚠️ <strong>Microtask starvation.</strong> A promise callback that keeps queueing another microtask never lets the browser render or handle clicks. The page freezes.</li>
-<li>⚠️ <strong>Order puzzle classic:</strong> sync code → microtasks → one task → microtasks → render → next task.</li>
+<li><strong><code>await</code> = microtask.</strong> The code <em>after</em> an <code>await</code> continues as a microtask, not right away.</li>
+<li><strong>Microtask starvation.</strong> A promise callback that keeps queueing another microtask never lets the browser render or handle clicks. The page freezes.</li>
+<li><strong>Order puzzle classic:</strong> sync code → microtasks → one task → microtasks → render → next task.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>Paste the code above in the Console. Then try this to watch a timer get starved:</p>
@@ -70,12 +70,12 @@
 <li>Tasks: timers, events. Microtasks: promise callbacks, <code>queueMicrotask</code>.</li>
 <li>After each task the loop drains ALL microtasks (incl. new ones), then may render, then next task. <code>1,timeout 2,promise 3,4</code> → 1 4 3 2.</li>
 <li>Trap: microtask starvation freezes the page.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e15/"><small>← PREVIOUS</small>Call stack &amp; task queue</a>
 <a class="r" href="../s1e17/"><small>NEXT →</small>16 ms frame budget</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

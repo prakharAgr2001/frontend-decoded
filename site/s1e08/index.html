@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 8 · How the browser really works</span>
 <h1><span class="hl">DOM &amp; CSSOM</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DzYfioQb/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 3 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DzYfioQb/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li>The browser turns <strong>HTML into the DOM</strong> (a tree of objects) and <strong>CSS into the CSSOM</strong> (a tree of style rules).</li>
 <li><strong>CSS blocks rendering:</strong> nothing is painted until the CSS is loaded, otherwise you'd see a flash of unstyled page.</li>
 <li>A normal <code>&lt;script&gt;</code> <strong>blocks parsing:</strong> the parser stops, downloads and runs it, then continues. <code>defer</code> and <code>async</code> fix that.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>The browser parses HTML bytes into tokens and builds the DOM tree, and parses CSS into the CSSOM. CSS is render-blocking because the browser won't paint until it knows the styles. Classic synchronous scripts are parser-blocking because they might modify the DOM, so the parser pauses until they download and execute. Using <code>defer</code> or <code>async</code>, and putting critical CSS early, keeps the critical rendering path short.</p>
 </blockquote>
@@ -37,11 +37,11 @@
 <li>The parser streams: it builds the DOM as bytes arrive, it doesn't wait for the whole file.</li>
 <li>A <strong>preload scanner</strong> looks ahead for <code>&lt;link&gt;</code>, <code>&lt;script&gt;</code> and <code>&lt;img&gt;</code> to start downloads early, even while parsing is blocked.</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>"The DOM is the HTML."</strong> No. The browser fixes broken markup (adds missing <code>&lt;tbody&gt;</code>, closes tags), and JavaScript changes the DOM afterwards. <em>View Source</em> shows what arrived; the <em>Elements</em> panel shows the live DOM.</li>
-<li>⚠️ <strong><code>async</code> vs <code>defer</code>.</strong> <code>defer</code> keeps order and waits for parsing to finish; <code>async</code> runs whenever it's ready, in any order.</li>
-<li>⚠️ <strong>Scripts in <code>&lt;head&gt;</code> without defer</strong> delay the whole page from showing up.</li>
+<li><strong>"The DOM is the HTML."</strong> No. The browser fixes broken markup (adds missing <code>&lt;tbody&gt;</code>, closes tags), and JavaScript changes the DOM afterwards. <em>View Source</em> shows what arrived; the <em>Elements</em> panel shows the live DOM.</li>
+<li><strong><code>async</code> vs <code>defer</code>.</strong> <code>defer</code> keeps order and waits for parsing to finish; <code>async</code> runs whenever it's ready, in any order.</li>
+<li><strong>Scripts in <code>&lt;head&gt;</code> without defer</strong> delay the whole page from showing up.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>Compare <strong>View Page Source</strong> (raw HTML) with DevTools → <strong>Elements</strong> (live DOM) on any React site. The source is nearly empty; the DOM is full.</p>
@@ -62,12 +62,12 @@
 <li>HTML → DOM tree; CSS → CSSOM tree. CSS blocks rendering; classic <code>&lt;script&gt;</code> blocks parsing.</li>
 <li>View Source = what arrived; Elements = live DOM.</li>
 <li>Trap: DOM ≠ HTML (browser fixes markup, JS mutates it).</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e06/"><small>← PREVIOUS</small>CDNs</a>
 <a class="r" href="../s1e09/"><small>NEXT →</small>Layout → Paint → Composite</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

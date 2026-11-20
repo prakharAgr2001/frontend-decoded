@@ -6,22 +6,22 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 23 · How the browser really works</span>
 <h1><span class="hl">Observers</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4F0fDAbTF/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4F0fDAbTF/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li><strong>Observers</strong> let the browser tell you when something happens, instead of you checking over and over.</li>
 <li><strong>IntersectionObserver:</strong> "this element entered or left the screen" (lazy loading, infinite scroll, autoplay, ad impressions).</li>
 <li><strong>ResizeObserver</strong> (an element's size changed), <strong>MutationObserver</strong> (the DOM changed), <strong>PerformanceObserver</strong> (performance entries like long tasks and layout shifts).</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>Instead of polling or listening to scroll and resize and measuring elements myself, which forces layout on the main thread, I use observers. IntersectionObserver reports when an element crosses a visibility threshold relative to the viewport or a root, which is ideal for lazy loading and infinite scroll. ResizeObserver reports element size changes, MutationObserver reports DOM changes, and PerformanceObserver streams performance entries. They're efficient because the browser computes the information during its own rendering work and only calls you when something actually changes.</p>
 </blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>Instead of asking "are we there yet?" every 5 seconds (a scroll listener running <code>getBoundingClientRect()</code>), you ask the driver to <strong>tap you when we reach the exit</strong>. The driver already knows where the car is; you only get interrupted when it matters.</p>
 <h2 id="how-it-works">How it works</h2>
-<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ Scroll listener</div><div class="dg-c">Runs on every scroll event, dozens per second</div><div class="dg-c">You measure with getBoundingClientRect()</div><div class="dg-c">Forces layout on the main thread</div><div class="dg-c">Easy to make janky</div></div><div class="dg-col good"><div class="dg-h">✅ IntersectionObserver</div><div class="dg-c">Fires only when a threshold is crossed</div><div class="dg-c">Browser computes intersection itself</div><div class="dg-c">No forced layout in your code</div><div class="dg-c">Smooth by default</div></div></div></figure>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Scroll listener</div><div class="dg-c">Runs on every scroll event, dozens per second</div><div class="dg-c">You measure with getBoundingClientRect()</div><div class="dg-c">Forces layout on the main thread</div><div class="dg-c">Easy to make janky</div></div><div class="dg-col good"><div class="dg-h">IntersectionObserver</div><div class="dg-c">Fires only when a threshold is crossed</div><div class="dg-c">Browser computes intersection itself</div><div class="dg-c">No forced layout in your code</div><div class="dg-c">Smooth by default</div></div></div></figure>
 
 <div class="hl-code"><pre><span></span><code><span class="c1">// Lazy-load images when they come within 200px of the screen</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">IntersectionObserver</span><span class="p">(</span><span class="nx">entries</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
@@ -41,11 +41,11 @@
 <span class="w">  </span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#sentinel'</span><span class="p">));</span>
 </code></pre></div>
 
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>Forgetting to disconnect.</strong> Call <code>unobserve()</code> or <code>disconnect()</code> when done, or on unmount, to avoid leaks.</li>
-<li>⚠️ <strong>Native lazy loading exists.</strong> For simple images, <code>&lt;img loading="lazy"&gt;</code> is enough. Use IntersectionObserver for custom behaviour.</li>
-<li>⚠️ <strong>MutationObserver callbacks are batched microtasks</strong>, not synchronous per change.</li>
+<li><strong>Forgetting to disconnect.</strong> Call <code>unobserve()</code> or <code>disconnect()</code> when done, or on unmount, to avoid leaks.</li>
+<li><strong>Native lazy loading exists.</strong> For simple images, <code>&lt;img loading="lazy"&gt;</code> is enough. Use IntersectionObserver for custom behaviour.</li>
+<li><strong>MutationObserver callbacks are batched microtasks</strong>, not synchronous per change.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>Open a long page with many images, paste the lazy-load snippet into the Console (after changing a few <code>src</code> to <code>data-src</code>), and watch the <strong>Network</strong> tab: images load only as you scroll near them.</p>
@@ -65,12 +65,12 @@
 <div class="pane" id="sheet"><div class="sheet"><ul>
 <li>IntersectionObserver (lazy load, infinite scroll, autoplay, impressions), ResizeObserver, MutationObserver, PerformanceObserver.</li>
 <li>Better than scroll listeners: browser computes intersections, no forced layout in your code, fires only on threshold crossings.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e22/"><small>← PREVIOUS</small>Memory leaks</a>
 </div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();

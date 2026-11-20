@@ -6,15 +6,15 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 13 · Rendering strategies</span>
 <h1><span class="hl">Streaming SSR</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gNJHjazH/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gNJHjazH/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
 <li>Send the shell + fallbacks first; stream the slow parts later with a tiny script that swaps them in.</li>
 <li>React: <code>renderToPipeableStream(&lt;App /&gt;, { onShellReady() { stream.pipe(res) } })</code>.</li>
 <li>Works because HTTP bodies arrive in pieces (chunked in 1.1, DATA frames in 2/3).</li>
 <li>See it: Timing → long "Content Download"; View Source → <code>&lt;div hidden id="S:0"&gt;</code> + <code>$RC(...)</code> scripts.</li>
 <li>Trap: once the first chunk is out, status/headers are sent → no 404/redirect later. Decide before the shell.</li>
 </ul></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e11/"><small>← PREVIOUS</small>Selective hydration</a>
 <a class="r" href="../s2e14/"><small>NEXT →</small>React Server Components (RSC)</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>

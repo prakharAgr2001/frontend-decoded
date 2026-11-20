@@ -6,22 +6,22 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 10 · How the browser really works</span>
 <h1><span class="hl">Reflow vs repaint</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EFk7jdKV/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
-<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EFk7jdKV/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
 <li><strong>Reflow (layout):</strong> something's <strong>size or position</strong> changed, so the browser recalculates geometry, then repaints and composites. Expensive.</li>
 <li><strong>Repaint:</strong> only <strong>looks</strong> changed (colour, background, shadow), so it repaints and composites. Cheaper.</li>
 <li><strong>Composite-only:</strong> <code>transform</code> and <code>opacity</code>. Cheapest: no layout, no paint.</li>
 </ul>
-<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<h2 id="interview-answer">Interview answer</h2>
 <blockquote>
 <p>Changing geometry properties like width, height, top or font-size triggers layout, then paint and composite, and layout can cascade to parents, siblings and children. Changing visual-only properties like color or background triggers paint and composite. Changing transform or opacity on a layer only triggers compositing, which runs on the GPU. So for animations and frequent updates I stick to transform and opacity.</p>
 </blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>Rearranging a classroom. <strong>Reflow:</strong> one desk gets bigger, so every desk in the row shifts and you re-measure the room. <strong>Repaint:</strong> you just change one desk's colour; nothing moves. <strong>Composite:</strong> you slide a transparent sheet with a drawing over the desks; the desks themselves are untouched.</p>
 <h2 id="how-it-works">How it works</h2>
-<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ Triggers layout</div><div class="dg-c">width, height, padding, margin</div><div class="dg-c">top, left, font-size</div><div class="dg-c">adding/removing elements, changing text</div><div class="dg-c">reading offsetHeight right after a write</div></div><div class="dg-col good"><div class="dg-h">✅ Skips layout</div><div class="dg-c">color, background (paint only)</div><div class="dg-c">box-shadow, border-color (paint only)</div><div class="dg-c">transform (composite only)</div><div class="dg-c">opacity (composite only)</div></div></div></figure>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Triggers layout</div><div class="dg-c">width, height, padding, margin</div><div class="dg-c">top, left, font-size</div><div class="dg-c">adding/removing elements, changing text</div><div class="dg-c">reading offsetHeight right after a write</div></div><div class="dg-col good"><div class="dg-h">Skips layout</div><div class="dg-c">color, background (paint only)</div><div class="dg-c">box-shadow, border-color (paint only)</div><div class="dg-c">transform (composite only)</div><div class="dg-c">opacity (composite only)</div></div></div></figure>
 
 <div class="hl-code"><pre><span></span><code><span class="c1">// Expensive: layout every frame</span>
 <span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">;</span>
@@ -34,11 +34,11 @@
 <li>One reflow can spread: changing a child's height can resize its parent and push its siblings.</li>
 <li>Reading layout values (<code>offsetHeight</code>, <code>getBoundingClientRect()</code>) <strong>right after</strong> changing styles forces the browser to do layout immediately (next episode: layout thrashing).</li>
 </ul>
-<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<h2 id="common-traps">Common traps</h2>
 <ul>
-<li>⚠️ <strong>"Repaint is free."</strong> It's cheaper than layout, but painting large areas (big blurred shadows, full-page backgrounds) is still slow.</li>
-<li>⚠️ <strong>Forced synchronous layout.</strong> Write a style, then read a size, in the same frame = a reflow right now.</li>
-<li>⚠️ <strong><code>visibility</code> vs <code>display</code> toggles.</strong> <code>display</code> changes trigger layout; <code>visibility</code> only repaints.</li>
+<li><strong>"Repaint is free."</strong> It's cheaper than layout, but painting large areas (big blurred shadows, full-page backgrounds) is still slow.</li>
+<li><strong>Forced synchronous layout.</strong> Write a style, then read a size, in the same frame = a reflow right now.</li>
+<li><strong><code>visibility</code> vs <code>display</code> toggles.</strong> <code>display</code> changes trigger layout; <code>visibility</code> only repaints.</li>
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>DevTools → ⋮ → More tools → <strong>Rendering</strong> → tick <strong>Paint flashing</strong>. Green flashes show every area being repainted as you scroll and hover.</p>
@@ -59,12 +59,12 @@
 <li>Geometry (width/height/top) → layout + paint + composite. Color → paint + composite. transform/opacity → composite only.</li>
 <li>Reflow spreads to siblings/parents. DevTools → Rendering → Paint flashing.</li>
 <li>Trap: reading <code>offsetHeight</code> right after a style write forces synchronous layout.</li>
-</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
-<div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
+<div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s1e09/"><small>← PREVIOUS</small>Layout → Paint → Composite</a>
 <a class="r" href="../s1e11/"><small>NEXT →</small>Layout thrashing</a></div>
 
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
 if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
