@@ -44,6 +44,11 @@ footer{margin-top:44px;color:var(--mute);font-size:14px}
 .deep{margin-top:18px}.deep h2{font:700 26px/1.15 Oswald,Impact,sans-serif;text-transform:uppercase;margin:38px 0 10px;scroll-margin-top:16px}
 .deep h2::before{content:'';display:inline-block;width:12px;height:22px;background:var(--yel);margin-right:10px;vertical-align:-2px;border:2px solid var(--ink)}
 .deep h3{font-size:19px;margin:24px 0 6px}.deep p,.deep li{font-size:17px}.deep li{margin:6px 0}
+.deep h2#in-one-line+p{font:600 20px/1.45 Inter,sans-serif;background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:16px 18px;box-shadow:5px 5px 0 var(--ink)}
+.deep h2#say-it-in-the-interview+blockquote{margin:12px 0;background:var(--ink);color:#fff;border-radius:16px;padding:16px 18px 16px 52px;position:relative;font-size:16.5px}
+.deep h2#say-it-in-the-interview+blockquote::before{content:'🎤';position:absolute;left:16px;top:16px;font-size:22px}
+.deep h2#say-it-in-the-interview+blockquote code{background:#2c2f38;color:#ffe58a}
+.deep h2#traps-interviewers-love+ul li::marker{content:'⚠️ '}
 .deep h2#tldr+ul{background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:14px 18px 14px 36px;box-shadow:5px 5px 0 var(--ink)}
 .deep pre{background:#15171C;color:#e8e6df;border-radius:14px;padding:16px 18px;overflow-x:auto;font-size:14px;line-height:1.55}
 .deep pre code{background:none;padding:0;color:inherit;font-size:14px}
@@ -157,6 +162,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .dg-col.bad .dg-h{background:var(--red)}.dg-col.good .dg-h{background:#1f9d55}
 .dg-c{font-size:14px;line-height:1.4;padding:9px 10px;border-top:1px solid var(--line)}
 .hl-code pre{white-space:pre-wrap;word-break:break-word}
+.medium{display:block;margin-top:22px;padding:16px 18px;border:3px solid var(--ink);border-radius:16px;background:#fff;text-decoration:none;box-shadow:5px 5px 0 var(--ink)}.medium:hover{background:var(--yel)}.medium b{display:block;font-size:17px}.medium span{display:block;color:var(--mute);font-size:14.5px;margin-top:3px}
 .toc{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;margin-top:16px;font-size:15px}
 .toc summary{font-weight:700;cursor:pointer}.toc ul{margin:8px 0 4px;padding-left:20px}.toc a{text-decoration:none}.toc a:hover{background:var(--yel)}
 .badge{font:800 11px Inter,sans-serif;background:var(--yel);border:1.5px solid var(--ink);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:2px}

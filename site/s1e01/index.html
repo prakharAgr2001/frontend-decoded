@@ -6,12 +6,60 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 1 · How the browser really works</span>
 <h1><span class="hl">URL to pixels</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4C2MrHCGr/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4C2MrHCGr/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 3 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>Typing a URL and seeing a page takes <strong>five journeys</strong>: <strong>DNS</strong> (find the server), <strong>TCP</strong> (connect), <strong>TLS</strong> (make it private), <strong>HTTP</strong> (ask for the page), <strong>render</strong> (turn code into pixels).</li>
+<li>The first four are <strong>network</strong> work, mostly waiting. The last one is <strong>browser</strong> work, mostly computing.</li>
+<li>Every speed trick in web performance makes one of these five steps shorter, or skips it.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>First the browser resolves the domain to an IP using DNS, checking caches before asking a resolver. Then it opens a TCP connection and, for HTTPS, does a TLS handshake to encrypt and verify the server. It sends an HTTP request and gets back HTML. Finally it parses HTML into the DOM and CSS into the CSSOM, builds the render tree, and runs layout, paint and compositing to draw pixels. Subresources like CSS, JS and images trigger the same fetch cycle in parallel.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Ordering food from a new restaurant. You <strong>look up</strong> its number (DNS), <strong>call</strong> and wait for someone to pick up (TCP), <strong>confirm</strong> it's really them and agree on a private line (TLS), <strong>place your order</strong> (HTTP), then the kitchen <strong>cooks</strong> and plates it (rendering). Most of the time is spent waiting, not cooking.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>DNS lookup</b><span>google.com → 142.250.x.x (cached most of the time)</span></li><li><b>TCP handshake</b><span>SYN → SYN-ACK → ACK, one round trip to open a connection</span></li><li><b>TLS handshake</b><span>agree on encryption keys + check the certificate (1 round trip in TLS 1.3)</span></li><li><b>HTTP request</b><span>GET / → server sends back the HTML</span></li><li><b>Render</b><span>HTML → DOM, CSS → CSSOM → layout → paint → composite → pixels</span></li></ol></figure>
+
+<ul>
+<li>Steps 1–3 happen <strong>once per connection</strong>, not per file. That's why reusing connections (keep-alive, HTTP/2) matters so much.</li>
+<li>While parsing the HTML, the browser finds <code>&lt;link&gt;</code>, <code>&lt;script&gt;</code> and <code>&lt;img&gt;</code> tags and fetches them too, often in parallel.</li>
+<li>Each round trip costs real time. India to a US server is roughly 200 ms there and back, so 3 round trips = over half a second before the first byte.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"DNS happens on every visit."</strong> Usually not. Browser, OS and resolver caches answer most lookups instantly. The first visit is the slowest.</li>
+<li>⚠️ <strong>"The page appears when the HTML arrives."</strong> No. CSS blocks rendering and synchronous scripts block parsing, so the page waits for them too.</li>
+<li>⚠️ <strong>Forgetting it repeats.</strong> Every CSS, JS, image and font file goes through fetch again (minus DNS/TCP/TLS if the connection is reused).</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → reload → click the first request → <strong>Timing</strong> tab. You'll see each phase: DNS Lookup, Initial connection, SSL, Waiting (server time), Content Download.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which of the five steps can a CDN shorten?</summary>
+<p>TCP, TLS and HTTP: the server is physically closer, so every round trip is shorter. It can also serve cached files without waiting for the origin.</p>
+</details>
+<details>
+<summary>Why is the first visit to a site slower than the second?</summary>
+<p>Nothing is cached yet: DNS answer, connection, and files (HTML/CSS/JS/images) all have to be fetched. On repeat visits the browser cache and connection reuse skip much of it.</p>
+</details>
+<details>
+<summary>What does "Waiting (TTFB)" in DevTools measure?</summary>
+<p>Time to First Byte: from sending the request until the first byte of the response arrives, which is mostly server processing plus one round trip.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>5 journeys: <strong>DNS</strong> (name → IP) → <strong>TCP</strong> (connection) → <strong>TLS</strong> (encrypt + verify) → <strong>HTTP</strong> (request) → <strong>render</strong> (HTML → pixels).</li>
 <li>See it: DevTools → Network → first request → Timing (DNS Lookup, Initial connection, SSL, Waiting, Content Download).</li>
 <li>Trap: DNS isn't done every visit — browser, OS and resolver cache it. First load is usually slowest.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s1e02/"><small>NEXT →</small>DNS</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

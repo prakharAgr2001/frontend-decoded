@@ -8,12 +8,16 @@
 <h1><span class="hl">One-chef kitchen</span></h1>
 <div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EtHkCMKI/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 4 min read</span><span>⚡ 1-min cheat sheet</span></div>
 <div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-connection">Real-world connection</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-connection">Real-world connection</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
 <ul>
 <li>JavaScript in the browser runs on <strong>one main thread</strong>: one "chef" who also handles clicks, scrolling, style, layout and paint.</li>
 <li><strong>Waiting</strong> (timers, network, events) happens outside the chef, in the browser's Web APIs. <strong>Computing</strong> happens on the chef.</li>
 <li>So a <code>fetch()</code> never freezes the page, but a long loop does. Anything over ~50 ms on the main thread is a <strong>long task</strong>, and users feel it.</li>
 </ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>JavaScript runs on a single main thread that also handles input, style, layout and paint. Waiting work like timers, network and events is handled by the browser's Web APIs, and their callbacks are queued and run when the main thread is free. That's why <code>fetch</code> doesn't freeze the page but a long loop does. To keep the UI responsive I break heavy work into chunks and yield, or move it to a Web Worker.</p>
+</blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>A restaurant with exactly one cook. The cook makes your food, but also takes orders, plates dishes and wipes the counter. If one order takes the cook 3 minutes of chopping, every other table waits, even the person who just wants water.</p>
 <p>The cook does have helpers: a timer on the oven, a delivery boy who fetches ingredients. They work on their own and leave a note on the counter when done. The cook reads the notes only when the hands are free.</p>
@@ -105,6 +109,7 @@
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e12/"><small>← PREVIOUS</small>Smooth animation</a>
 <a class="r" href="../s1e15/"><small>NEXT →</small>Call stack &amp; task queue</a></div>
+
 <div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});

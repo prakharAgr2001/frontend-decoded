@@ -8,12 +8,16 @@
 <h1><span class="hl">CLS</span></h1>
 <div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yubfk4QQ/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
 <div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#the-usual-culprits-and-their-fixes">The usual culprits and their fixes</a></li><li><a href="#measure-it-in-code">Measure it in code</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#the-usual-culprits-and-their-fixes">The usual culprits and their fixes</a></li><li><a href="#measure-it-in-code">Measure it in code</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
 <ul>
 <li><strong>CLS (Cumulative Layout Shift)</strong> measures how much visible content <strong>moves unexpectedly</strong> while someone uses the page.</li>
 <li><strong>Good ≤ 0.1, poor &gt; 0.25.</strong> It's one of Google's three Core Web Vitals, with LCP (loading) and INP (responsiveness).</li>
 <li>Almost every shift has the same fix: <strong>reserve the space before the content arrives.</strong></li>
 </ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>CLS measures how much visible content moves unexpectedly. Each shift scores impact fraction times distance fraction, shifts are grouped into bursts, and the worst burst is the CLS. Good is 0.1 or less. The main causes are images without dimensions, ads and embeds without reserved space, injected banners and font swaps, and the fix is always to reserve space before the content arrives.</p>
+</blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>Someone pulls your chair away just as you sit down. The chair was fine; it just moved at the worst moment. That's a layout shift: you aim for "Cancel", an ad loads above it, everything slides down, and your thumb lands on "Buy".</p>
 <h2 id="how-it-actually-works">How it actually works</h2>
@@ -108,6 +112,7 @@
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s3e03/"><small>← PREVIOUS</small>LCP</a>
 <a class="r" href="../s3e05/"><small>NEXT →</small>INP</a></div>
+
 <div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});

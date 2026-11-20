@@ -6,7 +6,58 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 18 · How the browser really works</span>
 <h1><span class="hl">Long tasks</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FPX3mfXx/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FPX3mfXx/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>A <strong>long task</strong> is anything that keeps the main thread busy for <strong>more than 50 ms</strong>.</li>
+<li>During a long task the page can't respond to taps or draw, so clicks feel laggy.</li>
+<li>It's measured by <strong>INP</strong> (Interaction to Next Paint), a Core Web Vital since 2024 (it replaced FID). Fix: <strong>break the work up and yield</strong>.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>A long task is any main-thread task over 50 ms. While it runs, input events and rendering wait, so the UI feels unresponsive, which shows up as poor INP. The 50 ms limit comes from aiming for a response within about 100 ms, leaving time for the browser to handle the input and paint. To fix it, I split the work into smaller chunks and yield back to the browser between them, move heavy computation to a Web Worker, or avoid doing the work at all with pagination or virtualisation.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A single checkout counter. One customer with 300 items (a long task) holds up everyone behind them, even the person buying only water. Splitting the order into baskets lets the cashier serve quick customers in between.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ One long task</div><div class="dg-c">400 ms of work in one go</div><div class="dg-c">Tap during it waits up to 400 ms</div><div class="dg-c">No frames painted</div><div class="dg-c">Poor INP</div></div><div class="dg-col good"><div class="dg-h">✅ Chunked with yields</div><div class="dg-c">8 chunks of 50 ms</div><div class="dg-c">Tap waits at most ~50 ms</div><div class="dg-c">Frames painted between chunks</div><div class="dg-c">Good INP</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processRows</span><span class="p">(</span><span class="nx">rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">process</span><span class="p">(</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">yieldToBrowser</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">yieldToBrowser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// scheduler.yield() keeps your place in line (Chromium); setTimeout is the fallback</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">scheduler</span><span class="p">.</span><span class="k">yield</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"Async functions don't block."</strong> The code between <code>await</code>s still runs on the main thread. Only the waiting is offloaded.</li>
+<li>⚠️ <strong>INP vs FID.</strong> FID measured only the <em>delay</em> before the first input was handled. INP measures the <em>whole</em> response (delay + processing + next paint) for interactions throughout the visit.</li>
+<li>⚠️ <strong>Huge React renders count too.</strong> A state update that re-renders 5,000 rows is a long task: memoise, virtualise, or use transitions.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record while clicking around. Long tasks have a <strong>red triangle</strong> in the corner. The <strong>Interactions</strong> track shows how long each tap took to paint.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What counts as a long task?</summary>
+<p>Any task that occupies the main thread for more than 50 ms.</p>
+</details>
+<details>
+<summary>What does INP measure?</summary>
+<p>The time from a user interaction (tap, click, keypress) until the next frame is painted, reported as roughly the worst interaction during the page visit. Good is 200 ms or less.</p>
+</details>
+<details>
+<summary>Three ways to fix a long task?</summary>
+<p>Chunk and yield (setTimeout / scheduler.yield), move work to a Web Worker, or reduce the work (virtualise lists, debounce, do it on the server).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>
 <blockquote>
 <p>50 ms = long task; blocks input. 100 ms feels instant (50 task + 50 input/paint).</p>
@@ -14,8 +65,13 @@
 </li>
 <li>Fix: chunk work and yield (<code>await scheduler.yield()</code> or <code>setTimeout</code>).</li>
 <li>Metric: <strong>INP</strong> (Interaction to Next Paint), Core Web Vital since 2024 (replaced FID).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e17/"><small>← PREVIOUS</small>16 ms frame budget</a>
 <a class="r" href="../s1e20/"><small>NEXT →</small>Bubbling &amp; capturing</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

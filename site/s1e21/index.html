@@ -6,12 +6,72 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 21 · How the browser really works</span>
 <h1><span class="hl">Event delegation</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4Flf6ETB2/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4Flf6ETB2/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li><strong>Event delegation:</strong> put <strong>one listener on a parent</strong> instead of one on every child. Use <code>e.target.closest(...)</code> to find which child was clicked.</li>
+<li>It works for children <strong>added later</strong>, uses fewer listeners, and avoids leaks when items are removed.</li>
+<li>It relies on <strong>bubbling</strong>, so it doesn't work with events that don't bubble, or if a child calls <code>stopPropagation()</code>.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>Event delegation means attaching a single listener to a common ancestor and using event bubbling to handle events from its descendants. Inside the handler I use event.target.closest with a selector to find the relevant child and check that it's inside the container. This reduces the number of listeners, automatically handles dynamically added elements, and avoids cleanup issues. It doesn't work for non-bubbling events like focus, where I'd use focusin instead.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A class with 60 students. Instead of giving each student their own phone to call the teacher (60 listeners), there's <strong>one receptionist at the door</strong> who hears everyone and checks the name tag: "Ah, that's Riya from row 3."</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ One listener per row</div><div class="dg-c">1,000 rows = 1,000 listeners</div><div class="dg-c">New rows need new listeners</div><div class="dg-c">Removed rows must be cleaned up</div></div><div class="dg-col good"><div class="dg-h">✅ One listener on the list</div><div class="dg-c">1,000 rows = 1 listener</div><div class="dg-c">New rows just work</div><div class="dg-c">Nothing to clean up</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#todo-list'</span><span class="p">);</span>
+
+<span class="nx">list</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'.todo'</span><span class="p">);</span><span class="w">      </span><span class="c1">// walk up from what was clicked</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">row</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">list</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">row</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w">    </span><span class="c1">// clicked empty space or outside</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'.delete'</span><span class="p">))</span><span class="w"> </span><span class="nx">row</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="nx">row</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">toggle</span><span class="p">(</span><span class="s1">'done'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Rows added later work automatically</span>
+<span class="nx">list</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">'beforeend'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;li class="todo"&gt;New task &lt;button class="delete"&gt;✕&lt;/button&gt;&lt;/li&gt;'</span><span class="p">);</span>
+</code></pre></div>
+
+<ul>
+<li>React already does this for you: it attaches one listener per event type at the root and dispatches to your components.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>Using <code>e.target</code> directly.</strong> If the row contains a <code>&lt;span&gt;</code> or icon, <code>e.target</code> is that inner element. Always use <code>closest()</code>.</li>
+<li>⚠️ <strong>Non-bubbling events.</strong> <code>focus</code>/<code>blur</code> won't reach the parent; use <code>focusin</code>/<code>focusout</code>.</li>
+<li>⚠️ <strong>A child's <code>stopPropagation()</code></strong> means the parent never hears the click, so the delegated handler silently doesn't run.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Elements</strong> → select a row → <strong>Event Listeners</strong> → tick <strong>Ancestors</strong>: on a delegated list you'll see one click listener on the parent, none on each row.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why use closest() instead of checking e.target.classList?</summary>
+<p>The click may land on a nested element (icon, span). closest() walks up from the clicked element to the nearest matching ancestor, so it finds the row either way.</p>
+</details>
+<details>
+<summary>Why does delegation work for elements added after page load?</summary>
+<p>The listener is on the parent, which already exists. Clicks on new children bubble up to it like any other.</p>
+</details>
+<details>
+<summary>When does delegation not work?</summary>
+<p>For events that don't bubble (focus, blur, mouseenter), or when something below calls stopPropagation.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>One listener on the parent + <code>e.target.closest('.row')</code>.</li>
 <li>Fewer listeners, works for rows added later, no listener leaks. DevTools → Event Listeners → Ancestors.</li>
 <li>Trap: needs bubbling events; a child's <code>stopPropagation</code> hides it.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e20/"><small>← PREVIOUS</small>Bubbling &amp; capturing</a>
 <a class="r" href="../s1e22/"><small>NEXT →</small>Memory leaks</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

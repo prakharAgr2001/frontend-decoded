@@ -6,12 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 17 · How the browser really works</span>
 <h1><span class="hl">16 ms frame budget</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FI9BEVIt/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FI9BEVIt/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>On a 60 Hz screen the browser draws a frame every <strong>~16.7 ms</strong>. On 120 Hz screens it's <strong>~8.3 ms</strong>.</li>
+<li>Your JS + style + layout + paint must fit inside that budget, or frames get dropped (jank). Aim for <strong>about 10 ms of your own work</strong>.</li>
+<li>Use <strong><code>requestAnimationFrame</code></strong> for visual updates: it runs once per frame, right before paint, and pauses in background tabs.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>At 60 Hz each frame has about 16.7 ms, and the browser needs part of that for style, layout, paint and compositing, so my JavaScript should take roughly 10 ms or less per frame. For visual updates I use requestAnimationFrame, which runs right before the next paint and syncs with the display's refresh rate, and I compute motion from the timestamp it provides rather than assuming a fixed frame rate. setInterval isn't synced to frames, so it can drift and update twice or not at all in a frame.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A train that leaves the platform every 16.7 ms, whether you're on it or not. If your work isn't done when it leaves, your update waits for the next train, and the user sees a stutter.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Input &amp; JS</b><span>event handlers, timers, your code</span></li><li><b>requestAnimationFrame callbacks</b><span>the right place for visual updates</span></li><li><b>Style + Layout</b><span>recalculate styles and geometry</span></li><li><b>Paint + Composite</b><span>draw and show the frame</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// ✅ Smooth, time-based movement: same speed on 60 Hz and 120 Hz screens</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">start</span><span class="p">;</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">step</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">start</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="nx">now</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">((</span><span class="nx">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">start</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span><span class="w">   </span><span class="c1">// 0.2 px per ms</span>
+<span class="w">  </span><span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`translateX(</span><span class="si">${</span><span class="nx">x</span><span class="si">}</span><span class="sb">px)`</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">300</span><span class="p">)</span><span class="w"> </span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">step</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">step</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>Frame-count based motion.</strong> <code>x += 2</code> per frame moves twice as fast on a 120 Hz phone. Use the timestamp.</li>
+<li>⚠️ <strong><code>setInterval(fn, 16)</code> for animation.</strong> Not aligned with paint: some frames get two updates, some get none.</li>
+<li>⚠️ <strong>Heavy work inside rAF.</strong> rAF doesn't make slow code fast; it only schedules it at the right moment.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record while scrolling or animating. The <strong>Frames</strong> row shows each frame; long red bars are dropped frames.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the frame budget at 60 fps and 120 fps?</summary>
+<p>About 16.7 ms and 8.3 ms.</p>
+</details>
+<details>
+<summary>When does a requestAnimationFrame callback run?</summary>
+<p>Once per frame, just before the browser does style, layout and paint for that frame. It's paused in hidden tabs.</p>
+</details>
+<details>
+<summary>Why use the rAF timestamp instead of counting frames?</summary>
+<p>Refresh rates differ and frames can be dropped, so movement based on elapsed time stays the same speed on every device.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>60 Hz ≈ 16.7 ms per frame (120 Hz ≈ 8.3 ms). Keep your JS ≲ 10 ms.</li>
 <li><code>requestAnimationFrame</code> runs right before paint, once per frame, pauses in background tabs. Use its timestamp (time-based motion).</li>
 <li><code>setInterval</code> drifts against frames.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e16/"><small>← PREVIOUS</small>Microtasks vs tasks</a>
 <a class="r" href="../s1e18/"><small>NEXT →</small>Long tasks</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

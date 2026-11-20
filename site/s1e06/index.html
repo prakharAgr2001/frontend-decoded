@@ -6,12 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 6 · How the browser really works</span>
 <h1><span class="hl">CDNs</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DkN9AuIR/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DkN9AuIR/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 3 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>A <strong>CDN</strong> (Content Delivery Network) keeps <strong>copies of your files on servers close to users</strong> ("edges").</li>
+<li><strong>Cache hit:</strong> the edge already has the file, so it's fast. <strong>Cache miss:</strong> the edge fetches it once from your server (the "origin"), then serves everyone nearby.</li>
+<li>The real win is <strong>distance</strong>: fewer milliseconds per round trip, and your origin doesn't melt under traffic.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>A CDN is a network of edge servers around the world that cache copies of content close to users. A request goes to the nearest edge. On a hit, it's served directly with low latency; on a miss, the edge fetches from the origin, caches it based on the Cache-Control headers, and serves it. This reduces latency and offloads the origin. The main challenge is invalidation, which is usually solved with content-hashed filenames and long cache lifetimes, plus purges for HTML.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A pizza chain. Instead of one kitchen in Mumbai delivering to all of India, there's an outlet in every city. Your order goes to the nearest outlet. If it doesn't have the topping, it gets it from the central warehouse once, then keeps it for the next customer.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>You request app.js</b><span>DNS sends you to the nearest edge (e.g. Bengaluru, not Virginia)</span></li><li><b>Edge checks its cache</b><span>HIT → sent back in a few ms</span></li><li><b>On a MISS</b><span>edge fetches from your origin once</span></li><li><b>Edge stores it</b><span>for as long as Cache-Control allows</span></li><li><b>Next user nearby</b><span>gets a HIT</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="err"># Static assets with a content hash in the name: cache "forever"</span>
+<span class="err">Cache-Control: public, max-age=31536000, immutable      → app.3f9a1c.js</span>
+
+<span class="err"># HTML: always check for a newer version</span>
+<span class="err">Cache-Control: no-cache                                   → index.html</span>
+</code></pre></div>
+
+<ul>
+<li>CDNs also terminate TLS close to the user, so the handshakes are shorter too.</li>
+<li>Response headers like <code>x-cache: HIT</code>, <code>cf-cache-status: HIT</code> and <code>age: 1200</code> tell you whether you got a cached copy.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"Users see the old version after deploy."</strong> Classic cache-invalidation bug. Fix: hashed filenames (<code>app.3f9a1c.js</code>) for assets, <code>no-cache</code> for HTML, and purge on deploy.</li>
+<li>⚠️ <strong>Caching personalized pages.</strong> If a response depends on cookies or login, a shared CDN cache can show one user's page to another. Use <code>Cache-Control: private</code> or vary correctly.</li>
+<li>⚠️ <strong>Single point of failure.</strong> If the CDN breaks, every site on it breaks (see the Fastly outage in our reels).</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → click a JS or image file → <strong>Headers</strong> → look for <code>x-cache</code>, <code>cf-cache-status</code> or <code>age</code>. Reload a few times and watch MISS turn into HIT.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the difference between a cache hit and a miss at the edge?</summary>
+<p>Hit: the edge already has a fresh copy and responds immediately. Miss: it has to fetch from the origin first (slower), then caches the result for later requests.</p>
+</details>
+<details>
+<summary>How do you deploy new JS without users getting stale files from the CDN?</summary>
+<p>Put a content hash in the filename so every change is a new URL, cache those for a year with <code>immutable</code>, and keep HTML short-lived or <code>no-cache</code> so it always points to the latest hashed files.</p>
+</details>
+<details>
+<summary>Can a CDN help dynamic, non-cacheable pages?</summary>
+<p>Yes: shorter TLS/TCP handshakes to a nearby edge, optimized connections from edge to origin, compression, and edge compute. But the biggest wins are for cacheable static content.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Copies of files on edge servers near users; hit = fast, miss = fetch once from origin then cache.</li>
 <li>Headers: <code>x-cache</code>, <code>cf-cache-status</code>, <code>age</code>.</li>
 <li>Trap: users see old assets after deploy → versioned (hashed) file names + purge.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e05/"><small>← PREVIOUS</small>HTTP/1.1 vs 2 vs 3</a>
 <a class="r" href="../s1e08/"><small>NEXT →</small>DOM &amp; CSSOM</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

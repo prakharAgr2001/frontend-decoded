@@ -1,0 +1,5 @@
+{
+  "_help": "Fill these in later. medium_profile = your Medium page URL (shows a card on every page + the home page). episodes = an article URL for a specific episode, e.g. \"S1E14\": \"https://medium.com/@you/event-loop-interview-questions-xyz\". Empty = hidden. Then run: python3 -m publish.build_site",
+  "medium_profile": "",
+  "episodes": {}
+}

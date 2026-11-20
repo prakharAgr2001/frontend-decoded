@@ -6,12 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 9 · How the browser really works</span>
 <h1><span class="hl">Layout → Paint → Composite</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4D6tlmTdS/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4D6tlmTdS/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>After DOM + CSSOM, the browser runs a pipeline: <strong>render tree → layout → paint → composite</strong>.</li>
+<li><strong>Layout</strong> works out <em>where</em> and <em>how big</em> every box is. <strong>Paint</strong> fills in pixels (text, colours, shadows). <strong>Composite</strong> stacks painted layers on the GPU.</li>
+<li><code>display: none</code> removes an element from the render tree; <code>visibility: hidden</code> keeps its space.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>The browser combines the DOM and CSSOM into a render tree of visible elements with their computed styles. Layout calculates the exact size and position of each box. Paint records drawing commands and rasterises them into layers, and compositing combines those layers on the GPU into the final frame. Changes later in the pipeline are cheaper: a transform only needs compositing, while a width change triggers layout, paint and composite again.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Making a magazine page. <strong>Render tree:</strong> decide which articles make it in. <strong>Layout:</strong> draw the grid and box sizes on the page. <strong>Paint:</strong> print the text, photos and colours into each box. <strong>Composite:</strong> stack transparent sheets (layers) on top of each other to get the final page.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Render tree</b><span>visible nodes + their computed styles (no &lt;head&gt;, no display:none)</span></li><li><b>Layout (reflow)</b><span>exact x, y, width, height for every box</span></li><li><b>Paint</b><span>draw commands: text, backgrounds, borders, shadows → pixels</span></li><li><b>Composite</b><span>GPU stacks the layers (e.g. a fixed header, an animated card) into one frame</span></li></ol></figure>
+
+<ul>
+<li>Layout depends on the parent: a box's width usually comes from its container, its height from its children, so changes ripple.</li>
+<li>Some elements get their own <strong>layer</strong> (videos, <code>transform</code>/<code>opacity</code> animations, <code>will-change</code>), so they can move without repainting the rest.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong><code>display: none</code> vs <code>visibility: hidden</code> vs <code>opacity: 0</code>.</strong> None: not in the render tree, no space. Hidden: takes space, not visible, not clickable. Opacity 0: takes space, invisible, <strong>still clickable</strong>.</li>
+<li>⚠️ <strong>"Paint means drawing to the screen."</strong> The screen update is the composite step; paint produces layer bitmaps.</li>
+<li>⚠️ <strong>Too many layers.</strong> Each one costs GPU memory; promoting everything makes things slower, not faster.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record a page load. Purple blocks are <strong>Layout</strong> (and style), green blocks are <strong>Paint</strong>. DevTools → ⋮ → More tools → <strong>Layers</strong> shows each composited layer.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's in the render tree, and what isn't?</summary>
+<p>Visible nodes with computed styles. Not included: <code>&lt;head&gt;</code>, <code>&lt;script&gt;</code>, <code>display: none</code> elements and their children. <code>visibility: hidden</code> elements are included (they take space).</p>
+</details>
+<details>
+<summary>Order the stages: paint, layout, composite, style.</summary>
+<p>Style → Layout → Paint → Composite.</p>
+</details>
+<details>
+<summary>Why is animating transform cheaper than animating left?</summary>
+<p><code>left</code> changes geometry, so every frame needs layout + paint + composite. <code>transform</code> is applied at composite time on an existing layer, so it skips layout and paint.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Render tree (visible nodes) → Layout (size/position) → Paint (pixels) → Composite (GPU stacks layers).</li>
 <li>Performance panel: purple = layout, green = paint.</li>
 <li>Q: <code>display:none</code> removes from render tree (no space); <code>visibility:hidden</code> keeps the space.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e08/"><small>← PREVIOUS</small>DOM &amp; CSSOM</a>
 <a class="r" href="../s1e10/"><small>NEXT →</small>Reflow vs repaint</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

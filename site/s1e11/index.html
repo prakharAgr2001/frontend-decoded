@@ -6,12 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 11 · How the browser really works</span>
 <h1><span class="hl">Layout thrashing</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EMKqAfwG/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EMKqAfwG/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li><strong>Layout thrashing</strong> = writing styles and reading layout values <strong>back and forth in a loop</strong>. Every read forces a fresh layout.</li>
+<li>100 items × (write + read) = <strong>100 layouts in one frame</strong> instead of 1.</li>
+<li>Fix: <strong>read everything first, then write everything</strong>, ideally inside <code>requestAnimationFrame</code>.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>The browser normally batches style changes and runs layout once per frame. But if you read a layout property like offsetHeight after writing a style, it has to run layout synchronously to give you a correct value. Doing that write-read pattern in a loop forces layout on every iteration, which is layout thrashing. The fix is to batch all reads first and then all writes, or schedule writes with requestAnimationFrame.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Asking a tailor to measure you after every single stitch. "Add a button. How long is the sleeve now? Add another. How long now?" The tailor re-measures the whole shirt every time. Instead: take all measurements first, then do all the stitching.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="c1">// ❌ Thrashing: each read forces layout because the previous write made it dirty</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">cards</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">card</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">card</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">;</span><span class="w">   </span><span class="c1">// read → write → read → write…</span>
+<span class="p">}</span>
+
+<span class="c1">// ✅ Batched: one layout for all reads, then writes are applied together</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">widths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cards</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="p">);</span><span class="w">       </span><span class="c1">// all reads</span>
+<span class="nx">requestAnimationFrame</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">);</span><span class="w">   </span><span class="c1">// all writes</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ Interleaved</div><div class="dg-c">write, read (layout!), write, read (layout!)…</div><div class="dg-c">N layouts per frame</div><div class="dg-c">Janky scrolling and animations</div></div><div class="dg-col good"><div class="dg-h">✅ Batched</div><div class="dg-c">read, read, read… (1 layout)</div><div class="dg-c">then write, write, write…</div><div class="dg-c">1 layout in the next frame</div></div></div></figure>
+
+<p><strong>Properties that force layout when read:</strong> <code>offsetTop/Left/Width/Height</code>, <code>clientWidth/Height</code>, <code>scrollTop</code>, <code>scrollHeight</code>, <code>getBoundingClientRect()</code>, <code>getComputedStyle()</code> (for layout values).</p>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"Reading is harmless."</strong> Reading is only free if nothing changed since the last layout.</li>
+<li>⚠️ <strong>Hidden in libraries.</strong> jQuery's <code>.height()</code>, measuring scroll position in a scroll handler, or a React effect that measures then sets state can all thrash.</li>
+<li>⚠️ <strong>Use observers instead of polling.</strong> <code>ResizeObserver</code> and <code>IntersectionObserver</code> give you sizes without forcing layout in your own code.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record. Thrashing shows as many tiny purple <strong>Layout</strong> blocks with a red corner and the warning <strong>"Forced reflow is a likely performance bottleneck."</strong></p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does reading offsetHeight after setting a style cause layout?</summary>
+<p>The style change made layout invalid. To return an accurate number, the browser must recalculate layout immediately instead of waiting for the next frame.</p>
+</details>
+<details>
+<summary>How do you fix layout thrashing in a loop?</summary>
+<p>Do all reads first and store them, then do all writes (optionally in requestAnimationFrame), so layout runs once.</p>
+</details>
+<details>
+<summary>Name three properties that force layout when read.</summary>
+<p><code>offsetHeight</code>, <code>getBoundingClientRect()</code>, <code>scrollTop</code> (also <code>clientWidth</code>, <code>offsetTop</code>, <code>scrollHeight</code>).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Read/write/read/write in a loop → a layout per read. Fix: batch all reads, then all writes; schedule writes in <code>requestAnimationFrame</code>.</li>
 <li>Shows as "Forced reflow is a likely performance bottleneck" in Performance.</li>
 <li>Q: layout-forcing reads: offsetHeight/Top, clientWidth, scrollTop, getBoundingClientRect().</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e10/"><small>← PREVIOUS</small>Reflow vs repaint</a>
 <a class="r" href="../s1e12/"><small>NEXT →</small>Smooth animation</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

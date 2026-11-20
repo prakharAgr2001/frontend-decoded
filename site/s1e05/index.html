@@ -6,12 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 5 · How the browser really works</span>
 <h1><span class="hl">HTTP/1.1 vs 2 vs 3</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DdfKiGjx/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DdfKiGjx/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li><strong>HTTP/1.1:</strong> one request at a time per connection, so browsers open about <strong>6 connections per site</strong>.</li>
+<li><strong>HTTP/2:</strong> many requests at once on <strong>one connection</strong> (multiplexing) + compressed headers. But it still runs on TCP, so one lost packet stalls every stream.</li>
+<li><strong>HTTP/3:</strong> runs on <strong>QUIC over UDP</strong>. Streams are independent, handshakes are faster, and connections survive switching from Wi-Fi to mobile data.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>HTTP/1.1 handles one request at a time per connection, so browsers open around six parallel connections and requests queue behind each other. HTTP/2 multiplexes many streams over a single TCP connection and compresses headers, but a lost TCP packet blocks all streams. HTTP/3 replaces TCP with QUIC on UDP, so each stream recovers loss independently, the handshake is combined with TLS, and connections can migrate between networks.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A toll plaza. <strong>HTTP/1.1</strong> = 6 booths, each car pays fully before the next moves. <strong>HTTP/2</strong> = one huge booth processing many cars at once, but if one car breaks down, the whole lane stops. <strong>HTTP/3</strong> = many independent lanes; a breakdown only blocks its own lane.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">HTTP/1.1 · HTTP/2</div><div class="dg-c">Runs on TCP</div><div class="dg-c">1.1: one request per connection at a time · 2: many streams on one connection</div><div class="dg-c">A lost packet blocks everything behind it</div><div class="dg-c">TCP handshake + TLS handshake</div><div class="dg-c">New network (Wi-Fi → 4G) = new connection</div></div><div class="dg-col good"><div class="dg-h">HTTP/3</div><div class="dg-c">Runs on QUIC (over UDP)</div><div class="dg-c">Many streams on one connection</div><div class="dg-c">A lost packet blocks only its own stream</div><div class="dg-c">Combined handshake (1 round trip, 0 on resume)</div><div class="dg-c">Connection survives the switch</div></div></div></figure>
+
+<ul>
+<li>HTTP/1.1 tricks like <strong>domain sharding</strong>, <strong>sprites</strong> and <strong>bundling everything</strong> existed to work around the 6-connection limit. With HTTP/2 they're mostly unnecessary, sometimes harmful.</li>
+<li>HTTP/2 <strong>server push</strong> was removed from Chrome; <code>preload</code> and <code>103 Early Hints</code> replaced it.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"HTTP/2 is always faster."</strong> On lossy mobile networks, one connection with TCP head-of-line blocking can lose to several HTTP/1.1 connections.</li>
+<li>⚠️ <strong>Confusing the two kinds of head-of-line blocking.</strong> HTTP/2 fixed it at the HTTP level (requests no longer queue). HTTP/3 fixed it at the transport level (packet loss).</li>
+<li>⚠️ <strong>"UDP means unreliable."</strong> QUIC adds its own reliability and encryption on top of UDP.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → right-click the column header → enable <strong>Protocol</strong>. You'll see <code>http/1.1</code>, <code>h2</code> and <code>h3</code> side by side.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What is multiplexing in HTTP/2?</summary>
+<p>Sending many requests and responses at the same time over one connection, split into interleaved frames tagged with stream IDs.</p>
+</details>
+<details>
+<summary>Why did HTTP/3 move away from TCP?</summary>
+<p>TCP's strict in-order delivery means one lost packet blocks all multiplexed streams, and TCP can't be changed easily because it lives in operating systems and middleboxes. QUIC on UDP fixes loss per stream and can evolve in user space.</p>
+</details>
+<details>
+<summary>Is bundling all JS into one big file still a good idea with HTTP/2?</summary>
+<p>Not necessarily. Many smaller files are cheap with multiplexing and cache better (one change doesn't invalidate everything). Very large numbers of tiny files still have overhead, so moderate code splitting wins.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>1.1: one request per connection at a time → ~6 connections per site.</li>
 <li>2: multiplexing + header compression on ONE TCP connection — but a lost packet stalls all streams.</li>
 <li>3: QUIC over UDP, independent streams, survives Wi-Fi → mobile switches. Trap: HTTP/2 isn't always faster on lossy networks.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e04/"><small>← PREVIOUS</small>HTTPS &amp; the padlock</a>
 <a class="r" href="../s1e06/"><small>NEXT →</small>CDNs</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

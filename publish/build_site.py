@@ -58,6 +58,11 @@ footer{margin-top:44px;color:var(--mute);font-size:14px}
 .deep{margin-top:18px}.deep h2{font:700 26px/1.15 Oswald,Impact,sans-serif;text-transform:uppercase;margin:38px 0 10px;scroll-margin-top:16px}
 .deep h2::before{content:'';display:inline-block;width:12px;height:22px;background:var(--yel);margin-right:10px;vertical-align:-2px;border:2px solid var(--ink)}
 .deep h3{font-size:19px;margin:24px 0 6px}.deep p,.deep li{font-size:17px}.deep li{margin:6px 0}
+.deep h2#in-one-line+p{font:600 20px/1.45 Inter,sans-serif;background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:16px 18px;box-shadow:5px 5px 0 var(--ink)}
+.deep h2#say-it-in-the-interview+blockquote{margin:12px 0;background:var(--ink);color:#fff;border-radius:16px;padding:16px 18px 16px 52px;position:relative;font-size:16.5px}
+.deep h2#say-it-in-the-interview+blockquote::before{content:'🎤';position:absolute;left:16px;top:16px;font-size:22px}
+.deep h2#say-it-in-the-interview+blockquote code{background:#2c2f38;color:#ffe58a}
+.deep h2#traps-interviewers-love+ul li::marker{content:'⚠️ '}
 .deep h2#tldr+ul{background:var(--yel);border:3px solid var(--ink);border-radius:16px;padding:14px 18px 14px 36px;box-shadow:5px 5px 0 var(--ink)}
 .deep pre{background:#15171C;color:#e8e6df;border-radius:14px;padding:16px 18px;overflow-x:auto;font-size:14px;line-height:1.55}
 .deep pre code{background:none;padding:0;color:inherit;font-size:14px}
@@ -171,6 +176,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .dg-col.bad .dg-h{background:var(--red)}.dg-col.good .dg-h{background:#1f9d55}
 .dg-c{font-size:14px;line-height:1.4;padding:9px 10px;border-top:1px solid var(--line)}
 .hl-code pre{white-space:pre-wrap;word-break:break-word}
+.medium{display:block;margin-top:22px;padding:16px 18px;border:3px solid var(--ink);border-radius:16px;background:#fff;text-decoration:none;box-shadow:5px 5px 0 var(--ink)}.medium:hover{background:var(--yel)}.medium b{display:block;font-size:17px}.medium span{display:block;color:var(--mute);font-size:14.5px;margin-top:3px}
 .toc{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;margin-top:16px;font-size:15px}
 .toc summary{font-weight:700;cursor:pointer}.toc ul{margin:8px 0 4px;padding-left:20px}.toc a{text-decoration:none}.toc a:hover{background:var(--yel)}
 .badge{font:800 11px Inter,sans-serif;background:var(--yel);border:1.5px solid var(--ink);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:2px}
@@ -217,6 +223,17 @@ def _compare(body):
 
 DIAGRAMS = {'steps': _steps, 'loop': lambda b: _steps(b, True), 'chat': _chat, 'compare': _compare}
 
+LINKS = json.load(open('notes/links.json')) if os.path.exists('notes/links.json') else {}
+
+def medium_card(eid=None):
+    art = (LINKS.get('episodes') or {}).get(eid) if eid else None
+    prof = LINKS.get('medium_profile')
+    if art:
+        return f'<a class="medium" href="{html.escape(art)}" target="_blank" rel="noopener"><b>✍️ Go deeper on Medium</b><span>Interview questions, follow-ups and design breakdowns for this topic →</span></a>'
+    if prof:
+        return f'<a class="medium" href="{html.escape(prof)}" target="_blank" rel="noopener"><b>✍️ Interview prep on Medium</b><span>System design and frontend interview questions, explained step by step →</span></a>'
+    return ''
+
 def render_deep(md_text):
     # ```mermaid blocks -> <pre class="mermaid"> (rendered in the browser); <details> may contain markdown
     md_text = re.sub(r'```(steps|loop|chat|compare)\n(.*?)```', lambda m: '\n<figure class="dg">' + DIAGRAMS[m.group(1)](m.group(2)) + '</figure>\n', md_text, flags=re.S)
@@ -243,7 +260,7 @@ def episodes():
             text = re.sub(r'<[^>]+>', ' ', ht); text = html.unescape(re.sub(r'\s+', ' ', text)).strip()
             eid = f'S{s}E{e:02d}'; dp = f'notes/deep/{eid.lower()}.md'; deep = toc = None; mins = 0
             if os.path.exists(dp):
-                deep, toc = render_deep(open(dp).read()); mins = max(1, round(len(open(dp).read().split()) / 200))
+                deep, toc = render_deep(open(dp).read()); mins = max(1, round(len(open(dp).read().split()) / 220))
             out.append(dict(id=eid, s=s, e=e, title=h.group(2).strip(), season=SEASONS.get(s, ''), html=ht, text=text, deep=deep, toc=toc, mins=mins, reel=REELS.get(eid)))
     return sorted(out, key=lambda x: (x['s'], x['e']))
 
@@ -257,6 +274,7 @@ def ep_page(ep, prev, nxt):
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({{title:document.title,url:location.href}}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav">{f'<a href="{slug(prev)}"><small>← PREVIOUS</small>{html.escape(prev["title"])}</a>' if prev else '<span></span>'}
 {f'<a class="r" href="{slug(nxt)}"><small>NEXT →</small>{html.escape(nxt["title"])}</a>' if nxt else ''}</div>
+{medium_card(ep['id'])}
 <div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="{IG}">follow @tech.explained.dev</a></div>"""
     return p + FOOT.format(js=DEEP_JS if ep.get('deep') else '')
 
@@ -336,7 +354,7 @@ def build():
 <p class="lead">{len(eps)} cheat sheets across {len({e['s'] for e in eps})} seasons. Type the number from the reel, or what it was about.</p>
 <div class="search"><input id="q" type="search" placeholder="s2e5 · 3 10 · event loop" autocomplete="off" aria-label="Search notes">
 <div class="hint">Try <code>s1e5</code> <code>2 3</code> <code>season 4 episode 2</code> <code>debounce</code></div></div>
-<div class="chips" id="chips"></div><div id="list"></div>"""
+{medium_card()}<div class="chips" id="chips"></div><div id="list"></div>"""
     js = APP_JS.replace('__DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/')).replace('__SEASONS__', json.dumps(SEASONS))
     open('site/index.html', 'w').write(idx + FOOT.format(js=js))
     open('site/404.html', 'w').write(HEAD.format(title='Not found · Tech, Explained', desc='', root='/') +

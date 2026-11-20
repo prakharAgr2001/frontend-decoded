@@ -6,12 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 20 · How the browser really works</span>
 <h1><span class="hl">Bubbling &amp; capturing</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FdJegJHl/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4FdJegJHl/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 2 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>A click travels in <strong>three phases</strong>: <strong>capture</strong> (down from <code>window</code> to the target), <strong>target</strong>, <strong>bubble</strong> (back up to <code>window</code>).</li>
+<li>Listeners run in the <strong>bubble</strong> phase by default. Pass <code>{ capture: true }</code> to run on the way down.</li>
+<li><code>stopPropagation()</code> stops the journey. <code>preventDefault()</code> stops the browser's default action (following a link, submitting a form). They're different things.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>DOM events propagate in three phases: capturing from the window down to the target's parent, the target phase, then bubbling back up to the window. addEventListener listens in the bubble phase by default, or capture if you pass capture: true. event.target is the element that was actually clicked, while event.currentTarget is the element whose listener is running. stopPropagation stops further propagation; preventDefault cancels the default browser behaviour, and you can use either independently.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A letter delivered to a flat. It goes <strong>down</strong> from the city post office to the building to the floor to your door (capture). You open it (target). Then the news spreads <strong>up</strong>: your floor hears, then the building, then the city (bubble). Anyone along the way can react, or stop the news from spreading further.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Capture ↓</b><span>window → document → html → body → … → parent (only { capture: true } listeners)</span></li><li><b>Target</b><span>the element you actually clicked</span></li><li><b>Bubble ↑</b><span>parent → … → body → html → document → window (normal listeners)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="nx">list</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span><span class="w">         </span><span class="c1">// the &lt;button&gt; you clicked (deepest element)</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">currentTarget</span><span class="p">);</span><span class="w">  </span><span class="c1">// the &lt;ul&gt; this listener is attached to</span>
+<span class="p">});</span>
+
+<span class="nx">link</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span><span class="w">      </span><span class="c1">// don't navigate</span>
+<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span><span class="w">     </span><span class="c1">// and don't let parents hear about it</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong><code>target</code> vs <code>currentTarget</code>.</strong> Mixing them up is the #1 bug in delegated handlers.</li>
+<li>⚠️ <strong>Not every event bubbles.</strong> <code>focus</code>, <code>blur</code>, <code>mouseenter</code> and <code>mouseleave</code> don't. Use <code>focusin</code>/<code>focusout</code> and <code>mouseover</code>/<code>mouseout</code> if you need bubbling.</li>
+<li>⚠️ <strong><code>stopPropagation</code> breaks other code.</strong> Analytics, dropdown "click outside" handlers and delegation on parents stop working. Use it rarely.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Elements</strong> → select an element → <strong>Event Listeners</strong> tab → tick <strong>Ancestors</strong> to see every listener that will hear a click on it.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>A div has a capture listener and its child button has a normal listener. Which runs first when you click the button?</summary>
+<p>The div's capture listener: capture runs on the way down, before the target and bubble phases.</p>
+</details>
+<details>
+<summary>Difference between stopPropagation and preventDefault?</summary>
+<p>stopPropagation stops the event from reaching other elements; preventDefault stops the browser's default action. A link click with preventDefault still bubbles.</p>
+</details>
+<details>
+<summary>Which common events don't bubble?</summary>
+<p>focus, blur, mouseenter, mouseleave (also load and scroll on elements).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Phases: capture ↓ → target → bubble ↑. Listeners default to bubble; <code>{ capture: true }</code> for capture.</li>
 <li><code>stopPropagation</code> (stop the journey) ≠ <code>preventDefault</code> (stop default action).</li>
 <li><code>target</code> = clicked element, <code>currentTarget</code> = element whose listener runs. focus/blur/mouseenter/mouseleave don't bubble.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e18/"><small>← PREVIOUS</small>Long tasks</a>
 <a class="r" href="../s1e21/"><small>NEXT →</small>Event delegation</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,12 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 8 · How the browser really works</span>
 <h1><span class="hl">DOM &amp; CSSOM</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DzYfioQb/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DzYfioQb/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 3 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#traps-interviewers-love">Traps interviewers love</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>The browser turns <strong>HTML into the DOM</strong> (a tree of objects) and <strong>CSS into the CSSOM</strong> (a tree of style rules).</li>
+<li><strong>CSS blocks rendering:</strong> nothing is painted until the CSS is loaded, otherwise you'd see a flash of unstyled page.</li>
+<li>A normal <code>&lt;script&gt;</code> <strong>blocks parsing:</strong> the parser stops, downloads and runs it, then continues. <code>defer</code> and <code>async</code> fix that.</li>
+</ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>The browser parses HTML bytes into tokens and builds the DOM tree, and parses CSS into the CSSOM. CSS is render-blocking because the browser won't paint until it knows the styles. Classic synchronous scripts are parser-blocking because they might modify the DOM, so the parser pauses until they download and execute. Using <code>defer</code> or <code>async</code>, and putting critical CSS early, keeps the critical rendering path short.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Building furniture from a manual. The <strong>HTML</strong> is the parts list: what pieces exist and how they fit (the DOM). The <strong>CSS</strong> is the paint and finish instructions (the CSSOM). You won't show the furniture to anyone until you know what colour it is. And if a step says "stop and read this other booklet first" (a script), you stop building until you've read it.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Bytes → characters</b><span>the HTML arrives over the network in chunks</span></li><li><b>Tokens → nodes</b><span>&lt;div&gt;, &lt;p&gt;, text… become objects</span></li><li><b>DOM tree</b><span>nodes linked as parent/child, what JS sees as document</span></li><li><b>CSS → CSSOM</b><span>every stylesheet parsed into a tree of rules</span></li><li><b>DOM + CSSOM → render tree</b><span>ready for layout (next episode)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Blocks parsing until downloaded AND run --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"app.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Downloads in parallel, runs after parsing, in order: best default --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Downloads in parallel, runs as soon as it arrives (order not guaranteed): good for analytics --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"analytics.js"</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<ul>
+<li>The parser streams: it builds the DOM as bytes arrive, it doesn't wait for the whole file.</li>
+<li>A <strong>preload scanner</strong> looks ahead for <code>&lt;link&gt;</code>, <code>&lt;script&gt;</code> and <code>&lt;img&gt;</code> to start downloads early, even while parsing is blocked.</li>
+</ul>
+<h2 id="traps-interviewers-love">Traps interviewers love</h2>
+<ul>
+<li>⚠️ <strong>"The DOM is the HTML."</strong> No. The browser fixes broken markup (adds missing <code>&lt;tbody&gt;</code>, closes tags), and JavaScript changes the DOM afterwards. <em>View Source</em> shows what arrived; the <em>Elements</em> panel shows the live DOM.</li>
+<li>⚠️ <strong><code>async</code> vs <code>defer</code>.</strong> <code>defer</code> keeps order and waits for parsing to finish; <code>async</code> runs whenever it's ready, in any order.</li>
+<li>⚠️ <strong>Scripts in <code>&lt;head&gt;</code> without defer</strong> delay the whole page from showing up.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Compare <strong>View Page Source</strong> (raw HTML) with DevTools → <strong>Elements</strong> (live DOM) on any React site. The source is nearly empty; the DOM is full.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why is CSS render-blocking?</summary>
+<p>Painting without styles would show unstyled content and then reflow everything when CSS arrives (FOUC). So the browser waits for the CSSOM before the first paint.</p>
+</details>
+<details>
+<summary>When would you use async instead of defer?</summary>
+<p>For independent scripts that don't depend on the DOM or other scripts, such as analytics or ads, where order doesn't matter and you want them to run as early as possible.</p>
+</details>
+<details>
+<summary>Why doesn't the DOM always match the HTML source?</summary>
+<p>The parser repairs invalid markup, and JavaScript adds, removes and changes nodes after load.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>HTML → DOM tree; CSS → CSSOM tree. CSS blocks rendering; classic <code>&lt;script&gt;</code> blocks parsing.</li>
 <li>View Source = what arrived; Elements = live DOM.</li>
 <li>Trap: DOM ≠ HTML (browser fixes markup, JS mutates it).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e06/"><small>← PREVIOUS</small>CDNs</a>
 <a class="r" href="../s1e09/"><small>NEXT →</small>Layout → Paint → Composite</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

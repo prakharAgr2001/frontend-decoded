@@ -8,12 +8,16 @@
 <h1><span class="hl">DNS</span></h1>
 <div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DF4WmWFp/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
 <div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
-<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#why-frontend-engineers-should-care">Why frontend engineers should care</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#say-it-in-the-interview">Say it in the interview</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#why-frontend-engineers-should-care">Why frontend engineers should care</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
 <ul>
 <li>Computers talk using <strong>IP addresses</strong> (<code>142.250.183.14</code>), humans type <strong>names</strong> (<code>google.com</code>). DNS turns one into the other.</li>
 <li>Your browser asks a <strong>resolver</strong>, which walks a chain of servers: <strong>root → TLD (.com) → the domain's own name server</strong>.</li>
 <li>Every answer comes with a <strong>TTL</strong> (time to live). Everyone along the way caches it until it expires. That is why DNS is fast most of the time, and why changes take time to reach everyone.</li>
 </ul>
+<h2 id="say-it-in-the-interview">Say it in the interview</h2>
+<blockquote>
+<p>DNS converts a domain name into an IP address. The browser first checks its own cache and the OS cache, then asks a recursive resolver. On a miss, the resolver asks a root server, then the TLD server like <code>.com</code>, then the domain's authoritative name server, and caches the answer for its TTL. For performance I keep third-party domains few and use <code>dns-prefetch</code> or <code>preconnect</code> for the ones I can't avoid.</p>
+</blockquote>
 <h2 id="the-analogy">The analogy</h2>
 <p>Think of your phone's contacts app. You tap "Mom", the phone dials <code>+91 98xxx xxxxx</code>. You never remember the number; the app does.</p>
 <p>DNS is the contacts app of the internet, except nobody has the full list. So when your browser meets a name it hasn't seen, it has to ask around: first a general directory that knows who handles <code>.com</code> names, then the <code>.com</code> office that knows who handles <code>google.com</code>, then Google's own server that finally says the number.</p>
@@ -129,6 +133,7 @@
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e01/"><small>← PREVIOUS</small>URL to pixels</a>
 <a class="r" href="../s1e03/"><small>NEXT →</small>TCP handshake</a></div>
+
 <div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
