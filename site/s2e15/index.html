@@ -6,13 +6,73 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 15 · Rendering strategies</span>
 <h1><span class="hl">Server Actions</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gZ8rkUMj/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gZ8rkUMj/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A <strong>Server Action</strong> is a function marked <code>'use server'</code> that you call from the client like a normal function. React turns that call into a <strong>POST request</strong> to your server.</li>
+<li>It works with <code>&lt;form action={fn}&gt;</code>, even <strong>before JavaScript loads</strong> (progressive enhancement).</li>
+<li>It's a <strong>public endpoint</strong>: always check auth and validate the input inside it.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Server Actions let you define server-side functions with 'use server' and call them directly from components or pass them to a form's action. Under the hood the framework creates an endpoint and sends a POST with an action ID and the serialized arguments, then returns the result and can revalidate cached data. Forms using actions work without client JavaScript. Because anyone can call that endpoint, the action must authenticate the user and validate every input, exactly like an API route.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A hotel room phone with a "room service" button. You just press it; you don't need to know the kitchen's number or how the order travels. But the kitchen must still check that the order really comes from a guest.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Define</b><span>async function with &#x27;use server&#x27;</span></li><li><b>Use it</b><span>&lt;form action={createTodo}&gt; or call it in an event handler</span></li><li><b>Browser sends a POST</b><span>with a Next-Action header identifying the function</span></li><li><b>Server runs it</b><span>DB write, then revalidate the page data</span></li><li><b>Response</b><span>updated UI (or a return value)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// actions.js</span>
+<span class="s1">'use server'</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createTodo</span><span class="p">(</span><span class="nx">formData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getUser</span><span class="p">();</span><span class="w">                 </span><span class="c1">// auth check</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">'Not signed in'</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="nx">formData</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'title'</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="p">).</span><span class="nx">trim</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">title</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">200</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s1">'Invalid title'</span><span class="w"> </span><span class="p">};</span><span class="w">   </span><span class="c1">// validate</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">todo</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">userId</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="nx">revalidatePath</span><span class="p">(</span><span class="s1">'/todos'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// TodoForm.jsx</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createTodo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./actions'</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">TodoForm</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">form</span><span class="w"> </span><span class="na">action</span><span class="o">=</span><span class="p">{</span><span class="nx">createTodo</span><span class="p">}&gt;&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">"title"</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">button</span><span class="p">&gt;</span><span class="nx">Add</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;&lt;/</span><span class="nt">form</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Trusting the caller.</strong> The action is reachable by anyone who sends the right POST. Check permissions every time.</li>
+<li><strong>Returning secrets.</strong> Whatever you return is sent to the browser.</li>
+<li><strong>Using actions for data fetching.</strong> They're for mutations; fetch data in server components.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In a Next.js app, submit a form that uses an action → DevTools → <strong>Network</strong>: a POST to the same page with a <code>Next-Action</code> header.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does calling a server action do at the network level?</summary>
+<p>The framework sends a POST request to the server with an action ID and serialized arguments, runs the function, and returns the result.</p>
+</details>
+<details>
+<summary>Why do forms with server actions work before JS loads?</summary>
+<p>The form posts natively using standard HTML form submission; JavaScript only enhances it.</p>
+</details>
+<details>
+<summary>What must every server action do?</summary>
+<p>Authenticate/authorize the user and validate inputs, because it's a public endpoint.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>'use server'</code> function called like a normal function → React sends a POST (<code>Next-Action: &lt;id&gt;</code> header).</li>
 <li>Works with <code>&lt;form action={fn}&gt;</code> even before JS loads (progressive enhancement).</li>
 <li>Trap: it's a PUBLIC POST endpoint. Always check auth and validate inputs inside the action.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e14/"><small>← PREVIOUS</small>React Server Components (RSC)</a>
 <a class="r" href="../s2e16/"><small>NEXT →</small>Islands architecture</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

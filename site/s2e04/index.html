@@ -6,14 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 4 · Rendering strategies</span>
 <h1><span class="hl">Server-side rendering (SSR)</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5errwAtq3/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5errwAtq3/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>In <strong>server-side rendering (SSR)</strong>, the server fetches data and builds the full HTML <strong>on every request</strong>.</li>
+<li>The browser paints content immediately; JavaScript then loads and makes the page interactive (hydration).</li>
+<li><strong>Trade-off:</strong> first paint comes sooner, but <strong>TTFB</strong> (time to first byte) goes up because the server is doing work before responding.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>With SSR, each request runs the app on the server: it fetches the data, renders components to HTML and sends a complete page. The user sees content as soon as the HTML arrives, which helps first contentful paint and SEO, and then the client bundle hydrates the page to make it interactive. The cost is higher server load and TTFB, since nothing is sent until rendering finishes, and the page still isn't interactive until hydration completes.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant that cooks your dish fresh when you order. You wait a bit longer before the plate arrives (TTFB), but it arrives ready to eat, unlike the flat-pack kitchen of CSR.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Request /product/42</b><span>hits the server</span></li><li><b>Server fetches data</b><span>database or APIs</span></li><li><b>Server renders HTML</b><span>components → full HTML string</span></li><li><b>Browser paints</b><span>content visible right away</span></li><li><b>JS loads and hydrates</b><span>buttons start working</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js (App Router): this component runs on the server for each request</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">dynamic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'force-dynamic'</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">Product</span><span class="p">({</span><span class="w"> </span><span class="nx">params</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">product</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="err">·</span><span class="w"> </span><span class="err">₹</span><span class="p">{</span><span class="nx">product</span><span class="p">.</span><span class="nx">price</span><span class="p">}&lt;/</span><span class="nt">h1</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"SSR is always faster."</strong> A slow database or a far-away server makes TTFB huge, and the page can feel slower than CSR.</li>
+<li><strong>SSR doesn't delete JavaScript.</strong> The page still needs the bundle to hydrate before clicks work.</li>
+<li><strong>Caching matters.</strong> Rendering the same page for every visitor is wasted work; cache it or use SSG/ISR where possible.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>View Source on an Amazon product page: titles and prices are in the HTML. DevTools → Network → the document request → <strong>Timing</strong> → "Waiting for server response" roughly equals server render time.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which metric gets worse with SSR, and which gets better?</summary>
+<p>TTFB usually gets worse (the server renders first). First contentful paint usually gets better (HTML arrives with content).</p>
+</details>
+<details>
+<summary>Is an SSR page interactive as soon as it's visible?</summary>
+<p>No. It becomes interactive only after the JavaScript downloads and hydration attaches event handlers.</p>
+</details>
+<details>
+<summary>When would you choose SSR over SSG?</summary>
+<p>When the content is personalised or changes per request (user-specific pages, live prices, search results) and must still be visible quickly and crawlable.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Every request: server fetches data + builds full HTML → browser paints immediately; JS loads after to make it interactive.</li>
 <li>TTFB goes up (server is cooking), first paint comes sooner.</li>
 <li>See it: View Source on Amazon shows titles/prices; Network → document → Timing → "Waiting for server response" ≈ render time.</li>
 <li>Trap: SSR isn't always faster — slow DB or far server = huge TTFB, and still not interactive until JS. SSR moves work, doesn't delete it.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e03/"><small>← PREVIOUS</small>Client-side routing</a>
 <a class="r" href="../s2e05/"><small>NEXT →</small>Static site generation (SSG)</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

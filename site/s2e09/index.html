@@ -6,14 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 9 · Rendering strategies</span>
 <h1><span class="hl">Hydration mismatch</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fnLAiFGc/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fnLAiFGc/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Hydration has one rule: <strong>the server's HTML must match the browser's first render</strong>.</li>
+<li>Mismatches come from values that differ between server and browser: <strong><code>Date</code>, <code>Math.random()</code>, <code>window</code>/<code>localStorage</code>, timezone or locale</strong>, invalid HTML nesting, browser extensions.</li>
+<li>Fix: render the <strong>same placeholder on both sides</strong>, then fill browser-only values in <code>useEffect</code>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A hydration mismatch happens when the HTML generated on the server differs from what the client renders on its first pass. Common causes are time and random values, reading browser-only APIs like window or localStorage during render, locale and timezone formatting, and invalid nesting that the browser repairs. React warns and may re-render that subtree on the client. The fix is to make the initial render deterministic, then update browser-specific values in an effect after hydration.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Two people assembling the same flat-pack with different manuals. When they compare, the pieces don't line up, and one of them has to take it apart and redo it.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Causes a mismatch</div><div class="dg-c">{new Date().toLocaleTimeString()} in render</div><div class="dg-c">{Math.random()} in render</div><div class="dg-c">typeof window !== &#x27;undefined&#x27; ? A : B</div><div class="dg-c">&lt;p&gt;&lt;div&gt;…&lt;/div&gt;&lt;/p&gt; (invalid nesting)</div></div><div class="dg-col good"><div class="dg-h">Safe pattern</div><div class="dg-c">Render a placeholder, set the time in useEffect</div><div class="dg-c">Generate the value on the server and pass it down</div><div class="dg-c">Same output first, switch after mount</div><div class="dg-c">Valid HTML structure</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">LocalTime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">time</span><span class="p">,</span><span class="w"> </span><span class="nx">setTime</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span><span class="w">           </span><span class="c1">// same on server and client</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTime</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()),</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;{</span><span class="nx">time</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">'--:--'</span><span class="p">}&lt;/</span><span class="nt">span</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>typeof window</code> checks in render cause mismatches</strong>: the server renders one thing, the browser another.</li>
+<li><strong><code>suppressHydrationWarning</code></strong> is only for tiny, expected differences (like a timestamp), not a general fix.</li>
+<li><strong>Browser extensions</strong> that inject DOM can trigger warnings you can't reproduce in incognito.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In a Next.js or Remix app, render <code>new Date().toISOString()</code> directly in a component and reload: the console shows a hydration error pointing at the text.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does `Math.random()` in render cause a mismatch?</summary>
+<p>The server and browser each generate a different number, so the first client render doesn't match the server HTML.</p>
+</details>
+<details>
+<summary>How do you safely show something that depends on localStorage?</summary>
+<p>Render a neutral placeholder first, then read localStorage in useEffect and update state after hydration.</p>
+</details>
+<details>
+<summary>Can invalid HTML cause hydration errors?</summary>
+<p>Yes. The browser repairs invalid nesting (like a div inside a p) when parsing, so the DOM no longer matches what React expects.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Rule: server HTML must equal the browser's first render.</li>
 <li>Causes: <code>Date</code>, <code>Math.random()</code>, <code>window</code>/<code>localStorage</code> in render, timezone/locale, invalid nesting (<code>&lt;div&gt;</code> in <code>&lt;p&gt;</code>), extensions.</li>
 <li>Fix: same placeholder on both sides → fill browser-only values in <code>useEffect</code>. Tiny diffs: <code>suppressHydrationWarning</code>.</li>
 <li>Trap: <code>typeof window</code> checks in render CAUSE mismatches.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e08/"><small>← PREVIOUS</small>Hydration</a>
 <a class="r" href="../s2e10/"><small>NEXT →</small>Visible but not clickable</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

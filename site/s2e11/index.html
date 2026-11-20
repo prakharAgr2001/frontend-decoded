@@ -6,13 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 11 · Rendering strategies</span>
 <h1><span class="hl">Selective hydration</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5f0kNDgHA/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5f0kNDgHA/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Classic hydration is <strong>all or nothing</strong>: the whole page hydrates in one go before anything works.</li>
+<li>With React 18+, each <strong><code>&lt;Suspense&gt;</code> boundary hydrates on its own</strong>, and React yields to the browser between chunks.</li>
+<li>If you click a part that isn't hydrated yet, React <strong>hydrates that part first, then replays your click</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>React 18 introduced selective hydration. When the page is wrapped in Suspense boundaries, React can hydrate each boundary independently instead of the whole tree at once, and it yields between them so the browser can handle input. If the user interacts with a boundary that hasn't hydrated, React prioritises it and replays the event afterwards. It improves responsiveness, but it doesn't reduce the total JavaScript that's downloaded and executed.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Opening a big store floor by floor instead of keeping the whole building shut until every floor is ready. If a customer walks up to the third floor first, staff rush to open that floor next.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Server HTML for all sections</b><span>page fully visible</span></li><li><b>Hydrate boundary by boundary</b><span>React yields between them</span></li><li><b>User taps a not-yet-ready section</b><span>React bumps it to the front</span></li><li><b>Hydrate it, replay the click</b><span>the tap isn&#x27;t lost</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">Layout</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Header</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Spinner</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Comments</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">          </span><span class="p">{</span><span class="cm">/* hydrates independently */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Spinner</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Recommendations</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">   </span><span class="p">{</span><span class="cm">/* hydrates independently */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Layout</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>It doesn't make the JS smaller.</strong> The same code still downloads and runs; only the order and chunking change.</li>
+<li><strong>No boundaries = no benefit.</strong> Without Suspense boundaries, the tree still hydrates as one unit.</li>
+<li><strong>Too many tiny boundaries</strong> add overhead and can cause flickering fallbacks.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In a React 18 SSR app with Suspense around heavy sections, record <strong>Performance</strong> with CPU throttling: hydration appears as several smaller tasks instead of one long one.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What unit does React hydrate independently?</summary>
+<p>Each Suspense boundary.</p>
+</details>
+<details>
+<summary>What happens if a user clicks an un-hydrated boundary?</summary>
+<p>React hydrates that boundary with priority, then replays the click event.</p>
+</details>
+<details>
+<summary>Does selective hydration reduce bundle size?</summary>
+<p>No. It changes when and in what order hydration work happens, not how much code is shipped.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Classic hydration is all-or-nothing. React 18 hydrates each <code>&lt;Suspense&gt;</code> boundary independently, yielding between chunks.</li>
 <li>Clicking an un-hydrated part → React hydrates it first, then replays the click.</li>
 <li>Trap: it doesn't make JS smaller — same code downloads and runs; only order + chunking change.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e10/"><small>← PREVIOUS</small>Visible but not clickable</a>
 <a class="r" href="../s2e13/"><small>NEXT →</small>Streaming SSR</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

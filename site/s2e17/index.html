@@ -6,13 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 17 · Rendering strategies</span>
 <h1><span class="hl">Resumability</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gtjFjDJt/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gtjFjDJt/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Resumability</strong> (from the Qwik framework) skips hydration completely.</li>
+<li>The server <strong>serialises the app's state and event wiring into the HTML</strong>. The browser <strong>resumes</strong> where the server stopped, without re-running components.</li>
+<li>Event handlers are tiny chunks loaded <strong>only when the user interacts</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Hydration has to re-execute components on the client to rebuild state and attach listeners. Resumability avoids that: the server serializes application state and the location of each event handler into the HTML, and a tiny global listener on the client loads and runs only the specific handler chunk when an interaction occurs. Startup JavaScript is close to zero regardless of app size. The trade-off is that the first interaction may need to fetch code, so frameworks prefetch likely handlers.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Pausing a video game and saving to a memory card. Resuming loads you right back to the same spot. You don't replay the whole level to get there, which is what hydration does.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Hydration</div><div class="dg-c">Download all component code</div><div class="dg-c">Re-run components to rebuild state</div><div class="dg-c">Attach every listener</div><div class="dg-c">Then interactive</div></div><div class="dg-col good"><div class="dg-h">Resumability</div><div class="dg-c">Download almost nothing upfront</div><div class="dg-c">State is already in the HTML</div><div class="dg-c">One global listener</div><div class="dg-c">Load the handler only when clicked</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Qwik output: the handler is a reference to a small lazy-loaded chunk --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">on:click</span><span class="o">=</span><span class="s">"q-chunk-abc.js#s_onClickHandler"</span><span class="p">&gt;</span>Add to cart<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>First click can be slow on a bad network</strong> because the handler code is fetched then. Prefetching (Qwik does this with a service worker) mitigates it.</li>
+<li><strong>Serialization limits:</strong> state must be serializable to go into the HTML.</li>
+<li><strong>It's not "no JavaScript".</strong> JS still runs; it's just loaded lazily, piece by piece.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open a Qwik demo site → DevTools → <strong>Network</strong> (JS filter) → load the page: very little JS. Click a button and watch a small chunk load at that moment.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What step does resumability skip?</summary>
+<p>Hydration, meaning re-executing components on the client to rebuild state and attach handlers.</p>
+</details>
+<details>
+<summary>Where does the app state live when the page loads?</summary>
+<p>Serialized inside the HTML sent by the server.</p>
+</details>
+<details>
+<summary>What's the main downside?</summary>
+<p>The first interaction may need to download its handler code, which is slow on poor networks unless prefetched.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Qwik: server serializes state + event wiring into HTML; browser resumes without re-running components.</li>
 <li>Handlers are URLs to small chunks (<code>on:click="q-…js#s_…"</code>); one tiny global listener loads code on interaction.</li>
 <li>Trap: first interaction must fetch code → slow on bad networks; mitigate by prefetching likely handlers.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e16/"><small>← PREVIOUS</small>Islands architecture</a>
 <a class="r" href="../s2e18/"><small>NEXT →</small>Edge rendering</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,14 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 6 · Rendering strategies</span>
 <h1><span class="hl">Incremental static regeneration (ISR)</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5e_CjCbFp/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5e_CjCbFp/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Incremental Static Regeneration (ISR)</strong> = a static page with an <strong>expiry time</strong>.</li>
+<li>After it expires, the next visitor <strong>still gets the old page instantly</strong>, while that one page is rebuilt in the background.</li>
+<li>Everyone after that gets the fresh version. It's static speed with data that stays reasonably current.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>ISR serves pre-rendered static pages from a cache, but each page has a revalidation window. When a request comes in after the window has passed, the cached page is still served immediately, and a background regeneration is triggered for that page only. Once it succeeds, the cache is updated for subsequent visitors. It's the stale-while-revalidate idea applied to pages, and frameworks also support on-demand revalidation when you know data has changed.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A café's daily specials board. The board is rewritten only when it's out of date, and only after the first customer of the day notices. That customer still reads yesterday's board, but the staff update it right away for everyone after.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Page built</b><span>served as static HTML from cache</span></li><li><b>Revalidate window passes</b><span>e.g. 60 seconds</span></li><li><b>Next visitor</b><span>still gets the OLD page, instantly</span></li><li><b>Background rebuild</b><span>of just that page</span></li><li><b>Visitors after that</b><span>get the NEW page</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js: rebuild this page at most once a minute</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">revalidate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">60</span><span class="p">;</span>
+
+<span class="c1">// Or on demand, e.g. after an admin edits a product</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">revalidatePath</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'next/cache'</span><span class="p">;</span>
+<span class="nx">revalidatePath</span><span class="p">(</span><span class="s1">'/product/42'</span><span class="p">);</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="err"># Same idea at the HTTP/CDN level</span>
+<span class="err">Cache-Control: s-maxage=60, stale-while-revalidate=300</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>The first visitor after expiry sees stale data.</strong> It's "eventually fresh", not real-time. Don't use it for stock counts at checkout.</li>
+<li><strong>Pages nobody visits stay stale</strong> because regeneration is triggered by a request.</li>
+<li><strong>Choosing the window.</strong> Too short = lots of rebuilds; too long = stale content. Prefer on-demand revalidation when you can.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Deploy a Next.js page with <code>revalidate = 10</code> that prints the time. Refresh after 10 s: you see the old time once, then the new time on the next refresh.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>After the revalidate time passes, what does the next visitor see?</summary>
+<p>The old cached page, immediately. A rebuild starts in the background for later visitors.</p>
+</details>
+<details>
+<summary>What's the HTTP equivalent of ISR?</summary>
+<p><code>Cache-Control: s-maxage=…, stale-while-revalidate=…</code> on a CDN.</p>
+</details>
+<details>
+<summary>How can you update a page right after data changes instead of waiting?</summary>
+<p>On-demand revalidation, e.g. <code>revalidatePath()</code> or <code>revalidateTag()</code> called from a webhook or admin action.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Static page + expiry. After it expires, the next visitor still gets the old page; a rebuild of that page runs in the background.</li>
 <li>Next.js: <code>export const revalidate = 60;</code> · on-demand: <code>revalidatePath('/product/42')</code>.</li>
 <li>Same idea in HTTP: <code>Cache-Control: s-maxage=60, stale-while-revalidate</code>.</li>
 <li>Trap: the first visitor after expiry still sees the OLD page; pages nobody visits stay stale.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e05/"><small>← PREVIOUS</small>Static site generation (SSG)</a>
 <a class="r" href="../s2e08/"><small>NEXT →</small>Hydration</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

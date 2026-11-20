@@ -6,13 +6,65 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 16 · Rendering strategies</span>
 <h1><span class="hl">Islands architecture</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5ghVoCGmy/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5ghVoCGmy/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Islands architecture:</strong> the page is <strong>static HTML by default</strong>, and only the interactive widgets (a carousel, a cart button) ship JavaScript and hydrate.</li>
+<li>Each island hydrates <strong>independently</strong>, and you choose when: on load, when visible, or when the browser is idle.</li>
+<li>Astro popularised it: <code>client:load</code>, <code>client:visible</code>, <code>client:idle</code>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>In islands architecture most of the page is rendered to static HTML with no JavaScript, and only specific interactive components are hydrated as isolated islands. Each island loads its own JS and can be hydrated with different strategies, such as immediately, when idle, or when it scrolls into view using IntersectionObserver. This dramatically cuts JavaScript on content-heavy sites. The trade-off is that islands are separate apps, so sharing state between them needs a shared store or events.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A museum where only a few exhibits are interactive touch screens. Most of the walls are just printed boards (static HTML). You only power the screens people actually use, when they walk up to them.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Render everything to HTML</b><span>at build or request time</span></li><li><b>Mark interactive parts</b><span>e.g. &lt;Carousel client:visible /&gt;</span></li><li><b>Ship JS only for islands</b><span>the rest of the page has zero JS</span></li><li><b>Hydrate each island</b><span>on load, when idle, or when visible</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code>---
+import Header from './Header.astro';      // static, no JS
+import Carousel from './Carousel.jsx';
+import Newsletter from './Newsletter.jsx';
+---
+&lt;Header /&gt;
+&lt;Carousel client:visible /&gt;              &lt;!-- hydrates when scrolled into view --&gt;
+&lt;Newsletter client:idle /&gt;               &lt;!-- hydrates when the browser is idle --&gt;
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Islands can't share React state directly.</strong> Each is its own app. Use a small shared store (e.g. nanostores), custom events, or merge them into one island.</li>
+<li><strong>Too many islands</strong> each bring their framework runtime overhead.</li>
+<li><strong>Not a fit for app-like pages</strong> (dashboards) where almost everything is interactive.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open an Astro site → DevTools → <strong>Elements</strong>: interactive parts are wrapped in <code>&lt;astro-island&gt;</code> tags with their hydration strategy as an attribute.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the default for content in an islands architecture?</summary>
+<p>Static HTML with no JavaScript.</p>
+</details>
+<details>
+<summary>How does client:visible decide when to hydrate?</summary>
+<p>It uses IntersectionObserver and hydrates the island when it enters the viewport.</p>
+</details>
+<details>
+<summary>Two islands need the same cart count. What are your options?</summary>
+<p>A shared store both subscribe to, custom DOM events between them, or combining them into one island.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Static HTML by default; only interactive widgets hydrate, each independently (<code>&lt;astro-island&gt;</code> in Elements).</li>
 <li>Astro: <code>client:load</code>, <code>client:visible</code> (IntersectionObserver), <code>client:idle</code>.</li>
 <li>Trap: islands are separate apps → props can't cross. Share via a store (nanostores), custom events, or rethink boundaries.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e15/"><small>← PREVIOUS</small>Server Actions</a>
 <a class="r" href="../s2e17/"><small>NEXT →</small>Resumability</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

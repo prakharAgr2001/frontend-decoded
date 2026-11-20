@@ -6,14 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 1 · Rendering strategies</span>
 <h1><span class="hl">White screen first</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5d9DXCQkp/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5d9DXCQkp/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Every rendering strategy answers one question: <strong>who builds the HTML, and when?</strong></li>
+<li><strong>Server-rendered:</strong> the HTML arrives with content, so the browser can paint right away. JS comes later.</li>
+<li><strong>Client-rendered:</strong> the HTML arrives nearly empty. The browser must download JS, run it, fetch data, <em>then</em> paint. Until then: white screen.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>The core difference between rendering strategies is where and when HTML is produced. With server rendering, the server sends meaningful HTML so the first paint happens as soon as it arrives, and JavaScript hydrates it later. With client rendering, the server sends a shell and a bundle, and the user sees nothing useful until the JS downloads, parses, executes and fetches data. On slow phones that JS cost, not just the network, is often what causes the white screen.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Ordering furniture. <strong>Server-rendered</strong> = it arrives assembled; you can sit on it immediately. <strong>Client-rendered</strong> = a flat-pack box arrives and you must assemble it before anyone can sit. Fast delivery doesn't help if assembly takes ages.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Client-rendered</div><div class="dg-c">Server sends an empty &lt;div id=&quot;root&quot;&gt;</div><div class="dg-c">Download JS bundle</div><div class="dg-c">Parse + run JS</div><div class="dg-c">Fetch data, then render</div><div class="dg-c">First paint: late</div></div><div class="dg-col good"><div class="dg-h">Server-rendered</div><div class="dg-c">Server sends HTML with real content</div><div class="dg-c">Browser paints immediately</div><div class="dg-c">Download JS in the background</div><div class="dg-c">JS attaches interactivity (hydration)</div><div class="dg-c">First paint: early</div></div></div></figure>
+
+<ul>
+<li>On a cheap Android phone, parsing and running 1 MB of JS can take several seconds even after it's downloaded.</li>
+</ul>
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"White screen = slow network."</strong> Often it's the CPU. Throttle the CPU (4x slowdown) in DevTools, not just the network.</li>
+<li><strong>One strategy for the whole app.</strong> Different pages can use different strategies (later episodes).</li>
+<li><strong>"Server rendering means no JavaScript."</strong> Usually the same JS still loads to make the page interactive.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → tick <strong>Screenshots</strong>, set Network to <strong>Slow 4G</strong> and CPU to <strong>4x slowdown</strong> → reload. The filmstrip shows exactly how long the screen stays white.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What question does every rendering strategy answer?</summary>
+<p>Who builds the HTML (server or browser) and when (at build time, per request, or after the page loads).</p>
+</details>
+<details>
+<summary>Why can a client-rendered app show a white screen on a fast network?</summary>
+<p>The JS still has to be parsed and executed, then data fetched, before anything renders. On slow CPUs that takes seconds.</p>
+</details>
+<details>
+<summary>What does server rendering improve, and what doesn't it?</summary>
+<p>It improves first paint (content visible sooner). It doesn't remove the JS cost of making the page interactive.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Every strategy answers one question: <strong>who builds the HTML, and when?</strong> Server (before sending) or browser (after arriving).</li>
 <li>Server-rendered: HTML has content → paint now, JS later. Client-rendered: empty HTML → download JS → run → fetch → paint.</li>
 <li>See it: DevTools → Performance → ✓ Screenshots, Network = Slow 4G → reload → filmstrip.</li>
 <li>Trap: a white screen isn't always the network. Big bundles take seconds to parse/run on cheap CPUs → throttle CPU (4x) too.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s2e02/"><small>NEXT →</small>Client-side rendering (CSR)</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

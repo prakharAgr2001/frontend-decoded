@@ -6,14 +6,60 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 10 · Rendering strategies</span>
 <h1><span class="hl">Visible but not clickable</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fuaEEUfh/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fuaEEUfh/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>The <strong>uncanny valley</strong>: the page is <strong>visible</strong> but <strong>not yet interactive</strong> because JS is still loading or hydrating.</li>
+<li><strong>FCP</strong> = first time you see something. <strong>TTI</strong> = when it reliably responds. <strong>TBT</strong> = how long the main thread was blocked in between.</li>
+<li>In the field, this shows up as bad <strong>INP</strong> (slow response to taps).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>With SSR the page can paint early, but it isn't usable until JavaScript has downloaded and hydrated. That gap between First Contentful Paint and Time to Interactive is where users tap and nothing happens, which is frustrating and causes rage clicks. In lab tools it shows as high Total Blocking Time; in real-user data it appears as poor INP. Reducing JavaScript, splitting hydration, and deferring non-critical scripts shrink that gap.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A shop with the lights on and products on display, but the doors are still locked. People can see everything and keep pushing the door.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>FCP</b><span>first text or image appears</span></li><li><b>Long tasks</b><span>JS parses, runs, hydrates (main thread busy)</span></li><li><b>Taps queue up</b><span>nothing happens yet</span></li><li><b>TTI</b><span>main thread quiet, handlers attached</span></li></ol></figure>
+
+<ul>
+<li>Lab metric to watch: <strong>Total Blocking Time</strong> (time above 50 ms in each long task between FCP and TTI).</li>
+<li>Field metric to watch: <strong>INP</strong>, since that's what real users experience.</li>
+</ul>
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Green Lighthouse score ≠ happy users.</strong> Lighthouse tests one simulated device; real users on cheap phones may have much worse INP.</li>
+<li><strong>Showing buttons before they work</strong> with no feedback. Consider disabled states or making critical forms work without JS.</li>
+<li><strong>Third-party scripts</strong> (chat widgets, analytics) often cause the biggest long tasks.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → CPU <strong>4x slowdown</strong> → reload with Screenshots on. Compare the first screenshot with content to where the long tasks end: that's your uncanny valley.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the difference between FCP and TTI?</summary>
+<p>FCP is when content first appears; TTI is when the page reliably responds to input. The gap between them is the uncanny valley.</p>
+</details>
+<details>
+<summary>What does Total Blocking Time measure?</summary>
+<p>The sum of the portions of long tasks over 50 ms between FCP and TTI: how long input would have been blocked.</p>
+</details>
+<details>
+<summary>Which Core Web Vital reflects this problem for real users?</summary>
+<p>INP (Interaction to Next Paint).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>The uncanny valley: visible (FCP) but not interactive (JS loading/hydrating).</li>
 <li>FCP = first see something · TTI = reliably responds · TBT = blocked time in between. Field: INP.</li>
 <li>See it: Performance, CPU 4x slowdown → gap between first content screenshot and end of long tasks.</li>
 <li>Trap: green Lighthouse (one lab device) ≠ real users on cheap phones → check field INP.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e09/"><small>← PREVIOUS</small>Hydration mismatch</a>
 <a class="r" href="../s2e11/"><small>NEXT →</small>Selective hydration</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,55 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 19 · Rendering strategies</span>
 <h1><span class="hl">Case study: an online store</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5g6exiqz3/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5g6exiqz3/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Pick a rendering strategy <strong>per page, not per app</strong>, by asking three questions: <strong>Does it need SEO? Is it the same for everyone? How often does the data change?</strong></li>
+<li>A typical online store mixes <strong>SSG, ISR, SSR, streaming and CSR</strong> on different routes.</li>
+<li>Even within one page, static parts and live parts (price, stock, cart) can render differently.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I'd choose rendering per route based on SEO needs, personalisation and data freshness. Marketing and blog pages are static. The home page and product pages can be incrementally regenerated for speed and SEO, with live bits like stock, price and the add-to-cart button as client components. Search results are personalised and dynamic, so streaming SSR fits. Cart, checkout and account pages are private and highly interactive, so client rendering behind auth is fine. One strategy for everything always compromises somewhere.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant doesn't cook everything the same way: bread is baked in the morning (SSG), curries are refreshed every few hours (ISR), dosas are made to order (SSR), and you mix your own salad at the table (CSR).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>/blog</b><span>SSG: rarely changes, needs SEO</span></li><li><b>/ (home)</b><span>ISR: same for everyone, changes daily</span></li><li><b>/product/:id</b><span>ISR + client islands for price, stock and cart</span></li><li><b>/search</b><span>streaming SSR: dynamic and personal, but should paint fast</span></li><li><b>/cart, /checkout, /account</b><span>CSR: private, interactive, no SEO</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>One strategy for the whole app.</strong> Either SEO suffers (all CSR) or servers do pointless work (all SSR).</li>
+<li><strong>Caching personalised pages.</strong> Never ISR/CDN-cache a page that contains user-specific data.</li>
+<li><strong>Stale critical data.</strong> Stock and price at checkout must be checked live, even if the product page is cached.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open a big e-commerce site and compare <strong>View Source</strong> across the home page, a product page and the cart: you'll see which ones arrive with content and which are built in the browser.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What three questions decide a page's rendering strategy?</summary>
+<p>Does it need SEO? Is it the same for every user? How often does its data change?</p>
+</details>
+<details>
+<summary>Why CSR for checkout?</summary>
+<p>It's private (no SEO), highly interactive, personalised, and users are already engaged, so first-paint speed matters less than interactivity.</p>
+</details>
+<details>
+<summary>How can a cached product page still show live stock?</summary>
+<p>Render the static content with ISR/SSG and fetch stock in a small client component (or stream it) on each visit.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>3 questions per page: SEO? Same for everyone? How often does data change?</li>
 <li><code>/blog</code> SSG · <code>/</code> ISR · <code>/product/:id</code> ISR + client islands (price/stock/cart) · <code>/search</code> streaming SSR · cart/checkout/account CSR.</li>
 <li>Trap: one strategy for the whole app. Choose per route, even per component.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e18/"><small>← PREVIOUS</small>Edge rendering</a>
 <a class="r" href="../s2e21/"><small>NEXT →</small>Finale</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

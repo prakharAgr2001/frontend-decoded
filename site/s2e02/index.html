@@ -6,7 +6,52 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 2 · Rendering strategies</span>
 <h1><span class="hl">Client-side rendering (CSR)</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eVTBmo-c/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eVTBmo-c/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>In <strong>client-side rendering (CSR)</strong>, the server sends an almost empty HTML file plus a JS bundle. JavaScript builds the whole page in the browser.</li>
+<li><strong>Pros:</strong> cheap static hosting, very fast navigation after the first load (feels like an app).</li>
+<li><strong>Cons:</strong> slow first paint, and tools that don't run JS (link previews, some crawlers) see a blank page.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>In CSR the server returns a minimal HTML shell with a root element and script tags. The browser downloads and executes the bundle, which fetches data and renders the UI into the DOM. It's simple to host on a CDN and great for app-like experiences after load, but first contentful paint is slow, especially on low-end devices, and anything that reads raw HTML, like social link previews, sees no content. It fits dashboards and logged-in tools more than public, SEO-sensitive pages.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant that hands you raw ingredients and a recipe card. Once you've learned the kitchen, cooking the next dish is quick. But the first meal takes a long time, and anyone peeking through the window just sees an empty table.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Request the page</b><span>server returns index.html with &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span></li><li><b>Download the bundle</b><span>main.js, often hundreds of KB</span></li><li><b>Run React</b><span>components render in the browser</span></li><li><b>Fetch data</b><span>API calls, then render again with real content</span></li><li><b>Navigate</b><span>later pages need only data, no new HTML</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- What the server actually sends in a CSR app --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"root"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/assets/main.4f2a.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>SEO and link previews.</strong> Google can run JS (sometimes later), but WhatsApp, LinkedIn and Slack previews read raw HTML only, so they show a blank card.</li>
+<li><strong>Loading spinners everywhere.</strong> Every page that fetches after render shows a spinner first; consider skeletons or prefetching.</li>
+<li><strong>Bundle growth.</strong> One big bundle makes every first visit slower. Split code by route.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On any React app built with Vite or Create React App: <strong>View Page Source</strong> shows an empty <code>#root</code>. DevTools → <strong>Elements</strong> shows the full page that JS built.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does a CSR page's link preview show nothing?</summary>
+<p>Preview bots fetch the HTML without running JavaScript, and CSR HTML has no content, only an empty root element.</p>
+</details>
+<details>
+<summary>When is CSR a good choice?</summary>
+<p>Logged-in, highly interactive apps (dashboards, editors, internal tools) where SEO doesn't matter and users stay for long sessions.</p>
+</details>
+<details>
+<summary>View Source vs Elements panel: what's the difference in a CSR app?</summary>
+<p>View Source shows what the server sent (an empty shell). Elements shows the live DOM after JavaScript rendered the page.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Server sends <code>&lt;div id="root"&gt;&lt;/div&gt;</code> + a bundle; JS builds the DOM in the browser.</li>
 <li>View Source = what the server sent (empty). Elements = live DOM after JS (full).</li>
 <li>
@@ -15,9 +60,13 @@
 </ul>
 </li>
 <li>Trap: Google can render JS (sometimes deferred), but WhatsApp/LinkedIn link previews read raw HTML → blank preview.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e01/"><small>← PREVIOUS</small>White screen first</a>
 <a class="r" href="../s2e03/"><small>NEXT →</small>Client-side routing</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

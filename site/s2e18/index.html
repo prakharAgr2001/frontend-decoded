@@ -6,13 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 18 · Rendering strategies</span>
 <h1><span class="hl">Edge rendering</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gz_OAWLA/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gz_OAWLA/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Edge rendering</strong> runs your server-side rendering in <strong>many small data centers close to users</strong> (the same places CDNs live).</li>
+<li>Edge runtimes are <strong>lighter than Node</strong>: limited APIs, memory and CPU time.</li>
+<li>Great for <strong>personalisation, redirects, A/B tests and auth checks</strong>. Useless if every render must query a database on the other side of the world.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Edge rendering executes server code in globally distributed locations near the user, typically on lightweight runtimes based on web standards rather than full Node.js. That cuts network latency for the request itself, which is great for redirects, geolocation, A/B testing, authentication and personalised responses. But if the edge function needs data from a database in a single region, every query travels back to that region, so the latency savings disappear. It works best with cached, replicated or edge-friendly data.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Opening small kitchens in every neighbourhood. Delivery is faster, unless every kitchen still has to phone the central warehouse in another city for each ingredient.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Single-region server</div><div class="dg-c">Request travels to one region (e.g. US)</div><div class="dg-c">Full Node.js, big memory</div><div class="dg-c">Close to the database</div><div class="dg-c">Good for heavy rendering</div></div><div class="dg-col good"><div class="dg-h">Edge</div><div class="dg-c">Request handled near the user (e.g. Mumbai)</div><div class="dg-c">Light runtime, small limits</div><div class="dg-c">Far from the database (unless data is replicated)</div><div class="dg-c">Good for fast, light logic</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js middleware runs at the edge: redirect by country before rendering</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">middleware</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">geo</span><span class="o">?</span><span class="p">.</span><span class="nx">country</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">country</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'IN'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">nextUrl</span><span class="p">.</span><span class="nx">pathname</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'/in'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">Response</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">URL</span><span class="p">(</span><span class="s1">'/in'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">nextUrl</span><span class="p">.</span><span class="nx">pathname</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Edge function + far database = slower, not faster.</strong> Several sequential queries each cross the globe.</li>
+<li><strong>Node APIs missing.</strong> Some libraries (native modules, <code>fs</code>) don't work in edge runtimes.</li>
+<li><strong>Cold starts and limits</strong> vary by provider; heavy rendering may hit CPU time caps.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On a site deployed on Vercel or Cloudflare, check response headers like <code>x-vercel-id</code> or <code>cf-ray</code>: they include the edge location code that served you (e.g. <code>bom</code> for Mumbai).</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does edge rendering mainly reduce?</summary>
+<p>Network latency between the user and the code handling their request.</p>
+</details>
+<details>
+<summary>When can edge rendering make a page slower?</summary>
+<p>When the render needs data from a database in one far-away region, so each query adds a long round trip.</p>
+</details>
+<details>
+<summary>Give three good edge use cases.</summary>
+<p>Redirects and rewrites, A/B test bucketing, auth/session checks, geolocation-based personalisation.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Run SSR in many small data centers near users (where CDNs live). Lighter runtimes: no full Node, small memory/CPU limits.</li>
 <li>Great for personalization, redirects, A/B tests, auth checks.</li>
 <li>Trap: edge render + single-region DB = every query crosses the planet. Only helps when data is close or cached.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e17/"><small>← PREVIOUS</small>Resumability</a>
 <a class="r" href="../s2e19/"><small>NEXT →</small>Case study: an online store</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

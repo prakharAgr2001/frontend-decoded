@@ -6,12 +6,55 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 21 · Rendering strategies</span>
 <h1><span class="hl">Finale</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5hIpCDKDP/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5hIpCDKDP/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Blog → SSG</strong> (plus ISR and islands): fast, cheap, mostly static.</li>
+<li><strong>Amazon-style store → SSR / ISR</strong>: content visible fast for users and search engines, then JS makes it interactive.</li>
+<li><strong>Gmail-style app → CSR + client routing</strong>: slow first load, instant afterwards.</li>
+<li>Modern tools (streaming, server components, server actions, edge, resumability) all aim at the same goal: <strong>less work on the user's phone without losing interactivity.</strong></li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>There's no single best rendering strategy. Content sites like blogs fit static generation with incremental regeneration and a few interactive islands. Commerce and media sites benefit from server rendering or ISR for fast first paint and SEO, followed by hydration. Long-lived apps like email clients accept a slower first load for an app-like experience with client-side rendering and routing. Newer techniques such as streaming SSR, server components and resumability exist to reduce how much JavaScript the user's device must download and execute.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Choosing transport: walking for 500 metres (SSG), an auto for a few kilometres (SSR), and a car you own for daily long commutes (CSR). The right choice depends on the trip, not on which vehicle is "best".</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Strategy</div><div class="dg-c">SSG / ISR</div><div class="dg-c">SSR / streaming SSR</div><div class="dg-c">CSR + client routing</div><div class="dg-c">Islands / RSC / resumability</div></div><div class="dg-col good"><div class="dg-h">Best for</div><div class="dg-c">Blogs, docs, marketing, product listings</div><div class="dg-c">Personalised or fast-changing public pages</div><div class="dg-c">Logged-in apps used for long sessions</div><div class="dg-c">Ship less JS on mostly-content pages</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Choosing by trend.</strong> Pick by page needs: SEO, personalisation, freshness, interactivity.</li>
+<li><strong>Ignoring the device.</strong> Most users are on mid-range phones; JS cost matters more than server speed.</li>
+<li><strong>Forgetting caching.</strong> Many "SSR is slow" problems are really "nothing is cached".</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Pick three sites you use daily (a blog, a shop, an email app). Compare <strong>View Source</strong> and DevTools <strong>Performance</strong> filmstrips with CPU throttling, and guess the strategy each uses.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does Gmail accept a slow first load?</summary>
+<p>Users stay for long sessions, and after the first load every action is instant because only data is fetched. SEO doesn't matter for a private inbox.</p>
+</details>
+<details>
+<summary>What's the common goal of streaming, RSC and resumability?</summary>
+<p>Reduce the work and JavaScript the user's device has to do, while keeping the page fast to show and interactive.</p>
+</details>
+<details>
+<summary>Name the strategy: same for everyone, changes daily, needs SEO.</summary>
+<p>ISR (or SSG with frequent rebuilds).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Blog = SSG (+ ISR, islands). Amazon = SSR (fast paint, then JS makes it interactive). Gmail = CSR + client routing (slow start, instant after).</li>
 <li>Modern toolbox (streaming, RSC, actions, edge, resumability) = less work on the user's phone without losing interactivity.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e19/"><small>← PREVIOUS</small>Case study: an online store</a>
 </div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

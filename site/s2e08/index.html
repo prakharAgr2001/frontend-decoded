@@ -6,14 +6,65 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 8 · Rendering strategies</span>
 <h1><span class="hl">Hydration</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fgkGjOv9/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5fgkGjOv9/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Server HTML is like a <strong>picture</strong> of the page: it looks right, but buttons don't work yet.</li>
+<li><strong>Hydration</strong> = React runs your components again in the browser and <strong>attaches event handlers to the existing DOM</strong> (it doesn't rebuild it).</li>
+<li>It runs on the main thread, often as <strong>one long task</strong>, so taps during hydration wait.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>After server rendering, the browser has static HTML but no event listeners or component state. Hydration loads the same component code on the client, renders the tree in memory, matches it against the existing DOM, and attaches event handlers and state instead of recreating nodes. It's called with hydrateRoot. Because it re-executes every component, it costs CPU time on the main thread, which delays interactivity on slow devices.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Adding water to instant noodles. The noodles (HTML) are already there and look like food, but you can't eat them until you add hot water (JavaScript) and wait.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Server</b><span>renderToString(&lt;App /&gt;) produces HTML</span></li><li><b>Browser paints</b><span>content visible, nothing clickable</span></li><li><b>Bundle loads</b><span>the same components arrive as JS</span></li><li><b>hydrateRoot</b><span>React renders in memory and walks the existing DOM</span></li><li><b>Attach handlers</b><span>onClick, state, effects: now it&#x27;s interactive</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// server.js</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderToString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-dom/server'</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">html</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">renderToString</span><span class="p">(&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;);</span>
+
+<span class="c1">// client.js</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">hydrateRoot</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-dom/client'</span><span class="p">;</span>
+<span class="nx">hydrateRoot</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'root'</span><span class="p">),</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Hydration rebuilds the DOM."</strong> It reuses the existing DOM; it does re-run every component, which is the expensive part.</li>
+<li><strong><code>createRoot</code> instead of <code>hydrateRoot</code></strong> throws away the server HTML and re-renders from scratch.</li>
+<li><strong>Bigger trees = longer hydration.</strong> Fewer client components means less to hydrate.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> with <strong>CPU 4x slowdown</strong> → reload an SSR site → look for a big scripting block after the first paint: that's hydration.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does hydration actually do?</summary>
+<p>Re-runs components on the client to rebuild React's internal tree and attach event listeners and state to the server-rendered DOM.</p>
+</details>
+<details>
+<summary>Why can taps feel ignored right after an SSR page appears?</summary>
+<p>Hydration hasn't finished: there are no handlers yet, and the main thread may be busy hydrating.</p>
+</details>
+<details>
+<summary>Which React API hydrates a server-rendered root?</summary>
+<p><code>hydrateRoot</code> from <code>react-dom/client</code>.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Server HTML = a picture. Hydration = React re-runs components in the browser and attaches handlers to the existing DOM.</li>
 <li><code>renderToString(&lt;App /&gt;)</code> on the server · <code>hydrateRoot(root, &lt;App /&gt;)</code> in the browser.</li>
 <li>Runs on the main thread → one long task; taps wait.</li>
 <li>Trap: it does NOT rebuild the DOM, but it DOES run every component again → CPU cost.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e06/"><small>← PREVIOUS</small>Incremental static regeneration (ISR)</a>
 <a class="r" href="../s2e09/"><small>NEXT →</small>Hydration mismatch</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

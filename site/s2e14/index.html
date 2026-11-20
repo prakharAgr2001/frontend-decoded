@@ -6,15 +6,75 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 14 · Rendering strategies</span>
 <h1><span class="hl">React Server Components (RSC)</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gTlkjcZA/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gTlkjcZA/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>React Server Components (RSC)</strong> run <strong>only on the server</strong>. They can be <code>async</code>, read the database directly, and their code is <strong>never sent to the browser</strong>.</li>
+<li>Only their <strong>output</strong> travels to the browser. Interactive parts are marked <code>'use client'</code>, and only those ship JavaScript.</li>
+<li>RSC is <strong>not</strong> the same as SSR: SSR makes HTML for the first load, then everything hydrates. Server components never hydrate.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>React Server Components are components that execute only on the server. They can fetch data directly and use server-only dependencies, and only their rendered result, the RSC payload, is sent to the client, so their code adds nothing to the bundle. Components that need state, effects or event handlers are client components marked with 'use client', and server components pass them data as props. SSR and RSC are complementary: frameworks render both to HTML for the first load, but only client components hydrate.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant where some dishes are cooked in the kitchen and served ready (server components), while a few come with a DIY grill at your table (client components). You only pay for the grills you actually use.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Server component</div><div class="dg-c">Runs only on the server</div><div class="dg-c">Can be async and query the DB</div><div class="dg-c">Code never ships to the browser</div><div class="dg-c">Never hydrates</div></div><div class="dg-col good"><div class="dg-h">Client component (&#x27;use client&#x27;)</div><div class="dg-c">Runs on server (SSR) and in the browser</div><div class="dg-c">Can use useState, useEffect, onClick</div><div class="dg-c">Code ships in the bundle</div><div class="dg-c">Hydrates</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// ProductPage.jsx: a server component (the default in Next.js App Router)</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">AddToCart</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./AddToCart'</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ProductPage</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span><span class="w">        </span><span class="c1">// direct DB access</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">product</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">AddToCart</span><span class="w"> </span><span class="na">productId</span><span class="o">=</span><span class="p">{</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                     </span><span class="p">{</span><span class="cm">/* only this ships JS */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;/&gt;);</span>
+<span class="p">}</span>
+
+<span class="c1">// AddToCart.jsx</span>
+<span class="s1">'use client'</span><span class="p">;</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">AddToCart</span><span class="p">({</span><span class="w"> </span><span class="nx">productId</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">setAdded</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setAdded</span><span class="p">(</span><span class="kc">true</span><span class="p">)}&gt;{</span><span class="nx">added</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'Added'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'Add to cart'</span><span class="p">}&lt;/</span><span class="nt">button</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>useState</code> or <code>onClick</code> in a server component</strong> throws an error. Move the interactive bit into a client component.</li>
+<li><strong>Props crossing the boundary must be serialisable.</strong> No functions or class instances from server to client.</li>
+<li><strong>Importing a client component makes it a client boundary,</strong> including everything it imports.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open nextjs.org → DevTools → <strong>Network</strong> → click between docs pages: requests with <code>?_rsc=</code> carry the RSC payload instead of a full HTML page.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Does a server component's code end up in the browser bundle?</summary>
+<p>No. Only its rendered output is sent.</p>
+</details>
+<details>
+<summary>How is RSC different from SSR?</summary>
+<p>SSR renders components to HTML for the initial load and then hydrates all of them. Server components run only on the server, never hydrate, and can be re-fetched on navigation.</p>
+</details>
+<details>
+<summary>How do you add a click handler to part of a server-rendered page?</summary>
+<p>Put that part in a client component marked 'use client' and pass it data as props.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Run only on the server; can be <code>async</code> and read the DB; their code never ships. Only output (RSC payload) does.</li>
 <li>Interactive parts = <code>'use client'</code> components; only those ship JS.</li>
 <li>See it: nextjs.org → Network → <code>?_rsc=</code> requests on navigation.</li>
 <li>RSC ≠ SSR: SSR = HTML for first load, then everything hydrates. RSC never hydrates, refetchable on navigation. Frameworks use both.</li>
 <li>Trap: no <code>useState</code>/<code>onClick</code> in server components → pass data as props to a client component.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e13/"><small>← PREVIOUS</small>Streaming SSR</a>
 <a class="r" href="../s2e15/"><small>NEXT →</small>Server Actions</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,15 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 13 · Rendering strategies</span>
 <h1><span class="hl">Streaming SSR</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gNJHjazH/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5gNJHjazH/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Streaming SSR</strong> sends the page in pieces: first the <strong>shell with loading placeholders</strong>, then each slow section as soon as its data is ready.</li>
+<li>It works because HTTP responses can arrive in chunks; the browser renders as it goes.</li>
+<li>A tiny inline script swaps each streamed section into its placeholder.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>With streaming SSR the server doesn't wait for all data before responding. It flushes the HTML shell and Suspense fallbacks immediately, so the user sees layout and fast content early, then streams each boundary's HTML as its data resolves, along with a small script that moves it into place. In React this is renderToPipeableStream or the streaming APIs in frameworks like Next.js. The important caveat is that once the first bytes are sent, the status code and headers are fixed.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A thali served one bowl at a time. Rice and dal arrive first so you can start eating; the dish that takes longest to cook is brought out when it's ready, into the empty space already on your plate.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Request</b><span>server starts rendering</span></li><li><b>Flush the shell</b><span>header, layout, fallbacks sent immediately</span></li><li><b>Slow data resolves</b><span>e.g. reviews from a slow API</span></li><li><b>Stream that HTML</b><span>plus a small script that swaps it in</span></li><li><b>Close the response</b><span>when every boundary is done</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Node + React: send the shell as soon as it's ready</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">pipe</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">renderToPipeableStream</span><span class="p">(&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">onShellReady</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">'Content-Type'</span><span class="p">,</span><span class="w"> </span><span class="s1">'text/html'</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">pipe</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Status codes are locked once streaming starts.</strong> You can't send a 404 or redirect after the shell is out, so decide those before the shell.</li>
+<li><strong>Buffering proxies</strong> (some CDNs, compression settings) can hold the whole response and kill streaming.</li>
+<li><strong>Fallback layout shift.</strong> Size your fallbacks like the final content to avoid CLS.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → Network → the document → <strong>Timing</strong>: a long "Content Download" phase means it was streamed. View Source shows hidden <code>&lt;div hidden id="S:0"&gt;</code> chunks and small <code>$RC(...)</code> scripts at the bottom.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What gets sent first in streaming SSR?</summary>
+<p>The shell: layout, fast content and Suspense fallbacks.</p>
+</details>
+<details>
+<summary>Why can't you return a 404 halfway through a streamed page?</summary>
+<p>Status and headers are sent with the first chunk; after that they can't be changed.</p>
+</details>
+<details>
+<summary>What makes streaming possible at the HTTP level?</summary>
+<p>Response bodies can arrive in pieces (chunked transfer in HTTP/1.1, DATA frames in HTTP/2 and 3), and browsers parse HTML incrementally.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Send the shell + fallbacks first; stream the slow parts later with a tiny script that swaps them in.</li>
 <li>React: <code>renderToPipeableStream(&lt;App /&gt;, { onShellReady() { stream.pipe(res) } })</code>.</li>
 <li>Works because HTTP bodies arrive in pieces (chunked in 1.1, DATA frames in 2/3).</li>
 <li>See it: Timing → long "Content Download"; View Source → <code>&lt;div hidden id="S:0"&gt;</code> + <code>$RC(...)</code> scripts.</li>
 <li>Trap: once the first chunk is out, status/headers are sent → no 404/redirect later. Decide before the shell.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e11/"><small>← PREVIOUS</small>Selective hydration</a>
 <a class="r" href="../s2e14/"><small>NEXT →</small>React Server Components (RSC)</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

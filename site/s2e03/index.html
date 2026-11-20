@@ -6,13 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 2 · Episode 3 · Rendering strategies</span>
 <h1><span class="hl">Client-side routing</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eeFCAMyt/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df5eeFCAMyt/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Client-side routing:</strong> JavaScript intercepts link clicks, changes the URL with <code>history.pushState()</code>, fetches data and swaps only part of the page. No full page reload.</li>
+<li>The <strong>Back button</strong> fires a <code>popstate</code> event, which the router handles.</li>
+<li>Refreshing a deep URL (<code>/products/42</code>) can <strong>404</strong> if the server isn't told to serve <code>index.html</code> for every route.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A client-side router listens for link clicks, prevents the browser's default navigation, and updates the URL using the History API's pushState. It then renders the matching component and fetches only the data it needs, so the page doesn't reload. Back and forward trigger popstate, which the router uses to render the previous route. Because the server only knows index.html, it must be configured to return index.html for all app routes, otherwise a refresh on a nested URL returns 404.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A mall map screen. Tapping a shop doesn't send you to a new building; the same screen just redraws the map for that shop. But if someone gives a visitor the address "Shop 42" directly, the security guard (the server) must know to send them to the map screen, not say "no such building".</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Click a &lt;Link&gt;</b><span>the router calls event.preventDefault()</span></li><li><b>Update the URL</b><span>history.pushState({}, &#x27;&#x27;, &#x27;/products/42&#x27;)</span></li><li><b>Render the route</b><span>match the URL to a component</span></li><li><b>Fetch only data</b><span>JSON from the API, not a new HTML page</span></li><li><b>Back button</b><span>popstate event → render the previous route</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// The core of every router, in a few lines</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'a[data-link]'</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">a</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span><span class="p">({},</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">href</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">render</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'popstate'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">render</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">));</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1"># Server: send index.html for any route the files don't match</span>
+<span class="k">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kn">try_files</span><span class="w"> </span><span class="nv">$uri</span><span class="w"> </span><span class="s">/index.html</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>The refresh 404.</strong> Fix it with a rewrite rule (Nginx <code>try_files</code>, Netlify <code>/* /index.html 200</code>).</li>
+<li><strong>Scroll position and focus.</strong> A router must restore scroll on Back and move focus for screen-reader users.</li>
+<li><strong>Hash routing (<code>/#/page</code>)</strong> avoids the server issue but looks dated and is worse for SEO.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open YouTube → DevTools → <strong>Network</strong> → filter <strong>Doc</strong>. Click a video: no new document loads; filter <strong>Fetch/XHR</strong> and you'll see JSON requests instead.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which browser API lets you change the URL without reloading?</summary>
+<p>The History API: <code>history.pushState()</code> (and <code>replaceState()</code>).</p>
+</details>
+<details>
+<summary>Why does refreshing /products/42 give a 404 on some SPAs?</summary>
+<p>The server looks for a real file at that path and doesn't find one. It must be configured to serve index.html for all app routes.</p>
+</details>
+<details>
+<summary>What event fires when the user presses Back?</summary>
+<p><code>popstate</code>.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>JS intercepts link clicks, <code>history.pushState()</code> updates the URL, fetches data, swaps part of the page. <code>popstate</code> = Back button.</li>
 <li>See it: YouTube → Network → Doc filter: no new document on video click; Fetch/XHR shows JSON (<code>next?…</code>, <code>player?…</code>).</li>
 <li>Trap: refreshing <code>/products/42</code> → 404, because the server only has <code>index.html</code>. Fix: rewrite all routes to <code>index.html</code> (<code>try_files $uri /index.html;</code>).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s2e02/"><small>← PREVIOUS</small>Client-side rendering (CSR)</a>
 <a class="r" href="../s2e04/"><small>NEXT →</small>Server-side rendering (SSR)</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>
