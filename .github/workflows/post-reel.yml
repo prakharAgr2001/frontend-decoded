@@ -2,7 +2,8 @@ name: Post reel to Instagram
 
 on:
   schedule:
-    - cron: '30 13 * * *'   # 19:00 IST daily
+    - cron: '23 13 * * *'   # 18:53 IST daily (off the busy :00/:30 marks)
+    - cron: '7 14 * * *'    # 19:37 IST backup if GitHub skipped the first
   workflow_dispatch:
     inputs:
       episode:
@@ -36,6 +37,7 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          SKIP_IF_POSTED_WITHIN_H: ${{ github.event_name == 'schedule' && '12' || '' }}
           EPISODE: ${{ github.event.inputs.episode }}
           COUNT: ${{ github.event.inputs.count }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}

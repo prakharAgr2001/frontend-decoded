@@ -1,7 +1,7 @@
 """Post the next unposted reel from publish/queue.json to Instagram (Graph API, resumable upload).
 Env: IG_TOKEN, IG_USER_ID, optional GRAPH_VERSION, EPISODE (force one id), COUNT (default 1), DRY_RUN=1 (only check token).
 Video and cover are fetched by Instagram from the public repo (cover_url). Nothing is rendered here."""
-import json, os, sys, time
+import calendar, json, os, sys, time
 import requests
 
 TOKEN, IG_ID = os.environ['IG_TOKEN'].strip(), os.environ['IG_USER_ID'].strip()
@@ -48,6 +48,12 @@ if __name__ == '__main__':
     host = pick_host()
     if os.environ.get('DRY_RUN') == '1': sys.exit(0)
     q = json.load(open(QUEUE)); want = os.environ.get('EPISODE', '').strip().upper()
+    gap = float(os.environ.get('SKIP_IF_POSTED_WITHIN_H') or 0)   # scheduled backup runs: don't double-post
+    if gap and not want:
+        last = max((calendar.timegm(time.strptime(e['posted_at'], '%Y-%m-%d %H:%M UTC'))
+                    for e in q if e.get('posted_at')), default=0)
+        if time.time() - last < gap * 3600:
+            print(f'Already posted within {gap} h, skipping this run.'); sys.exit(0)
     todo = [e for e in q if (e['id'] == want if want else not e['posted'])][:int(os.environ.get('COUNT') or 1)]
     if not todo: print('nothing to post'); sys.exit(0)
     for e in todo:

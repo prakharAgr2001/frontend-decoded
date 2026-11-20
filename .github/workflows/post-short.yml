@@ -2,7 +2,8 @@ name: Post short to Instagram
 
 on:
   schedule:
-    - cron: '0 8 * * *'   # 13:30 IST daily (series episode stays at 19:00)
+    - cron: '47 7 * * *'    # 13:17 IST daily (off the busy :00/:30 marks)
+    - cron: '29 8 * * *'    # 13:59 IST backup if GitHub skipped the first
   workflow_dispatch:
     inputs:
       episode:
@@ -32,6 +33,7 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          SKIP_IF_POSTED_WITHIN_H: ${{ github.event_name == 'schedule' && '12' || '' }}
           QUEUE: publish/shorts_queue.json
           EPISODE: ${{ github.event.inputs.episode }}
           TRIAL: ${{ (github.event_name == 'schedule' || github.event.inputs.trial == 'true') && '1' || '0' }}
