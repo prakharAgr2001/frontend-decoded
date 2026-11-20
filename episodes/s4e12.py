@@ -3,7 +3,7 @@ from engine.s3_extra import rows, netrows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E12', tag='S4 · E12', short='REACT QUERY')
+EP = dict(id='S4E12', tag='S4 · E12', short='REACT QUERY', hook='instant the second time')
 
 
 def ordersphone(c, cx, at_load, stale_upd=None, spin=True):

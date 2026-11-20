@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E18', tag='S4 · E18', short='URL STATE')
+EP = dict(id='S4E18', tag='S4 · E18', short='URL STATE', hook='why shared links lose filters')
 
 FILTERS = [('Pure veg', 'veg'), ('Rating 4+', 'Rating'), ('< 30 min', 'thirty')]
 

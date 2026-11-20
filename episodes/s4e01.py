@@ -3,7 +3,7 @@ from engine.s3_extra import rows, versus
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E01', tag='S4 · E01', short='WHAT IS STATE')
+EP = dict(id='S4E01', tag='S4 · E01', short='WHAT IS STATE', hook='who updates all 3 at once?')
 
 
 def hook(c):

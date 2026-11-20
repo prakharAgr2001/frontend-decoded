@@ -4,7 +4,7 @@ from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 from episodes.s4e15 import post
 
-EP = dict(id='S4E16', tag='S4 · E16', short='ROLLBACK')
+EP = dict(id='S4E16', tag='S4 · E16', short='ROLLBACK', hook='when the optimistic guess fails')
 
 
 def hook(c):

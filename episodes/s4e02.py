@@ -2,7 +2,7 @@ from engine.lib import *
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E02', tag='S4 · E02', short='THE 5 TYPES OF STATE')
+EP = dict(id='S4E02', tag='S4 · E02', short='THE 5 TYPES OF STATE', hook='one screen, five kinds of state')
 
 TYPES = [('LOCAL UI', BLUE), ('SHARED CLIENT', PURPLE), ('SERVER', ORANGE), ('URL', TEAL), ('FORM', PINK)]
 

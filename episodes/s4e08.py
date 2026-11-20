@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E08', tag='S4 · E08', short='ZUSTAND · JOTAI · MOBX')
+EP = dict(id='S4E08', tag='S4 · E08', short='ZUSTAND · JOTAI · MOBX', hook='store, atoms or observables?')
 
 COLS = {'Z': (255, 225, 190), 'J': (220, 205, 250), 'M': (200, 240, 200)}
 

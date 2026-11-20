@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E04', tag='S4 · E04', short='THE CONTEXT TRAP')
+EP = dict(id='S4E04', tag='S4 · E04', short='THE CONTEXT TRAP', hook='one Provider, everything renders')
 
 FLASH = (255, 210, 210)
 

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s4_extra import *
 
-EP = dict(id='S4E23', tag='S4 · E23', short='FINALE: ONE ORDER', tail=3.0)
+EP = dict(id='S4E23', tag='S4 · E23', short='FINALE: ONE ORDER', tail=3.0, hook='one food order, every state')
 
 HOMES = [('URL', TEAL), ('LOCAL', BLUE), ('SERVER', ORANGE), ('STORE', PURPLE), ('CONTEXT', PURPLE), ('FORM', PINK), ('MACHINE', RED)]
 

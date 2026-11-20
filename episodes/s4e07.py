@@ -3,7 +3,7 @@ from engine.s3_extra import rows, versus
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E07', tag='S4 · E07', short='REDUX TOOLKIT')
+EP = dict(id='S4E07', tag='S4 · E07', short='REDUX TOOLKIT', hook='same Redux, a third of the code')
 
 
 def hook(c):

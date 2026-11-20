@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E09', tag='S4 · E09', short='SELECTORS')
+EP = dict(id='S4E09', tag='S4 · E09', short='SELECTORS', hook='re-render only when it matters')
 
 
 def badge(c, cx, cy, n, at_flash=None):

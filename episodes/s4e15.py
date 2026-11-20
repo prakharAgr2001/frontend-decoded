@@ -3,7 +3,7 @@ from engine.s3_extra import rows, versus
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E15', tag='S4 · E15', short='OPTIMISTIC UI')
+EP = dict(id='S4E15', tag='S4 · E15', short='OPTIMISTIC UI', hook='why the heart fills instantly')
 
 
 def post(c, cx, cy, liked, likes, w=520, h=760, pop=None, signal=None):

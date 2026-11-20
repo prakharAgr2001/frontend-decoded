@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E06', tag='S4 · E06', short='REDUX FROM SCRATCH')
+EP = dict(id='S4E06', tag='S4 · E06', short='REDUX FROM SCRATCH', hook='the whole idea in 10 lines')
 
 
 def hook(c):

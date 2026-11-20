@@ -3,7 +3,7 @@ from engine.s3_extra import rows, versus
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E19', tag='S4 · E19', short='FORM STATE')
+EP = dict(id='S4E19', tag='S4 · E19', short='FORM STATE', hook='why typing in forms lags')
 
 
 def hook(c):

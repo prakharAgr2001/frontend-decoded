@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E20', tag='S4 · E20', short='STATE MACHINES')
+EP = dict(id='S4E20', tag='S4 · E20', short='STATE MACHINES', hook='spinner AND error at once?')
 
 
 def hook(c):

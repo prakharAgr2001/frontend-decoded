@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E03', tag='S4 · E03', short='STATE COLOCATION')
+EP = dict(id='S4E03', tag='S4 · E03', short='STATE COLOCATION', hook='why one keystroke re-renders all')
 
 GLOW = (255, 238, 170)
 

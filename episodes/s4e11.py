@@ -3,7 +3,7 @@ from engine.s3_extra import rows, versus
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E11', tag='S4 · E11', short='SERVER STATE')
+EP = dict(id='S4E11', tag='S4 · E11', short='SERVER STATE', hook="the data you don't own")
 
 
 def order_tab(c, x0, y0, status, col, label_):

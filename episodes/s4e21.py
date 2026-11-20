@@ -3,7 +3,7 @@ from engine.s3_extra import rows
 from engine.s2_extra import trap, verdict
 from engine.s4_extra import *
 
-EP = dict(id='S4E21', tag='S4 · E21', short='IMMER')
+EP = dict(id='S4E21', tag='S4 · E21', short='IMMER', hook='mutate without mutating')
 
 
 def hook(c):

@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S4E05', tag='S4 · E05', short='IQ: STATE BASICS')
+EP = dict(id='S4E05', tag='S4 · E05', short='IQ: STATE BASICS', hook='4 questions on state basics')
 
 SCENES = [
     (scene_iq_intro('STATE BASICS'),

@@ -788,5 +788,166 @@
   "media_id": "18122567723086123",
   "permalink": "https://www.instagram.com/reel/Df62eeiFQc0/",
   "posted_at": "2026-11-19 10:20 UTC"
+ },
+ {
+  "id": "S4E01",
+  "posted": false,
+  "video": "videos/S4E01.mp4",
+  "cover": "covers/S4E01.jpg",
+  "caption": "You tap Add on a biryani. The button, the cart bar and the total all change at once. Who told them? 🍛\nSeason 4 of Tech, Explained: state management.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E02",
+  "posted": false,
+  "video": "videos/S4E02.mp4",
+  "cover": "covers/S4E02.jpg",
+  "caption": "One food-app screen holds 5 different kinds of state. Mixing them up causes most bugs 🗂️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E03",
+  "posted": false,
+  "video": "videos/S4E03.mp4",
+  "cover": "covers/S4E03.jpg",
+  "caption": "Type one letter in a search box and the whole page re-renders. The fix is where your state lives 📍\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E04",
+  "posted": false,
+  "video": "videos/S4E04.mp4",
+  "cover": "covers/S4E04.jpg",
+  "caption": "You type a coupon code, and the header, footer and item list all re-render. Blame one Provider 📢\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E05",
+  "posted": false,
+  "video": "videos/S4E05.mp4",
+  "cover": "covers/S4E05.jpg",
+  "caption": "4 interview questions on state basics. Pause, answer, then check 🎯 How many did you get?\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E06",
+  "posted": false,
+  "video": "videos/S4E06.mp4",
+  "cover": "covers/S4E06.jpg",
+  "caption": "Actions, reducers, stores, middleware… sounds heavy. The core of Redux is about 10 lines. Let's write it ✍️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E07",
+  "posted": false,
+  "video": "videos/S4E07.mp4",
+  "cover": "covers/S4E07.jpg",
+  "caption": "One feature used to mean 4 files. Same Redux, a third of the code, and yes, you can write .push() 🧰\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E08",
+  "posted": false,
+  "video": "videos/S4E08.mp4",
+  "cover": "covers/S4E08.jpg",
+  "caption": "Not just Redux. One store, many atoms, or observable objects: three ways to share state 🧩 (+ an SSR trap)\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E09",
+  "posted": false,
+  "video": "videos/S4E09.mp4",
+  "cover": "covers/S4E09.jpg",
+  "caption": "Your cart badge shows one number, yet it re-renders on every keystroke. Selectors fix that 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E10",
+  "posted": false,
+  "video": "videos/S4E10.mp4",
+  "cover": "covers/S4E10.jpg",
+  "caption": "4 interview questions on Redux, stores and selectors. Pause, answer, then check 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E11",
+  "posted": false,
+  "video": "videos/S4E11.mp4",
+  "cover": "covers/S4E11.jpg",
+  "caption": "Two tabs, same order. You cancel in one. The other still says \"preparing\". One of them is lying 🚆\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E12",
+  "posted": false,
+  "video": "videos/S4E12.mp4",
+  "cover": "covers/S4E12.jpg",
+  "caption": "Open your orders: spinner. Go back and open them again: instant. Then it quietly updates. How? ⚡\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E13",
+  "posted": false,
+  "video": "videos/S4E13.mp4",
+  "cover": "covers/S4E13.jpg",
+  "caption": "You change your address to Office. Checkout still says Home. One of the 2 hard things in CS 🏷️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E14",
+  "posted": false,
+  "video": "videos/S4E14.mp4",
+  "cover": "covers/S4E14.jpg",
+  "caption": "She changed her name. Her old comments still show the old one. Store each thing once 🗃️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E15",
+  "posted": false,
+  "video": "videos/S4E15.mp4",
+  "cover": "covers/S4E15.jpg",
+  "caption": "One bar of signal, and the heart still fills instantly. The server hasn't even answered yet ❤️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E16",
+  "posted": false,
+  "video": "videos/S4E16.mp4",
+  "cover": "covers/S4E16.jpg",
+  "caption": "The heart filled, then the request failed. Now your screen is lying. Here's how to undo it right ✏️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E17",
+  "posted": false,
+  "video": "videos/S4E17.mp4",
+  "cover": "covers/S4E17.jpg",
+  "caption": "4 interview questions on server state, caching and optimistic updates. Pause, answer, check 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E18",
+  "posted": false,
+  "video": "videos/S4E18.mp4",
+  "cover": "covers/S4E18.jpg",
+  "caption": "You share a filtered link. Your friend sees every restaurant, unfiltered. Your state was in the wrong place 🔗\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E19",
+  "posted": false,
+  "video": "videos/S4E19.mp4",
+  "cover": "covers/S4E19.jpg",
+  "caption": "20 fields, one letter typed, every field re-renders. Controlled vs uncontrolled, explained ⌨️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E20",
+  "posted": false,
+  "video": "videos/S4E20.mp4",
+  "cover": "covers/S4E20.jpg",
+  "caption": "A spinner AND an error, at the same time. Make impossible states impossible 🚦\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E21",
+  "posted": false,
+  "video": "videos/S4E21.mp4",
+  "cover": "covers/S4E21.jpg",
+  "caption": "Six spreads to change one city. Immer lets you mutate without mutating 📝\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E22",
+  "posted": false,
+  "video": "videos/S4E22.mp4",
+  "cover": "covers/S4E22.jpg",
+  "caption": "4 interview questions on URL state, forms, state machines and Immer. Pause, answer, check 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S4E23",
+  "posted": false,
+  "video": "videos/S4E23.mp4",
+  "cover": "covers/S4E23.jpg",
+  "caption": "Season 4 finale: one food order, from search to doorstep, and every kind of state it touches 🛵\n💬 Comment NOTES for the full season cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
  }
 ]
