@@ -23,10 +23,10 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Heavy choice</div><div class="dg-c">moment (~70 KB)</div><div class="dg-c">Whole lodash</div><div class="dg-c">Big modal library</div><div class="dg-c">axios everywhere</div><div class="dg-c">Polyfills for old browsers</div></div><div class="dg-col good"><div class="dg-h">Lighter option</div><div class="dg-c">date-fns, or the built-in Intl API</div><div class="dg-c">lodash-es named imports, or native array methods</div><div class="dg-c">native &lt;dialog&gt;</div><div class="dg-c">fetch</div><div class="dg-c">only what your targets need</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Built into every modern browser, zero KB</span>
-<span class="ow">new</span><span class="w"> </span><span class="nb">Intl</span><span class="p">.</span><span class="nx">DateTimeFormat</span><span class="p">(</span><span class="s1">'en-IN'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">dateStyle</span><span class="o">:</span><span class="w"> </span><span class="s1">'medium'</span><span class="w"> </span><span class="p">}).</span><span class="nx">format</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">());</span>
-<span class="ow">new</span><span class="w"> </span><span class="nb">Intl</span><span class="p">.</span><span class="nx">NumberFormat</span><span class="p">(</span><span class="s1">'en-IN'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="s1">'currency'</span><span class="p">,</span><span class="w"> </span><span class="nx">currency</span><span class="o">:</span><span class="w"> </span><span class="s1">'INR'</span><span class="w"> </span><span class="p">}).</span><span class="nx">format</span><span class="p">(</span><span class="mf">1999</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Built into every modern browser, zero KB
+new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date());
+new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(1999);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

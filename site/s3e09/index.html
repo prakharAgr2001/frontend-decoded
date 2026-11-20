@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>HTML arrives</b><span>parsing builds the DOM</span></li><li><b>CSS found</b><span>download + build CSSOM (blocks first paint)</span></li><li><b>Plain script found</b><span>parsing stops until it downloads and runs</span></li><li><b>Render tree</b><span>DOM + CSSOM combined</span></li><li><b>First paint</b><span>only now</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span><span class="c">/* critical above-the-fold CSS, inlined */</span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"stylesheet"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/print.css"</span> <span class="na">media</span><span class="o">=</span><span class="s">"print"</span><span class="p">&gt;</span>         <span class="cm">&lt;!-- doesn't block screen rendering --&gt;</span>
-  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/rest.css"</span> <span class="na">as</span><span class="o">=</span><span class="s">"style"</span> <span class="na">onload</span><span class="o">=</span><span class="s">"this.rel='stylesheet'"</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;head&gt;
+  &lt;style&gt;/* critical above-the-fold CSS, inlined */&lt;/style&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;/print.css&quot; media=&quot;print&quot;&gt;         &lt;!-- doesn't block screen rendering --&gt;
+  &lt;link rel=&quot;preload&quot; href=&quot;/rest.css&quot; as=&quot;style&quot; onload=&quot;this.rel='stylesheet'&quot;&gt;
+  &lt;script src=&quot;/app.js&quot; defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -21,29 +21,29 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A Google Maps link. Send it to a friend and they see exactly the same place, zoom and route. That only works because everything is in the URL, not in your phone's memory.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useSearchParams</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-router-dom'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-jsx">import { useSearchParams } from 'react-router-dom';
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">ProductFilters</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">params</span><span class="p">,</span><span class="w"> </span><span class="nx">setParams</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useSearchParams</span><span class="p">();</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'q'</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">'price'</span><span class="p">,</span><span class="w"> </span><span class="s1">'rating'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">))</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'rating'</span><span class="p">;</span><span class="w">  </span><span class="c1">// validate</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">page</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'page'</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+function ProductFilters() {
+  const [params, setParams] = useSearchParams();
+  const q = params.get('q') ?? '';
+  const sort = ['price', 'rating'].includes(params.get('sort')) ? params.get('sort') : 'rating';  // validate
+  const page = Math.max(1, Number(params.get('page')) || 1);
 
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">update</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">URLSearchParams</span><span class="p">(</span><span class="nx">params</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">value</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">key</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'page'</span><span class="p">)</span><span class="w"> </span><span class="nx">next</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="s1">'page'</span><span class="p">);</span><span class="w">           </span><span class="c1">// new filter → back to page 1</span>
-<span class="w">    </span><span class="nx">setParams</span><span class="p">(</span><span class="nx">next</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">replace</span><span class="w"> </span><span class="p">});</span>
-<span class="w">  </span><span class="p">};</span>
+  const update = (key, value, replace = false) =&gt; {
+    const next = new URLSearchParams(params);
+    value ? next.set(key, value) : next.delete(key);
+    if (key !== 'page') next.delete('page');           // new filter → back to page 1
+    setParams(next, { replace });
+  };
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">q</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">update</span><span class="p">(</span><span class="s1">'q'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">   </span><span class="p">{</span><span class="cm">/* replace while typing */</span><span class="p">}</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">select</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">sort</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">update</span><span class="p">(</span><span class="s1">'sort'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}&gt;</span><span class="w">    </span><span class="p">{</span><span class="cm">/* push on commit */</span><span class="p">}</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">option</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">"rating"</span><span class="p">&gt;</span><span class="nx">Top</span><span class="w"> </span><span class="nx">rated</span><span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;&lt;</span><span class="nt">option</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">"price"</span><span class="p">&gt;</span><span class="nx">Price</span><span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
-</code></pre></div>
+  return (&lt;&gt;
+    &lt;input value={q} onChange={e =&gt; update('q', e.target.value, true)} /&gt;   {/* replace while typing */}
+    &lt;select value={sort} onChange={e =&gt; update('sort', e.target.value)}&gt;    {/* push on commit */}
+      &lt;option value=&quot;rating&quot;&gt;Top rated&lt;/option&gt;&lt;option value=&quot;price&quot;&gt;Price&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/&gt;);
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -21,25 +21,25 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A radio station. You tune in once and keep listening; the station broadcasts whenever there's news. If you lose signal, your radio retunes automatically. But you can't talk back through the radio.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/event-stream</span>
+<pre class="hl-code"><code class="language-http">HTTP/1.1 200 OK
+Content-Type: text/event-stream
 
 id: 41
 event: score
-data: {"match":"IND-AUS","runs":187}
+data: {&quot;match&quot;:&quot;IND-AUS&quot;,&quot;runs&quot;:187}
 
 id: 42
 event: score
-data: {"match":"IND-AUS","runs":191}
-</code></pre></div>
+data: {&quot;match&quot;:&quot;IND-AUS&quot;,&quot;runs&quot;:191}
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EventSource</span><span class="p">(</span><span class="s1">'/api/live-score'</span><span class="p">);</span>
-<span class="nx">source</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'score'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">updateScore</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">)));</span>
-<span class="nx">source</span><span class="p">.</span><span class="nx">onerror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">showReconnecting</span><span class="p">();</span><span class="w">          </span><span class="c1">// EventSource retries by itself</span>
+<pre class="hl-code"><code class="language-js">const source = new EventSource('/api/live-score');
+source.addEventListener('score', e =&gt; updateScore(JSON.parse(e.data)));
+source.onerror = () =&gt; showReconnecting();          // EventSource retries by itself
 
-<span class="c1">// Sending goes over normal HTTP</span>
-<span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/predictions'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">pick</span><span class="o">:</span><span class="w"> </span><span class="s1">'IND'</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+// Sending goes over normal HTTP
+fetch('/api/predictions', { method: 'POST', body: JSON.stringify({ pick: 'IND' }) });
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

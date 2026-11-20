@@ -84,11 +84,11 @@
 <h2 id="why-frontend-engineers-should-care">Why frontend engineers should care</h2>
 <p>A DNS lookup on a cold cache costs anything from ~20 ms to a few hundred ms, and it happens <strong>before</strong> a single byte of your page can download. Every new domain your page uses (fonts, analytics, ad scripts, an image CDN) can cost another lookup.</p>
 <p>You can tell the browser to start early:</p>
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Look up the name early (cheap) --&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"dns-prefetch"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://fonts.gstatic.com"</span><span class="p">&gt;</span>
-<span class="cm">&lt;!-- Look up + connect (TCP + TLS) early: use for the 1–3 domains you will definitely hit --&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preconnect"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://fonts.gstatic.com"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;!-- Look up the name early (cheap) --&gt;
+&lt;link rel=&quot;dns-prefetch&quot; href=&quot;https://fonts.gstatic.com&quot;&gt;
+&lt;!-- Look up + connect (TCP + TLS) early: use for the 1–3 domains you will definitely hit --&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+</code></pre>
 
 <h2 id="see-it-yourself">See it yourself</h2>
 <ul>

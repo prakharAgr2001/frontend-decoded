@@ -23,15 +23,15 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Fetch-on-render (waterfall)</div><div class="dg-c">Page renders → fetches user</div><div class="dg-c">User arrives → renders &lt;Orders&gt; → fetches orders</div><div class="dg-c">Orders arrive → renders &lt;Offers&gt; → fetches offers</div><div class="dg-c">3 round trips in a row</div></div><div class="dg-col good"><div class="dg-h">Fetch-then-render</div><div class="dg-c">Route loader starts user, orders and offers together</div><div class="dg-c">All requests in flight at once</div><div class="dg-c">Render when data is ready</div><div class="dg-c">~1 round trip</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// React Router: start all requests before rendering the route</span>
-<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loader</span><span class="p">({</span><span class="w"> </span><span class="nx">params</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">user</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span>
-<span class="w">    </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/users/</span><span class="si">${</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
-<span class="w">    </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/users/</span><span class="si">${</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/orders`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
-<span class="w">  </span><span class="p">]);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">user</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="w"> </span><span class="p">};</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// React Router: start all requests before rendering the route
+export async function loader({ params }) {
+  const [user, orders] = await Promise.all([
+    fetch(`/api/users/${params.id}`).then(r =&gt; r.json()),
+    fetch(`/api/users/${params.id}/orders`).then(r =&gt; r.json()),
+  ]);
+  return { user, orders };
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

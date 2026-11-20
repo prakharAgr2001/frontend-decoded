@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Janky</div><div class="dg-c">left: 0 → 300px</div><div class="dg-c">width / height growth</div><div class="dg-c">box-shadow change</div><div class="dg-c">layout + paint every frame</div></div><div class="dg-col good"><div class="dg-h">Smooth</div><div class="dg-c">transform: translateX(300px)</div><div class="dg-c">transform: scale(…)</div><div class="dg-c">opacity on a pseudo-element with the shadow</div><div class="dg-c">composite only, can run on GPU</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">.</span><span class="nc">card</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">transform</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease</span><span class="p">,</span><span class="w"> </span><span class="k">opacity</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="p">.</span><span class="nc">card</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">transform</span><span class="p">:</span><span class="w"> </span><span class="nb">translateY</span><span class="p">(</span><span class="mi">-4</span><span class="kt">px</span><span class="p">)</span><span class="w"> </span><span class="nb">scale</span><span class="p">(</span><span class="mf">1.02</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<pre class="hl-code"><code class="language-css">.card { transition: transform 200ms ease, opacity 200ms ease; }
+.card:hover { transform: translateY(-4px) scale(1.02); }
 
-<span class="c">/* Only for elements about to animate, remove when done */</span>
-<span class="p">.</span><span class="nc">drawer</span><span class="p">.</span><span class="nc">opening</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">will-change</span><span class="p">:</span><span class="w"> </span><span class="k">transform</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+/* Only for elements about to animate, remove when done */
+.drawer.opening { will-change: transform; }
+</code></pre>
 
 <ul>
 <li>CSS transitions and animations on <code>transform</code>/<code>opacity</code> can keep running smoothly even if JavaScript blocks the main thread for a moment.</li>

@@ -23,24 +23,24 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>User types &quot;r&quot;</b><span>start a 300 ms timer</span></li><li><b>Types &quot;re&quot;</b><span>cancel the timer, start again</span></li><li><b>Types &quot;react&quot;</b><span>cancel, start again</span></li><li><b>Stops typing for 300 ms</b><span>function runs once, with &quot;react&quot;</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">debounce</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span><span class="w"> </span><span class="nx">wait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">timer</span><span class="p">;</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fn</span><span class="p">(...</span><span class="nx">args</span><span class="p">),</span><span class="w"> </span><span class="nx">wait</span><span class="p">);</span>
-<span class="w">  </span><span class="p">};</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-js">function debounce(fn, wait = 300) {
+  let timer;
+  return (...args) =&gt; {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; fn(...args), wait);
+  };
+}
 
-<span class="kd">let</span><span class="w"> </span><span class="nx">controller</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">search</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">debounce</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">controller</span><span class="o">?</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span><span class="w">                         </span><span class="c1">// cancel the previous request</span>
-<span class="w">  </span><span class="nx">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AbortController</span><span class="p">();</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="w"> </span><span class="p">});</span>
-<span class="w">  </span><span class="nx">render</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
-<span class="p">},</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span>
+let controller;
+const search = debounce(async q =&gt; {
+  controller?.abort();                         // cancel the previous request
+  controller = new AbortController();
+  const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: controller.signal });
+  render(await res.json());
+}, 300);
 
-<span class="nx">input</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">search</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">));</span>
-</code></pre></div>
+input.addEventListener('input', e =&gt; search(e.target.value));
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

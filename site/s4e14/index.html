@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Nested (denormalized)</div><div class="dg-c">posts: [{ id: 101, author: { id: 7, name: &#x27;Riya&#x27; } }]</div><div class="dg-c">The same user copied into every post</div><div class="dg-c">Rename = update every copy</div><div class="dg-c">Find a post = loop through arrays</div></div><div class="dg-col good"><div class="dg-h">Normalized</div><div class="dg-c">users: { byId: { 7: { id: 7, name: &#x27;Riya&#x27; } } }</div><div class="dg-c">posts: { byId: { 101: { id: 101, author: 7 } } }</div><div class="dg-c">Rename = update users.byId[7]</div><div class="dg-c">Find a post = posts.byId[101]</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createEntityAdapter</span><span class="p">,</span><span class="w"> </span><span class="nx">createSlice</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@reduxjs/toolkit'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createEntityAdapter</span><span class="p">();</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">usersSlice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSlice</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">'users'</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">initialState</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">getInitialState</span><span class="p">(),</span><span class="w">        </span><span class="c1">// { ids: [], entities: {} }</span>
-<span class="w">  </span><span class="nx">reducers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">userUpdated</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">updateOne</span><span class="p">,</span><span class="w"> </span><span class="nx">usersReceived</span><span class="o">:</span><span class="w"> </span><span class="nx">usersAdapter</span><span class="p">.</span><span class="nx">setAll</span><span class="w"> </span><span class="p">},</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+const usersAdapter = createEntityAdapter();
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: usersAdapter.getInitialState(),        // { ids: [], entities: {} }
+  reducers: { userUpdated: usersAdapter.updateOne, usersReceived: usersAdapter.setAll },
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

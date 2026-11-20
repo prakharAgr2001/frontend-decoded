@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Request /product/42</b><span>hits the server</span></li><li><b>Server fetches data</b><span>database or APIs</span></li><li><b>Server renders HTML</b><span>components → full HTML string</span></li><li><b>Browser paints</b><span>content visible right away</span></li><li><b>JS loads and hydrates</b><span>buttons start working</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js (App Router): this component runs on the server for each request</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">dynamic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'force-dynamic'</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">Product</span><span class="p">({</span><span class="w"> </span><span class="nx">params</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">product</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="err">·</span><span class="w"> </span><span class="err">₹</span><span class="p">{</span><span class="nx">product</span><span class="p">.</span><span class="nx">price</span><span class="p">}&lt;/</span><span class="nt">h1</span><span class="p">&gt;;</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Next.js (App Router): this component runs on the server for each request
+export const dynamic = 'force-dynamic';
+export default async function Product({ params }) {
+  const product = await db.product.find(params.id);
+  return &lt;h1&gt;{product.title} · ₹{product.price}&lt;/h1&gt;;
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

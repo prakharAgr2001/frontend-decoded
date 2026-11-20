@@ -23,10 +23,10 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Attribute</div><div class="dg-c">none</div><div class="dg-c">async</div><div class="dg-c">defer</div><div class="dg-c">type=&quot;module&quot;</div></div><div class="dg-col good"><div class="dg-h">Behaviour</div><div class="dg-c">Blocks parsing while downloading and running</div><div class="dg-c">Parallel download, runs on arrival, no order guarantee</div><div class="dg-c">Parallel download, runs after parsing, in order</div><div class="dg-c">Deferred by default (add async to change)</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/vendor.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>            <span class="cm">&lt;!-- runs after vendor.js --&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"https://analytics.example.com/a.js"</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;script src=&quot;/vendor.js&quot; defer&gt;&lt;/script&gt;
+&lt;script src=&quot;/app.js&quot; defer&gt;&lt;/script&gt;            &lt;!-- runs after vendor.js --&gt;
+&lt;script src=&quot;https://analytics.example.com/a.js&quot; async&gt;&lt;/script&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

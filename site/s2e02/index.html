@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Request the page</b><span>server returns index.html with &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span></li><li><b>Download the bundle</b><span>main.js, often hundreds of KB</span></li><li><b>Run React</b><span>components render in the browser</span></li><li><b>Fetch data</b><span>API calls, then render again with real content</span></li><li><b>Navigate</b><span>later pages need only data, no new HTML</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- What the server actually sends in a CSR app --&gt;</span>
-<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"root"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/assets/main.4f2a.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;!-- What the server actually sends in a CSR app --&gt;
+&lt;body&gt;
+  &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+  &lt;script src=&quot;/assets/main.4f2a.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

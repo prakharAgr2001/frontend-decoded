@@ -21,21 +21,21 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Three ways to share notes in an office: <strong>Zustand</strong> is a shared notice board anyone can read a section of, <strong>Jotai</strong> is lots of sticky notes where you only watch the ones you care about, <strong>MobX</strong> is a live spreadsheet where changing one cell updates everything that depends on it.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="c1">// Zustand</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'zustand'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">useCart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">create</span><span class="p">(</span><span class="nx">set</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
-<span class="w">  </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">  </span><span class="nx">add</span><span class="o">:</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">set</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[...</span><span class="nx">s</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="p">]</span><span class="w"> </span><span class="p">})),</span>
-<span class="p">}));</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">CartBadge</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;{</span><span class="nx">useCart</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">)}&lt;/</span><span class="nt">span</span><span class="p">&gt;;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// re-renders only when the count changes</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Zustand
+import { create } from 'zustand';
+const useCart = create(set =&gt; ({
+  items: [],
+  add: item =&gt; set(s =&gt; ({ items: [...s.items, item] })),
+}));
+function CartBadge() { return &lt;span&gt;{useCart(s =&gt; s.items.length)}&lt;/span&gt;; }   // re-renders only when the count changes
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Jotai</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">atom</span><span class="p">,</span><span class="w"> </span><span class="nx">useAtomValue</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'jotai'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">itemsAtom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">atom</span><span class="p">([]);</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">countAtom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">atom</span><span class="p">(</span><span class="nx">get</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">get</span><span class="p">(</span><span class="nx">itemsAtom</span><span class="p">).</span><span class="nx">length</span><span class="p">);</span><span class="w">     </span><span class="c1">// derived atom</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">CartBadge</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;{</span><span class="nx">useAtomValue</span><span class="p">(</span><span class="nx">countAtom</span><span class="p">)}&lt;/</span><span class="nt">span</span><span class="p">&gt;;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Jotai
+import { atom, useAtomValue } from 'jotai';
+const itemsAtom = atom([]);
+const countAtom = atom(get =&gt; get(itemsAtom).length);     // derived atom
+function CartBadge() { return &lt;span&gt;{useAtomValue(countAtom)}&lt;/span&gt;; }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

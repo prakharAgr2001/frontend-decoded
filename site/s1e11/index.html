@@ -21,17 +21,17 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Asking a tailor to measure you after every single stitch. "Add a button. How long is the sleeve now? Add another. How long now?" The tailor re-measures the whole shirt every time. Instead: take all measurements first, then do all the stitching.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="c1">// Bad: Thrashing: each read forces layout because the previous write made it dirty</span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">cards</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">card</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">card</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">;</span><span class="w">   </span><span class="c1">// read → write → read → write…</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-js">// Bad: Thrashing: each read forces layout because the previous write made it dirty
+for (const card of cards) {
+  card.style.height = card.offsetWidth + 'px';   // read → write → read → write…
+}
 
-<span class="c1">// Good: Batched: one layout for all reads, then writes are applied together</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">widths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cards</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">c</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="p">);</span><span class="w">       </span><span class="c1">// all reads</span>
-<span class="nx">requestAnimationFrame</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">c</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">c</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">);</span><span class="w">   </span><span class="c1">// all writes</span>
-<span class="p">});</span>
-</code></pre></div>
+// Good: Batched: one layout for all reads, then writes are applied together
+const widths = cards.map(c =&gt; c.offsetWidth);       // all reads
+requestAnimationFrame(() =&gt; {
+  cards.forEach((c, i) =&gt; c.style.height = widths[i] + 'px');   // all writes
+});
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Interleaved</div><div class="dg-c">write, read (layout!), write, read (layout!)…</div><div class="dg-c">N layouts per frame</div><div class="dg-c">Janky scrolling and animations</div></div><div class="dg-col good"><div class="dg-h">Batched</div><div class="dg-c">read, read, read… (1 layout)</div><div class="dg-c">then write, write, write…</div><div class="dg-c">1 layout in the next frame</div></div></div></figure>
 

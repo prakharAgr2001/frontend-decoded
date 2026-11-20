@@ -21,25 +21,25 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Mopping a long corridor while people need to walk through. Mop a few metres, step aside to let people pass, then continue, instead of blocking the whole corridor until it's done.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processAll</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">10</span><span class="p">;</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">process</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">deadline</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">yieldToMain</span><span class="p">();</span><span class="w">                      </span><span class="c1">// let input + paint happen</span>
-<span class="w">      </span><span class="nx">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">10</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-js">async function processAll(items) {
+  let deadline = performance.now() + 10;
+  for (const item of items) {
+    process(item);
+    if (performance.now() &gt; deadline) {
+      await yieldToMain();                      // let input + paint happen
+      deadline = performance.now() + 10;
+    }
+  }
+}
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">yieldToMain</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">scheduler</span><span class="p">.</span><span class="k">yield</span><span class="p">();</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">resolve</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
-<span class="p">}</span>
+function yieldToMain() {
+  if (globalThis.scheduler?.yield) return scheduler.yield();
+  return new Promise(resolve =&gt; setTimeout(resolve, 0));
+}
 
-<span class="c1">// Priorities</span>
-<span class="nx">scheduler</span><span class="p">.</span><span class="nx">postTask</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">sendAnalytics</span><span class="p">(),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="s1">'background'</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+// Priorities
+scheduler.postTask(() =&gt; sendAnalytics(), { priority: 'background' });
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Doesn&#x27;t yield</div><div class="dg-c">await Promise.resolve() (microtask)</div><div class="dg-c">queueMicrotask(next)</div><div class="dg-c">One 800 ms loop</div></div><div class="dg-col good"><div class="dg-h">Yields</div><div class="dg-c">await scheduler.yield()</div><div class="dg-c">setTimeout(next, 0)</div><div class="dg-c">Many ~10 ms slices</div></div></div></figure>
 

@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">OT</div><div class="dg-c">Central server orders all operations</div><div class="dg-c">Operations use positions, transformed on conflict</div><div class="dg-c">Small document size</div><div class="dg-c">Hard offline / peer-to-peer</div><div class="dg-c">Google Docs</div></div><div class="dg-col good"><div class="dg-h">CRDT</div><div class="dg-c">No central authority required</div><div class="dg-c">Operations reference unique element ids</div><div class="dg-c">Extra metadata and tombstones</div><div class="dg-c">Built for offline and peer-to-peer</div><div class="dg-c">Yjs, Automerge (Figma-style multiplayer, local-first apps)</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Y</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'yjs'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Y</span><span class="p">.</span><span class="nx">Doc</span><span class="p">();</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">doc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="s1">'notes'</span><span class="p">);</span>
-<span class="nx">text</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s1">'hello'</span><span class="p">);</span>
-<span class="c1">// Sync with a provider (e.g. y-websocket or y-webrtc); edits merge automatically, even after offline edits</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">import * as Y from 'yjs';
+const doc = new Y.Doc();
+const text = doc.getText('notes');
+text.insert(0, 'hello');
+// Sync with a provider (e.g. y-websocket or y-webrtc); edits merge automatically, even after offline edits
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -23,22 +23,22 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Roots</b><span>window/globalThis, the current call stack, active timers and listeners</span></li><li><b>Mark</b><span>follow every reference from the roots and mark what&#x27;s reachable</span></li><li><b>Sweep</b><span>everything not marked is freed</span></li><li><b>Leak</b><span>something you forgot about still points to the old data, so it&#x27;s always &quot;reachable&quot;</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Bad: Leaks: interval + listener keep running after the component unmounts</span>
-<span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
-<span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
-<span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+<pre class="hl-code"><code class="language-jsx">// Bad: Leaks: interval + listener keep running after the component unmounts
+useEffect(() =&gt; {
+  const id = setInterval(poll, 1000);
+  window.addEventListener('resize', onResize);
+}, []);
 
-<span class="c1">// Good: Cleanup function removes them</span>
-<span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
-<span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
-<span class="w">    </span><span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
-<span class="w">  </span><span class="p">};</span>
-<span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
-</code></pre></div>
+// Good: Cleanup function removes them
+useEffect(() =&gt; {
+  const id = setInterval(poll, 1000);
+  window.addEventListener('resize', onResize);
+  return () =&gt; {
+    clearInterval(id);
+    window.removeEventListener('resize', onResize);
+  };
+}, []);
+</code></pre>
 
 <ul>
 <li><strong>Detached DOM nodes:</strong> removed from the page but still referenced from a JS variable or array, so the whole subtree stays in memory.</li>

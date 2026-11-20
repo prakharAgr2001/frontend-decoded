@@ -21,15 +21,15 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Ordering a pizza by table size. <code>srcset</code> is the menu of sizes; <code>sizes</code> tells the waiter how big your table is. Without that, they bring the family size to a table for one.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">picture</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">source</span> <span class="na">type</span><span class="o">=</span><span class="s">"image/avif"</span> <span class="na">srcset</span><span class="o">=</span><span class="s">"/p-400.avif 400w, /p-800.avif 800w, /p-1600.avif 1600w"</span>
-          <span class="na">sizes</span><span class="o">=</span><span class="s">"(max-width: 600px) 100vw, 50vw"</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"/p-800.jpg"</span>
-       <span class="na">srcset</span><span class="o">=</span><span class="s">"/p-400.jpg 400w, /p-800.jpg 800w, /p-1600.jpg 1600w"</span>
-       <span class="na">sizes</span><span class="o">=</span><span class="s">"(max-width: 600px) 100vw, 50vw"</span>
-       <span class="na">width</span><span class="o">=</span><span class="s">"800"</span> <span class="na">height</span><span class="o">=</span><span class="s">"600"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"Blue running shoes"</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">picture</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;picture&gt;
+  &lt;source type=&quot;image/avif&quot; srcset=&quot;/p-400.avif 400w, /p-800.avif 800w, /p-1600.avif 1600w&quot;
+          sizes=&quot;(max-width: 600px) 100vw, 50vw&quot;&gt;
+  &lt;img src=&quot;/p-800.jpg&quot;
+       srcset=&quot;/p-400.jpg 400w, /p-800.jpg 800w, /p-1600.jpg 1600w&quot;
+       sizes=&quot;(max-width: 600px) 100vw, 50vw&quot;
+       width=&quot;800&quot; height=&quot;600&quot; alt=&quot;Blue running shoes&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
 
 <figure class="dg"><ol class="dg-steps"><li><b>Browser reads sizes</b><span>e.g. on a phone: 100vw = 390 CSS px</span></li><li><b>Multiplies by DPR</b><span>390 × 3 = 1170 device px needed</span></li><li><b>Picks from srcset</b><span>the 1600w file (smallest one ≥ 1170)</span></li><li><b>Tries formats in order</b><span>AVIF if supported, else JPEG</span></li></ol></figure>
 

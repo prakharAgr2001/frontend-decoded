@@ -23,9 +23,9 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>TTFB</b><span>server responds with HTML</span></li><li><b>Load delay</b><span>time until the browser even starts downloading the LCP image</span></li><li><b>Load duration</b><span>downloading the image</span></li><li><b>Render delay</b><span>waiting for CSS/JS before it can be painted</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Discoverable early, high priority, NOT lazy --&gt;</span>
-<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"/hero-1200.avif"</span> <span class="na">width</span><span class="o">=</span><span class="s">"1200"</span> <span class="na">height</span><span class="o">=</span><span class="s">"600"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"New collection"</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;!-- Discoverable early, high priority, NOT lazy --&gt;
+&lt;img src=&quot;/hero-1200.avif&quot; width=&quot;1200&quot; height=&quot;600&quot; fetchpriority=&quot;high&quot; alt=&quot;New collection&quot;&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

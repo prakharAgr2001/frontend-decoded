@@ -21,19 +21,19 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A kid in the back seat asking "are we there yet?" every five minutes. Simple, but most answers are "no", and you only learn you've arrived up to five minutes late.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="c1">// setTimeout after the response: no overlapping requests if the server slows down</span>
-<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">poll</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">document</span><span class="p">.</span><span class="nx">hidden</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/notifications/unread-count'</span><span class="p">);</span>
-<span class="w">      </span><span class="nx">updateBadge</span><span class="p">((</span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="nx">count</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ignore, try again next round */</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">5000</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="nx">poll</span><span class="p">();</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'visibilitychange'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">document</span><span class="p">.</span><span class="nx">hidden</span><span class="p">)</span><span class="w"> </span><span class="nx">updateNow</span><span class="p">();</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// setTimeout after the response: no overlapping requests if the server slows down
+async function poll() {
+  if (!document.hidden) {
+    try {
+      const res = await fetch('/api/notifications/unread-count');
+      updateBadge((await res.json()).count);
+    } catch { /* ignore, try again next round */ }
+  }
+  setTimeout(poll, 5000);
+}
+poll();
+document.addEventListener('visibilitychange', () =&gt; { if (!document.hidden) updateNow(); });
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">setInterval(fetch, 5000)</div><div class="dg-c">Fires even if the last request is still running</div><div class="dg-c">Overlapping requests when the server slows</div><div class="dg-c">Responses can arrive out of order</div></div><div class="dg-col good"><div class="dg-h">setTimeout after response</div><div class="dg-c">Next poll starts only after the last finishes</div><div class="dg-c">Never overlaps</div><div class="dg-c">Always in order</div></div></div></figure>
 

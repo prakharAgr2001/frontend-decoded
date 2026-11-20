@@ -23,23 +23,23 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Define</b><span>async function with &#x27;use server&#x27;</span></li><li><b>Use it</b><span>&lt;form action={createTodo}&gt; or call it in an event handler</span></li><li><b>Browser sends a POST</b><span>with a Next-Action header identifying the function</span></li><li><b>Server runs it</b><span>DB write, then revalidate the page data</span></li><li><b>Response</b><span>updated UI (or a return value)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// actions.js</span>
-<span class="s1">'use server'</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createTodo</span><span class="p">(</span><span class="nx">formData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getUser</span><span class="p">();</span><span class="w">                 </span><span class="c1">// auth check</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s1">'Not signed in'</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="nx">formData</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'title'</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="p">).</span><span class="nx">trim</span><span class="p">();</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">title</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">200</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s1">'Invalid title'</span><span class="w"> </span><span class="p">};</span><span class="w">   </span><span class="c1">// validate</span>
-<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">todo</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">userId</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="p">});</span>
-<span class="w">  </span><span class="nx">revalidatePath</span><span class="p">(</span><span class="s1">'/todos'</span><span class="p">);</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-jsx">// actions.js
+'use server';
+export async function createTodo(formData) {
+  const user = await getUser();                 // auth check
+  if (!user) throw new Error('Not signed in');
+  const title = String(formData.get('title') ?? '').trim();
+  if (!title || title.length &gt; 200) return { error: 'Invalid title' };   // validate
+  await db.todo.create({ title, userId: user.id });
+  revalidatePath('/todos');
+}
 
-<span class="c1">// TodoForm.jsx</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createTodo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./actions'</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">TodoForm</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">form</span><span class="w"> </span><span class="na">action</span><span class="o">=</span><span class="p">{</span><span class="nx">createTodo</span><span class="p">}&gt;&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">"title"</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">button</span><span class="p">&gt;</span><span class="nx">Add</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;&lt;/</span><span class="nt">form</span><span class="p">&gt;;</span>
-<span class="p">}</span>
-</code></pre></div>
+// TodoForm.jsx
+import { createTodo } from './actions';
+export default function TodoForm() {
+  return &lt;form action={createTodo}&gt;&lt;input name=&quot;title&quot; /&gt;&lt;button&gt;Add&lt;/button&gt;&lt;/form&gt;;
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

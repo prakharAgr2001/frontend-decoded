@@ -23,22 +23,22 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>setState in Parent</b><span>Parent re-renders</span></li><li><b>All children re-render too</b><span>even if their props are identical</span></li><li><b>React diffs the output</b><span>compares old and new trees</span></li><li><b>Commit</b><span>only real differences touch the DOM</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Problem: typing re-renders the expensive chart</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">Page</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">setText</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">text</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setText</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-jsx">// Problem: typing re-renders the expensive chart
+function Page() {
+  const [text, setText] = useState('');
+  return (&lt;&gt;
+    &lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;
+    &lt;ExpensiveChart /&gt;
+  &lt;/&gt;);
+}
 
-<span class="c1">// Fix: move the state down into its own component</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">SearchBox</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">setText</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">text</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setText</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;;</span>
-<span class="p">}</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">Page</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;&lt;</span><span class="nt">SearchBox</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;&lt;/&gt;);</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+// Fix: move the state down into its own component
+function SearchBox() {
+  const [text, setText] = useState('');
+  return &lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;;
+}
+function Page() { return (&lt;&gt;&lt;SearchBox /&gt;&lt;ExpensiveChart /&gt;&lt;/&gt;); }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

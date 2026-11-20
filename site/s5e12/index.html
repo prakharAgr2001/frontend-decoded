@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Type &quot;re&quot;</b><span>request A starts (slow)</span></li><li><b>Type &quot;react&quot;</b><span>request B starts (fast)</span></li><li><b>B returns</b><span>show results for &quot;react&quot;</span></li><li><b>A returns later</b><span>overwrites with results for &quot;re&quot; (bug)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">ignore</span><span class="p">)</span><span class="w"> </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// only the latest effect wins</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="p">};</span><span class="w">                       </span><span class="c1">// runs when query changes</span>
-<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">]);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">useEffect(() =&gt; {
+  let ignore = false;
+  fetch(`/api/search?q=${encodeURIComponent(query)}`)
+    .then(r =&gt; r.json())
+    .then(data =&gt; { if (!ignore) setResults(data); });   // only the latest effect wins
+  return () =&gt; { ignore = true; };                       // runs when query changes
+}, [query]);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

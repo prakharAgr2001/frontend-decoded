@@ -23,11 +23,11 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Late hero</div><div class="dg-c">Background image in CSS</div><div class="dg-c">Injected by React after JS runs</div><div class="dg-c">loading=&quot;lazy&quot;</div><div class="dg-c">Low priority until layout</div></div><div class="dg-col good"><div class="dg-h">Early hero</div><div class="dg-c">&lt;img&gt; in the HTML</div><div class="dg-c">In server-rendered HTML or preloaded</div><div class="dg-c">No lazy loading</div><div class="dg-c">fetchpriority=&quot;high&quot;</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"/hero-1200.avif"</span> <span class="na">width</span><span class="o">=</span><span class="s">"1200"</span> <span class="na">height</span><span class="o">=</span><span class="s">"600"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"Sale banner"</span><span class="p">&gt;</span>
+<pre class="hl-code"><code class="language-html">&lt;img src=&quot;/hero-1200.avif&quot; width=&quot;1200&quot; height=&quot;600&quot; fetchpriority=&quot;high&quot; alt=&quot;Sale banner&quot;&gt;
 
-<span class="cm">&lt;!-- Hero only referenced in CSS? Preload it --&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">as</span><span class="o">=</span><span class="s">"image"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/hero-1200.avif"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span><span class="p">&gt;</span>
-</code></pre></div>
+&lt;!-- Hero only referenced in CSS? Preload it --&gt;
+&lt;link rel=&quot;preload&quot; as=&quot;image&quot; href=&quot;/hero-1200.avif&quot; fetchpriority=&quot;high&quot;&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

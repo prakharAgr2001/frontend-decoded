@@ -21,18 +21,18 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Five people in a WhatsApp group asking "what time is the movie?" One person checks and replies to all, instead of five people calling the cinema.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">inFlight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Map</span><span class="p">();</span>
+<pre class="hl-code"><code class="language-js">const inFlight = new Map();
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">url</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span><span class="w">           </span><span class="c1">// reuse the pending request</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="k">finally</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">inFlight</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">url</span><span class="p">));</span>
-<span class="w">  </span><span class="nx">inFlight</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">p</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">p</span><span class="p">;</span>
-<span class="p">}</span>
+function dedupedFetch(url) {
+  if (inFlight.has(url)) return inFlight.get(url);           // reuse the pending request
+  const p = fetch(url).then(r =&gt; r.json()).finally(() =&gt; inFlight.delete(url));
+  inFlight.set(url, p);
+  return p;
+}
 
-<span class="c1">// Header, sidebar and page all ask at once → one network request</span>
-<span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span><span class="w"> </span><span class="nx">dedupedFetch</span><span class="p">(</span><span class="s1">'/api/me'</span><span class="p">);</span>
-</code></pre></div>
+// Header, sidebar and page all ask at once → one network request
+dedupedFetch('/api/me'); dedupedFetch('/api/me'); dedupedFetch('/api/me');
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Deduplication</div><div class="dg-c">Shares a request that&#x27;s still in flight</div><div class="dg-c">Gone as soon as the request settles</div><div class="dg-c">Prevents duplicate concurrent calls</div></div><div class="dg-col good"><div class="dg-h">Caching</div><div class="dg-c">Stores the result after it arrives</div><div class="dg-c">Lives until it expires or is evicted</div><div class="dg-c">Prevents repeat calls later</div></div></div></figure>
 

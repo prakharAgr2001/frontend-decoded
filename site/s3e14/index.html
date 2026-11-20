@@ -23,11 +23,11 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Shakes poorly</div><div class="dg-c">const _ = require(&#x27;lodash&#x27;)</div><div class="dg-c">import * as utils from &#x27;./utils&#x27; with dynamic access</div><div class="dg-c">Barrel file: export * from &#x27;./everything&#x27;</div><div class="dg-c">Package with side effects</div></div><div class="dg-col good"><div class="dg-h">Shakes well</div><div class="dg-c">import { debounce } from &#x27;lodash-es&#x27;</div><div class="dg-c">named imports used directly</div><div class="dg-c">import from the specific file</div><div class="dg-c">&quot;sideEffects&quot;: false in package.json</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// package.json of your library</span>
-<span class="p">{</span><span class="w"> </span><span class="nt">"sideEffects"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
-<span class="c1">// or list files that DO have side effects:</span>
-<span class="p">{</span><span class="w"> </span><span class="nt">"sideEffects"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.css"</span><span class="p">,</span><span class="w"> </span><span class="s2">"./src/polyfills.js"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-json">// package.json of your library
+{ &quot;sideEffects&quot;: false }
+// or list files that DO have side effects:
+{ &quot;sideEffects&quot;: [&quot;*.css&quot;, &quot;./src/polyfills.js&quot;] }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

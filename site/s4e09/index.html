@@ -23,15 +23,15 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Re-renders every time</div><div class="dg-c">s =&gt; s.todos.filter(t =&gt; t.done)</div><div class="dg-c">s =&gt; ({ name: s.user.name, age: s.user.age })</div></div><div class="dg-col good"><div class="dg-h">Re-renders only when needed</div><div class="dg-c">createSelector([s =&gt; s.todos], todos =&gt; todos.filter(t =&gt; t.done))</div><div class="dg-c">two selectors, or useShallow / shallowEqual</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createSelector</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@reduxjs/toolkit'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-js">import { createSelector } from '@reduxjs/toolkit';
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">selectTodos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">todos</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">selectDoneTodos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSelector</span><span class="p">([</span><span class="nx">selectTodos</span><span class="p">],</span><span class="w"> </span><span class="nx">todos</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">todos</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">done</span><span class="p">));</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">selectDoneCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createSelector</span><span class="p">([</span><span class="nx">selectDoneTodos</span><span class="p">],</span><span class="w"> </span><span class="nx">done</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">done</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+const selectTodos = s =&gt; s.todos;
+export const selectDoneTodos = createSelector([selectTodos], todos =&gt; todos.filter(t =&gt; t.done));
+export const selectDoneCount = createSelector([selectDoneTodos], done =&gt; done.length);
 
-<span class="c1">// Component</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">doneCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useSelector</span><span class="p">(</span><span class="nx">selectDoneCount</span><span class="p">);</span>
-</code></pre></div>
+// Component
+const doneCount = useSelector(selectDoneCount);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

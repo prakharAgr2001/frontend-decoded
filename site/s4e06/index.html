@@ -21,27 +21,27 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A bank ledger. You never erase a balance; you write a new transaction (action), and the accountant (reducer) calculates the new balance from the old one. Anyone can replay the ledger to see how you got here.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span><span class="w"> </span><span class="nx">initialState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">initialState</span><span class="p">;</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">subscribers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Set</span><span class="p">();</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">getState</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">state</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">subscribe</span><span class="o">:</span><span class="w"> </span><span class="nx">fn</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">subscribers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">fn</span><span class="p">),</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">subscribers</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">fn</span><span class="p">)),</span>
-<span class="w">    </span><span class="nx">dispatch</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">);</span><span class="w">         </span><span class="c1">// pure: returns a new object</span>
-<span class="w">      </span><span class="nx">subscribers</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">fn</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fn</span><span class="p">());</span><span class="w">        </span><span class="c1">// notify the UI</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">  </span><span class="p">};</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-js">function createStore(reducer, initialState) {
+  let state = initialState;
+  const subscribers = new Set();
+  return {
+    getState: () =&gt; state,
+    subscribe: fn =&gt; (subscribers.add(fn), () =&gt; subscribers.delete(fn)),
+    dispatch(action) {
+      state = reducer(state, action);         // pure: returns a new object
+      subscribers.forEach(fn =&gt; fn());        // notify the UI
+    },
+  };
+}
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">cartReducer</span><span class="p">(</span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s1">'cart/added'</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[...</span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">item</span><span class="p">]</span><span class="w"> </span><span class="p">};</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s1">'cart/removed'</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
-<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">state</span><span class="p">;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
+function cartReducer(state = { items: [] }, action) {
+  switch (action.type) {
+    case 'cart/added': return { ...state, items: [...state.items, action.item] };
+    case 'cart/removed': return { ...state, items: state.items.filter(i =&gt; i.id !== action.id) };
+    default: return state;
+  }
+}
+</code></pre>
 
 <figure class="dg"><ol class="dg-steps"><li><b>UI</b><span>dispatch({ type: &#x27;cart/added&#x27;, item })</span></li><li><b>Reducer</b><span>(state, action) → new state object</span></li><li><b>Store saves it</b><span>and notifies subscribers</span></li><li><b>UI re-renders</b><span>with the new state</span></li></ol></figure>
 

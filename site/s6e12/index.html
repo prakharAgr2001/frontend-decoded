@@ -23,17 +23,17 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>User sends</b><span>id = crypto.randomUUID(), bubble shows a clock</span></li><li><b>Outbox</b><span>keep it until the server acks this id</span></li><li><b>Server stores it</b><span>ack → one grey tick (and assigns seq)</span></li><li><b>Ack lost?</b><span>client resends the same id → server sees the id, ignores the duplicate</span></li><li><b>Delivered / read</b><span>two grey / two blue ticks</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span><span class="p">(),</span><span class="w"> </span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'pending'</span><span class="w"> </span><span class="p">};</span>
-<span class="w">  </span><span class="nx">addBubble</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span><span class="w">                                   </span><span class="c1">// optimistic UI</span>
-<span class="w">  </span><span class="nx">outbox</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">msg</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">trySend</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">onAck</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">outbox</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">updateBubble</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'sent'</span><span class="p">,</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="p">});</span><span class="w">        </span><span class="c1">// merge own echo by id, not by text</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">function sendMessage(text) {
+  const msg = { id: crypto.randomUUID(), text, status: 'pending' };
+  addBubble(msg);                                   // optimistic UI
+  outbox.set(msg.id, msg);
+  trySend(msg);
+}
+function onAck({ id, seq }) {
+  outbox.delete(id);
+  updateBubble(id, { status: 'sent', seq });        // merge own echo by id, not by text
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

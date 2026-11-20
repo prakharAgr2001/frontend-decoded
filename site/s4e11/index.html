@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">useEffect + useState</div><div class="dg-c">Each component fetches on its own</div><div class="dg-c">No cache: every mount refetches</div><div class="dg-c">Race conditions on fast changes</div><div class="dg-c">Manual loading / error flags</div><div class="dg-c">Never refreshes stale data</div></div><div class="dg-col good"><div class="dg-h">Server-state cache</div><div class="dg-c">One request per key, shared (deduped)</div><div class="dg-c">Cached, instant on revisit</div><div class="dg-c">Handles cancellation and ordering</div><div class="dg-c">isPending, error, refetch built in</div><div class="dg-c">Refetch on focus, reconnect, interval</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// The useEffect version and its problems</span>
-<span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w">                                   </span><span class="c1">// you have to handle races yourself</span>
-<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/orders?page=</span><span class="si">${</span><span class="nx">page</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="nx">then</span><span class="p">(</span><span class="nx">d</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">ignore</span><span class="p">)</span><span class="w"> </span><span class="nx">setOrders</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ignore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
-<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">page</span><span class="p">]);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// The useEffect version and its problems
+useEffect(() =&gt; {
+  let ignore = false;                                   // you have to handle races yourself
+  fetch(`/api/orders?page=${page}`).then(r =&gt; r.json()).then(d =&gt; { if (!ignore) setOrders(d); });
+  return () =&gt; { ignore = true; };
+}, [page]);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

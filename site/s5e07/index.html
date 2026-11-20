@@ -23,21 +23,21 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>GET /posts?limit=10</b><span>→ items + nextCursor &quot;2026-11-20T10:00Z_981&quot;</span></li><li><b>GET /posts?after=&lt;cursor&gt;</b><span>→ the 10 items older than that one</span></li><li><b>Repeat</b><span>until nextCursor is null</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">-- Compound cursor (created_at, id) avoids skipping rows with equal timestamps</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span>
-<span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(:</span><span class="n">cursor_time</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">cursor_id</span><span class="p">)</span>
-<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">DESC</span>
-<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-sql">-- Compound cursor (created_at, id) avoids skipping rows with equal timestamps
+SELECT * FROM posts
+WHERE (created_at, id) &lt; (:cursor_time, :cursor_id)
+ORDER BY created_at DESC, id DESC
+LIMIT 10;
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Client with React Query</span>
-<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">fetchNextPage</span><span class="p">,</span><span class="w"> </span><span class="nx">hasNextPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useInfiniteQuery</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'feed'</span><span class="p">],</span>
-<span class="w">  </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">pageParam</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/posts?after=</span><span class="si">${</span><span class="nx">pageParam</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()),</span>
-<span class="w">  </span><span class="nx">initialPageParam</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">getNextPageParam</span><span class="o">:</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">last</span><span class="p">.</span><span class="nx">nextCursor</span><span class="p">,</span><span class="w">      </span><span class="c1">// null → no more pages</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Client with React Query
+const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  queryKey: ['feed'],
+  queryFn: ({ pageParam }) =&gt; fetch(`/api/posts?after=${pageParam ?? ''}`).then(r =&gt; r.json()),
+  initialPageParam: null,
+  getNextPageParam: last =&gt; last.nextCursor,      // null → no more pages
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Alice <i>→</i> Server A</div><div class="say">send &quot;hi&quot; to Bob</div></div><div class="dg-msg"><div class="who">Server A <i>→</i> Redis pub/sub</div><div class="say">PUBLISH user:bob {&quot;from&quot;:&quot;alice&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div><div class="dg-msg reply"><div class="who">Server B <i>←</i> Redis pub/sub</div><div class="say">message on user:bob (B subscribed when Bob connected)</div></div><div class="dg-msg reply"><div class="who">Bob <i>←</i> Server B</div><div class="say">frame: {&quot;from&quot;:&quot;alice&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Socket server (Node + ws + Redis)</span>
-<span class="nx">wss</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connection'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">subscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="sb">`user:</span><span class="si">${</span><span class="nx">userId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">msg</span><span class="p">));</span>
-<span class="w">  </span><span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span><span class="w"> </span><span class="nx">raw</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">to</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">raw</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">publisher</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="sb">`user:</span><span class="si">${</span><span class="nx">to</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="kr">from</span><span class="o">:</span><span class="w"> </span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="p">}));</span>
-<span class="w">  </span><span class="p">});</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Socket server (Node + ws + Redis)
+wss.on('connection', (ws, req) =&gt; {
+  const userId = authenticate(req);
+  subscriber.subscribe(`user:${userId}`, msg =&gt; ws.send(msg));
+  ws.on('message', raw =&gt; {
+    const { to, text } = JSON.parse(raw);
+    publisher.publish(`user:${to}`, JSON.stringify({ from: userId, text }));
+  });
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

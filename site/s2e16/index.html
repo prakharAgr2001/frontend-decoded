@@ -23,7 +23,7 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Render everything to HTML</b><span>at build or request time</span></li><li><b>Mark interactive parts</b><span>e.g. &lt;Carousel client:visible /&gt;</span></li><li><b>Ship JS only for islands</b><span>the rest of the page has zero JS</span></li><li><b>Hydrate each island</b><span>on load, when idle, or when visible</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code>---
+<pre class="hl-code"><code class="language-astro">---
 import Header from './Header.astro';      // static, no JS
 import Carousel from './Carousel.jsx';
 import Newsletter from './Newsletter.jsx';
@@ -31,7 +31,7 @@ import Newsletter from './Newsletter.jsx';
 &lt;Header /&gt;
 &lt;Carousel client:visible /&gt;              &lt;!-- hydrates when scrolled into view --&gt;
 &lt;Newsletter client:idle /&gt;               &lt;!-- hydrates when the browser is idle --&gt;
-</code></pre></div>
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

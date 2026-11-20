@@ -23,24 +23,24 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Controlled</div><div class="dg-c">value={name} onChange={e =&gt; setName(e.target.value)}</div><div class="dg-c">Re-render per keystroke</div><div class="dg-c">Instant formatting / live validation</div></div><div class="dg-col good"><div class="dg-h">Uncontrolled</div><div class="dg-c">defaultValue + read on submit</div><div class="dg-c">No re-render while typing</div><div class="dg-c">Simpler, faster for big forms</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useForm</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-hook-form'</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zodResolver</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'@hookform/resolvers/zod'</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'zod'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-jsx">import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span><span class="w"> </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">string</span><span class="p">().</span><span class="nx">email</span><span class="p">(),</span><span class="w"> </span><span class="nx">pincode</span><span class="o">:</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">string</span><span class="p">().</span><span class="nx">regex</span><span class="p">(</span><span class="sr">/^\d{6}$/</span><span class="p">)</span><span class="w"> </span><span class="p">});</span>
+const schema = z.object({ email: z.string().email(), pincode: z.string().regex(/^\d{6}$/) });
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">AddressForm</span><span class="p">({</span><span class="w"> </span><span class="nx">onSave</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">register</span><span class="p">,</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="p">,</span><span class="w"> </span><span class="nx">formState</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">errors</span><span class="p">,</span><span class="w"> </span><span class="nx">isSubmitting</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="nx">useForm</span><span class="p">({</span><span class="w"> </span><span class="nx">resolver</span><span class="o">:</span><span class="w"> </span><span class="nx">zodResolver</span><span class="p">(</span><span class="nx">schema</span><span class="p">),</span><span class="w"> </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="s1">'onTouched'</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// validate on blur, then on change</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">form</span><span class="w"> </span><span class="na">onSubmit</span><span class="o">=</span><span class="p">{</span><span class="nx">handleSubmit</span><span class="p">(</span><span class="nx">onSave</span><span class="p">)}&gt;</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="p">{</span><span class="na">...register</span><span class="err">('</span><span class="na">email</span><span class="err">')</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">email</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">Enter</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">valid</span><span class="w"> </span><span class="nx">email</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="p">{</span><span class="na">...register</span><span class="err">('</span><span class="na">pincode</span><span class="err">')</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">pincode</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="mf">6</span><span class="o">-</span><span class="nx">digit</span><span class="w"> </span><span class="nx">pincode</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">isSubmitting</span><span class="p">}&gt;</span><span class="nx">Save</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div>
+function AddressForm({ onSave }) {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } =
+    useForm({ resolver: zodResolver(schema), mode: 'onTouched' });   // validate on blur, then on change
+  return (
+    &lt;form onSubmit={handleSubmit(onSave)}&gt;
+      &lt;input {...register('email')} /&gt;{errors.email &amp;&amp; &lt;p&gt;Enter a valid email&lt;/p&gt;}
+      &lt;input {...register('pincode')} /&gt;{errors.pincode &amp;&amp; &lt;p&gt;6-digit pincode&lt;/p&gt;}
+      &lt;button disabled={isSubmitting}&gt;Save&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

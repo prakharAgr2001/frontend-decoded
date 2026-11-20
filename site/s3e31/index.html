@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Measure today</b><span>field LCP/INP + current bundle sizes</span></li><li><b>Set budgets</b><span>a little better than today</span></li><li><b>Automate</b><span>Lighthouse CI / size-limit in the PR pipeline</span></li><li><b>Fail the build</b><span>when a change exceeds the budget</span></li><li><b>Ratchet down</b><span>tighten as you improve</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// .size-limit.json</span>
-<span class="p">[{</span><span class="w"> </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist/assets/index-*.js"</span><span class="p">,</span><span class="w"> </span><span class="nt">"limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"170 KB"</span><span class="w"> </span><span class="p">}]</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-json">// .size-limit.json
+[{ &quot;path&quot;: &quot;dist/assets/index-*.js&quot;, &quot;limit&quot;: &quot;170 KB&quot; }]
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// lighthouserc.json (assertions)</span>
-<span class="p">{</span><span class="w"> </span><span class="nt">"ci"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"assert"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"assertions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"largest-contentful-paint"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"error"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"maxNumericValue"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span><span class="w"> </span><span class="p">}],</span>
-<span class="w">  </span><span class="nt">"total-blocking-time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"error"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"maxNumericValue"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">}]</span>
-<span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-json">// lighthouserc.json (assertions)
+{ &quot;ci&quot;: { &quot;assert&quot;: { &quot;assertions&quot;: {
+  &quot;largest-contentful-paint&quot;: [&quot;error&quot;, { &quot;maxNumericValue&quot;: 2500 }],
+  &quot;total-blocking-time&quot;: [&quot;error&quot;, { &quot;maxNumericValue&quot;: 200 }]
+} } } }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

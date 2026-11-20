@@ -23,17 +23,17 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Page built</b><span>served as static HTML from cache</span></li><li><b>Revalidate window passes</b><span>e.g. 60 seconds</span></li><li><b>Next visitor</b><span>still gets the OLD page, instantly</span></li><li><b>Background rebuild</b><span>of just that page</span></li><li><b>Visitors after that</b><span>get the NEW page</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js: rebuild this page at most once a minute</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">revalidate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">60</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-jsx">// Next.js: rebuild this page at most once a minute
+export const revalidate = 60;
 
-<span class="c1">// Or on demand, e.g. after an admin edits a product</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">revalidatePath</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'next/cache'</span><span class="p">;</span>
-<span class="nx">revalidatePath</span><span class="p">(</span><span class="s1">'/product/42'</span><span class="p">);</span>
-</code></pre></div>
+// Or on demand, e.g. after an admin edits a product
+import { revalidatePath } from 'next/cache';
+revalidatePath('/product/42');
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="err"># Same idea at the HTTP/CDN level</span>
-<span class="err">Cache-Control: s-maxage=60, stale-while-revalidate=300</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-http"># Same idea at the HTTP/CDN level
+Cache-Control: s-maxage=60, stale-while-revalidate=300
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

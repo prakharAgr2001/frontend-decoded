@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Start</b><span>text = &quot;cat&quot;</span></li><li><b>Riya</b><span>insert &quot;h&quot; at position 1 → &quot;chat&quot;</span></li><li><b>Arjun, at the same time</b><span>delete position 2 (the &quot;t&quot; in &quot;cat&quot;)</span></li><li><b>Applied blindly on &quot;chat&quot;</b><span>deletes &quot;a&quot; → &quot;cht&quot; (wrong)</span></li><li><b>Adjusted for Riya&#x27;s insert</b><span>delete position 3 → &quot;cha&quot; (both intents kept)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Forms: optimistic concurrency with ETags</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/profile'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'PUT'</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Content-Type'</span><span class="o">:</span><span class="w"> </span><span class="s1">'application/json'</span><span class="p">,</span><span class="w"> </span><span class="s1">'If-Match'</span><span class="o">:</span><span class="w"> </span><span class="nx">etag</span><span class="w"> </span><span class="p">},</span><span class="w">   </span><span class="c1">// version we loaded</span>
-<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">profile</span><span class="p">),</span>
-<span class="p">});</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">412</span><span class="p">)</span><span class="w"> </span><span class="nx">showConflictDialog</span><span class="p">();</span><span class="w">                          </span><span class="c1">// someone saved first</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Forms: optimistic concurrency with ETags
+const res = await fetch('/api/profile', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json', 'If-Match': etag },   // version we loaded
+  body: JSON.stringify(profile),
+});
+if (res.status === 412) showConflictDialog();                          // someone saved first
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

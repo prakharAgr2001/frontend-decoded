@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Request</b><span>server starts rendering</span></li><li><b>Flush the shell</b><span>header, layout, fallbacks sent immediately</span></li><li><b>Slow data resolves</b><span>e.g. reviews from a slow API</span></li><li><b>Stream that HTML</b><span>plus a small script that swaps it in</span></li><li><b>Close the response</b><span>when every boundary is done</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Node + React: send the shell as soon as it's ready</span>
-<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">pipe</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">renderToPipeableStream</span><span class="p">(&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">onShellReady</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">'Content-Type'</span><span class="p">,</span><span class="w"> </span><span class="s1">'text/html'</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">pipe</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Node + React: send the shell as soon as it's ready
+const { pipe } = renderToPipeableStream(&lt;App /&gt;, {
+  onShellReady() {
+    res.setHeader('Content-Type', 'text/html');
+    pipe(res);
+  },
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

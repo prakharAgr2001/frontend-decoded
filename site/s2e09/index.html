@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Causes a mismatch</div><div class="dg-c">{new Date().toLocaleTimeString()} in render</div><div class="dg-c">{Math.random()} in render</div><div class="dg-c">typeof window !== &#x27;undefined&#x27; ? A : B</div><div class="dg-c">&lt;p&gt;&lt;div&gt;…&lt;/div&gt;&lt;/p&gt; (invalid nesting)</div></div><div class="dg-col good"><div class="dg-h">Safe pattern</div><div class="dg-c">Render a placeholder, set the time in useEffect</div><div class="dg-c">Generate the value on the server and pass it down</div><div class="dg-c">Same output first, switch after mount</div><div class="dg-c">Valid HTML structure</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">LocalTime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">time</span><span class="p">,</span><span class="w"> </span><span class="nx">setTime</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span><span class="w">           </span><span class="c1">// same on server and client</span>
-<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTime</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()),</span><span class="w"> </span><span class="p">[]);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;{</span><span class="nx">time</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">'--:--'</span><span class="p">}&lt;/</span><span class="nt">span</span><span class="p">&gt;;</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">function LocalTime() {
+  const [time, setTime] = useState(null);           // same on server and client
+  useEffect(() =&gt; setTime(new Date().toLocaleTimeString()), []);
+  return &lt;span&gt;{time ?? '--:--'}&lt;/span&gt;;
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

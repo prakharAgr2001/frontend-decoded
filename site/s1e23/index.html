@@ -23,23 +23,23 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Scroll listener</div><div class="dg-c">Runs on every scroll event, dozens per second</div><div class="dg-c">You measure with getBoundingClientRect()</div><div class="dg-c">Forces layout on the main thread</div><div class="dg-c">Easy to make janky</div></div><div class="dg-col good"><div class="dg-h">IntersectionObserver</div><div class="dg-c">Fires only when a threshold is crossed</div><div class="dg-c">Browser computes intersection itself</div><div class="dg-c">No forced layout in your code</div><div class="dg-c">Smooth by default</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Lazy-load images when they come within 200px of the screen</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">IntersectionObserver</span><span class="p">(</span><span class="nx">entries</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">entries</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">entry</span><span class="p">.</span><span class="nx">isIntersecting</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">img</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">target</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">img</span><span class="p">.</span><span class="nx">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">img</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">src</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">io</span><span class="p">.</span><span class="nx">unobserve</span><span class="p">(</span><span class="nx">img</span><span class="p">);</span><span class="w">              </span><span class="c1">// done with this one</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">rootMargin</span><span class="o">:</span><span class="w"> </span><span class="s1">'200px'</span><span class="w"> </span><span class="p">});</span>
+<pre class="hl-code"><code class="language-js">// Lazy-load images when they come within 200px of the screen
+const io = new IntersectionObserver(entries =&gt; {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    const img = entry.target;
+    img.src = img.dataset.src;
+    io.unobserve(img);              // done with this one
+  }
+}, { rootMargin: '200px' });
 
-<span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">'img[data-src]'</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">img</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">io</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">img</span><span class="p">));</span>
-</code></pre></div>
+document.querySelectorAll('img[data-src]').forEach(img =&gt; io.observe(img));
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Infinite scroll: load more when the sentinel at the bottom appears</span>
-<span class="ow">new</span><span class="w"> </span><span class="nx">IntersectionObserver</span><span class="p">(([</span><span class="nx">e</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">isIntersecting</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">loadMore</span><span class="p">())</span>
-<span class="w">  </span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#sentinel'</span><span class="p">));</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Infinite scroll: load more when the sentinel at the bottom appears
+new IntersectionObserver(([e]) =&gt; e.isIntersecting &amp;&amp; loadMore())
+  .observe(document.querySelector('#sentinel'));
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

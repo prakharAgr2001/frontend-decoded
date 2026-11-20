@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Capture ↓</b><span>window → document → html → body → … → parent (only { capture: true } listeners)</span></li><li><b>Target</b><span>the element you actually clicked</span></li><li><b>Bubble ↑</b><span>parent → … → body → html → document → window (normal listeners)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="nx">list</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span><span class="w">         </span><span class="c1">// the &lt;button&gt; you clicked (deepest element)</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">currentTarget</span><span class="p">);</span><span class="w">  </span><span class="c1">// the &lt;ul&gt; this listener is attached to</span>
-<span class="p">});</span>
+<pre class="hl-code"><code class="language-js">list.addEventListener('click', e =&gt; {
+  console.log(e.target);         // the &lt;button&gt; you clicked (deepest element)
+  console.log(e.currentTarget);  // the &lt;ul&gt; this listener is attached to
+});
 
-<span class="nx">link</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span><span class="w">      </span><span class="c1">// don't navigate</span>
-<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span><span class="w">     </span><span class="c1">// and don't let parents hear about it</span>
-<span class="p">});</span>
-</code></pre></div>
+link.addEventListener('click', e =&gt; {
+  e.preventDefault();      // don't navigate
+  e.stopPropagation();     // and don't let parents hear about it
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

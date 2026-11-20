@@ -21,21 +21,21 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A building with fire doors. A fire in one room shouldn't burn down the whole building; the doors contain it, and the rest of the building keeps working.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ErrorBoundary</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-error-boundary'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-jsx">import { ErrorBoundary } from 'react-error-boundary';
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">ProductPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">ProductDetails</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                                    </span><span class="p">{</span><span class="cm">/* critical: let the route error page handle it */</span><span class="p">}</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">ErrorBoundary</span><span class="w"> </span><span class="na">fallbackRender</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">resetErrorBoundary</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">Reviews</span><span class="w"> </span><span class="nx">couldn</span>'<span class="nx">t</span><span class="w"> </span><span class="nx">load</span><span class="p">.</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{</span><span class="nx">resetErrorBoundary</span><span class="p">}&gt;</span><span class="nx">Retry</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;}&gt;</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">Reviews</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ErrorBoundary</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">ErrorBoundary</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{</span><span class="kc">null</span><span class="p">}&gt;</span><span class="w">                       </span><span class="p">{</span><span class="cm">/* optional: just hide it */</span><span class="p">}</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">Recommendations</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ErrorBoundary</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
-</code></pre></div>
+function ProductPage() {
+  return (&lt;&gt;
+    &lt;ProductDetails /&gt;                                    {/* critical: let the route error page handle it */}
+    &lt;ErrorBoundary fallbackRender={({ resetErrorBoundary }) =&gt;
+      &lt;p&gt;Reviews couldn't load. &lt;button onClick={resetErrorBoundary}&gt;Retry&lt;/button&gt;&lt;/p&gt;}&gt;
+      &lt;Reviews /&gt;
+    &lt;/ErrorBoundary&gt;
+    &lt;ErrorBoundary fallback={null}&gt;                       {/* optional: just hide it */}
+      &lt;Recommendations /&gt;
+    &lt;/ErrorBoundary&gt;
+  &lt;/&gt;);
+}
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Critical</div><div class="dg-c">Price, add to cart, checkout</div><div class="dg-c">Clear error state + retry</div><div class="dg-c">Block the action if data is wrong</div></div><div class="dg-col good"><div class="dg-h">Optional</div><div class="dg-c">Recommendations, reviews, ads</div><div class="dg-c">Hide quietly or show a small notice</div><div class="dg-c">Page still works without it</div></div></div></figure>
 

@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Bucket starts full</b><span>e.g. 60 tokens</span></li><li><b>Each request</b><span>spends 1 token</span></li><li><b>Tokens refill</b><span>e.g. 1 per minute (steady)</span></li><li><b>Bucket empty</b><span>server returns 429 + Retry-After</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">429</span> <span class="ne">Too Many Requests</span>
-<span class="na">Retry-After</span><span class="o">:</span> <span class="l">30</span>
-<span class="na">x-ratelimit-limit</span><span class="o">:</span> <span class="l">60</span>
-<span class="na">x-ratelimit-remaining</span><span class="o">:</span> <span class="l">0</span>
-<span class="na">x-ratelimit-reset</span><span class="o">:</span> <span class="l">1763640000</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-http">HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 0
+x-ratelimit-reset: 1763640000
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

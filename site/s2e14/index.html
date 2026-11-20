@@ -23,23 +23,23 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Server component</div><div class="dg-c">Runs only on the server</div><div class="dg-c">Can be async and query the DB</div><div class="dg-c">Code never ships to the browser</div><div class="dg-c">Never hydrates</div></div><div class="dg-col good"><div class="dg-h">Client component (&#x27;use client&#x27;)</div><div class="dg-c">Runs on server (SSR) and in the browser</div><div class="dg-c">Can use useState, useEffect, onClick</div><div class="dg-c">Code ships in the bundle</div><div class="dg-c">Hydrates</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// ProductPage.jsx: a server component (the default in Next.js App Router)</span>
-<span class="k">import</span><span class="w"> </span><span class="nx">AddToCart</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'./AddToCart'</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ProductPage</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">db</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span><span class="w">        </span><span class="c1">// direct DB access</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">product</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">AddToCart</span><span class="w"> </span><span class="na">productId</span><span class="o">=</span><span class="p">{</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                     </span><span class="p">{</span><span class="cm">/* only this ships JS */</span><span class="p">}</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-jsx">// ProductPage.jsx: a server component (the default in Next.js App Router)
+import AddToCart from './AddToCart';
+export default async function ProductPage({ id }) {
+  const product = await db.product.find(id);        // direct DB access
+  return (&lt;&gt;
+    &lt;h1&gt;{product.title}&lt;/h1&gt;
+    &lt;AddToCart productId={id} /&gt;                     {/* only this ships JS */}
+  &lt;/&gt;);
+}
 
-<span class="c1">// AddToCart.jsx</span>
-<span class="s1">'use client'</span><span class="p">;</span>
-<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">AddToCart</span><span class="p">({</span><span class="w"> </span><span class="nx">productId</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">setAdded</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setAdded</span><span class="p">(</span><span class="kc">true</span><span class="p">)}&gt;{</span><span class="nx">added</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'Added'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'Add to cart'</span><span class="p">}&lt;/</span><span class="nt">button</span><span class="p">&gt;;</span>
-<span class="p">}</span>
-</code></pre></div>
+// AddToCart.jsx
+'use client';
+export default function AddToCart({ productId }) {
+  const [added, setAdded] = useState(false);
+  return &lt;button onClick={() =&gt; setAdded(true)}&gt;{added ? 'Added' : 'Add to cart'}&lt;/button&gt;;
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

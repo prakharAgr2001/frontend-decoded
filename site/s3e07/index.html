@@ -23,11 +23,11 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Lab (Lighthouse)</div><div class="dg-c">One simulated device and network</div><div class="dg-c">Only the first page load</div><div class="dg-c">No INP (TBT as a proxy)</div><div class="dg-c">Instant results</div><div class="dg-c">Debug and verify</div></div><div class="dg-col good"><div class="dg-h">Field (CrUX / RUM)</div><div class="dg-c">Thousands of real devices and networks</div><div class="dg-c">Whole visit, including interactions</div><div class="dg-c">Real INP</div><div class="dg-c">28-day rolling window</div><div class="dg-c">Judge and prioritise</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Your own real-user monitoring</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">onLCP</span><span class="p">,</span><span class="w"> </span><span class="nx">onINP</span><span class="p">,</span><span class="w"> </span><span class="nx">onCLS</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'web-vitals'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">send</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">navigator</span><span class="p">.</span><span class="nx">sendBeacon</span><span class="p">(</span><span class="s1">'/analytics'</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">m</span><span class="p">));</span>
-<span class="nx">onLCP</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span><span class="w"> </span><span class="nx">onINP</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span><span class="w"> </span><span class="nx">onCLS</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Your own real-user monitoring
+import { onLCP, onINP, onCLS } from 'web-vitals';
+const send = m =&gt; navigator.sendBeacon('/analytics', JSON.stringify(m));
+onLCP(send); onINP(send); onCLS(send);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

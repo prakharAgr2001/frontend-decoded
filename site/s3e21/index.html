@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Default embed</div><div class="dg-c">Loads 500 KB chat widget on page load</div><div class="dg-c">Runs JS on your main thread at startup</div><div class="dg-c">Hurts LCP and INP for everyone</div></div><div class="dg-col good"><div class="dg-h">Facade</div><div class="dg-c">Shows a lightweight &quot;Chat&quot; button image</div><div class="dg-c">Loads the real widget only on click</div><div class="dg-c">Costs only the users who chat</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Load the chat widget only when the user shows intent</span>
-<span class="nx">chatButton</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">s</span><span class="p">.</span><span class="nx">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'https://chat.example.com/widget.js'</span><span class="p">;</span>
-<span class="w">  </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span>
-<span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">once</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Load the chat widget only when the user shows intent
+chatButton.addEventListener('click', () =&gt; {
+  const s = document.createElement('script');
+  s.src = 'https://chat.example.com/widget.js';
+  document.body.append(s);
+}, { once: true });
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -34,43 +34,43 @@
 
 <h2 id="the-usual-culprits-and-their-fixes">The usual culprits and their fixes</h2>
 <p><strong>1. Images and videos without dimensions.</strong> The browser doesn't know how tall they'll be until they load.</p>
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- The browser computes the aspect ratio from these and reserves the box --&gt;</span>
-<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"hero.jpg"</span> <span class="na">width</span><span class="o">=</span><span class="s">"1200"</span> <span class="na">height</span><span class="o">=</span><span class="s">"675"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"…"</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;!-- The browser computes the aspect ratio from these and reserves the box --&gt;
+&lt;img src=&quot;hero.jpg&quot; width=&quot;1200&quot; height=&quot;675&quot; alt=&quot;…&quot;&gt;
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="nt">img</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span><span class="w"> </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c">/* stays responsive, keeps the ratio */</span>
-<span class="p">.</span><span class="nc">video-embed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">aspect-ratio</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w"> </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-css">img { max-width: 100%; height: auto; }   /* stays responsive, keeps the ratio */
+.video-embed { aspect-ratio: 16 / 9; width: 100%; }
+</code></pre>
 
 <p><strong>2. Ads, embeds and iframes.</strong> Reserve the slot's most likely size:</p>
-<div class="hl-code"><pre><span></span><code><span class="p">.</span><span class="nc">ad-slot</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">min-height</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="kt">px</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c">/* don't collapse it to 0 when there's no ad */</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-css">.ad-slot { min-height: 250px; }   /* don't collapse it to 0 when there's no ad */
+</code></pre>
 
 <p><strong>3. Content injected above what the user is reading</strong> (cookie banners, "download our app" bars, late-loading announcements). Put them in reserved space, overlay them (<code>position: fixed</code>), or insert them below the fold.</p>
 <p><strong>4. Web fonts swapping in.</strong> A fallback font with different letter widths reflows the text when the real font arrives. Preload the key font and match the fallback's size:</p>
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/fonts/inter.woff2"</span> <span class="na">as</span><span class="o">=</span><span class="s">"font"</span> <span class="na">type</span><span class="o">=</span><span class="s">"font/woff2"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;link rel=&quot;preload&quot; href=&quot;/fonts/inter.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="o">;</span>
-<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">local</span><span class="o">(</span><span class="s1">'Arial'</span><span class="o">);</span>
-<span class="w">  </span><span class="nt">size-adjust</span><span class="o">:</span><span class="w"> </span><span class="nt">107</span><span class="o">%;</span><span class="w">   </span><span class="c">/* tune so Arial takes the same space as Inter */</span>
-<span class="p">}</span>
-<span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="p">,</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-css">@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;   /* tune so Arial takes the same space as Inter */
+}
+body { font-family: 'Inter', 'Inter Fallback', sans-serif; }
+</code></pre>
 
 <p><strong>5. Animating layout properties.</strong> Animating <code>top</code>, <code>height</code> or <code>margin</code> moves other elements. Animate <code>transform</code> instead: it moves pixels without changing layout, so it never counts as a shift.</p>
 <h2 id="measure-it-in-code">Measure it in code</h2>
-<div class="hl-code"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">cls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
-<span class="ow">new</span><span class="w"> </span><span class="nx">PerformanceObserver</span><span class="p">(</span><span class="nx">list</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">getEntries</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">entry</span><span class="p">.</span><span class="nx">hadRecentInput</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// shifts right after a tap/keypress don't count</span>
-<span class="w">      </span><span class="nx">cls</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
-<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'shift'</span><span class="p">,</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">3</span><span class="p">),</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">sources</span><span class="o">?</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">node</span><span class="p">));</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}).</span><span class="nx">observe</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'layout-shift'</span><span class="p">,</span><span class="w"> </span><span class="nx">buffered</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">let cls = 0;
+new PerformanceObserver(list =&gt; {
+  for (const entry of list.getEntries()) {
+    if (!entry.hadRecentInput) {   // shifts right after a tap/keypress don't count
+      cls += entry.value;
+      console.log('shift', entry.value.toFixed(3), entry.sources?.map(s =&gt; s.node));
+    }
+  }
+}).observe({ type: 'layout-shift', buffered: true });
+</code></pre>
 
 <p>(This simple sum ignores session windows; for the real number use Google's <code>web-vitals</code> library: <code>onCLS(console.log)</code>.)</p>
 <h2 id="see-it-yourself">See it yourself</h2>

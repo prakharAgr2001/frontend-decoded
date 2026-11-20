@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Skeleton</div><div class="dg-c">First load of content (lists, cards, profiles)</div><div class="dg-c">Shows the shape of what&#x27;s coming</div><div class="dg-c">Must match the final layout</div></div><div class="dg-col good"><div class="dg-h">Spinner</div><div class="dg-c">Actions: save, submit, pay</div><div class="dg-c">Shows that something is happening</div><div class="dg-c">Lives on the button that was pressed</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Orders</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">isPending</span><span class="p">,</span><span class="w"> </span><span class="nx">isFetching</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQuery</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'orders'</span><span class="p">],</span><span class="w"> </span><span class="nx">queryFn</span><span class="o">:</span><span class="w"> </span><span class="nx">getOrders</span><span class="w"> </span><span class="p">});</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isPending</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrderListSkeleton</span><span class="w"> </span><span class="na">rows</span><span class="o">=</span><span class="p">{</span><span class="mf">5</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">          </span><span class="c1">// same row height as real rows</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">OrderList</span><span class="w"> </span><span class="na">orders</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">}</span><span class="w"> </span><span class="na">refreshing</span><span class="o">=</span><span class="p">{</span><span class="nx">isFetching</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span><span class="w">    </span><span class="c1">// keep old data while refetching</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">function Orders() {
+  const { data, isPending, isFetching } = useQuery({ queryKey: ['orders'], queryFn: getOrders });
+  if (isPending) return &lt;OrderListSkeleton rows={5} /&gt;;          // same row height as real rows
+  return &lt;OrderList orders={data} refreshing={isFetching} /&gt;;    // keep old data while refetching
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

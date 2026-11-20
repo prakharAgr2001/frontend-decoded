@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Socket connects</b><span>INCR connections:riya, SET presence:riya online EX 60</span></li><li><b>Each heartbeat</b><span>refresh the TTL</span></li><li><b>Last connection closes</b><span>wait a few seconds (debounce) before marking offline</span></li><li><b>No heartbeat at all</b><span>TTL expires → offline automatically</span></li><li><b>Fan-out</b><span>only to users viewing that chat or contact list</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// On each heartbeat for a user</span>
-<span class="k">await</span><span class="w"> </span><span class="nx">redis</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="sb">`presence:</span><span class="si">${</span><span class="nx">userId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="s1">'online'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">EX</span><span class="o">:</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="p">});</span>
+<pre class="hl-code"><code class="language-js">// On each heartbeat for a user
+await redis.set(`presence:${userId}`, 'online', { EX: 60 });
 
-<span class="c1">// Typing indicator: throttle on the client, auto-expire on the receiver</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">sendTyping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">throttle</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'typing'</span><span class="p">,</span><span class="w"> </span><span class="nx">chat</span><span class="w"> </span><span class="p">})),</span><span class="w"> </span><span class="mf">3000</span><span class="p">);</span>
-<span class="nx">input</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span><span class="w"> </span><span class="nx">sendTyping</span><span class="p">);</span>
-</code></pre></div>
+// Typing indicator: throttle on the client, auto-expire on the receiver
+const sendTyping = throttle(() =&gt; ws.send(JSON.stringify({ type: 'typing', chat })), 3000);
+input.addEventListener('input', sendTyping);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

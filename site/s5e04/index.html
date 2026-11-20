@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">App <i>→</i> BFF</div><div class="say">GET /screens/home</div></div><div class="dg-msg"><div class="who">BFF <i>→</i> User service</div><div class="say">who is this?</div></div><div class="dg-msg"><div class="who">BFF <i>→</i> Orders service</div><div class="say">last 3 orders</div></div><div class="dg-msg"><div class="who">BFF <i>→</i> Offers service</div><div class="say">offers for this user</div></div><div class="dg-msg reply"><div class="who">BFF <i>←</i> Services</div><div class="say">three responses (in parallel, inside the data center)</div></div><div class="dg-msg reply"><div class="who">App <i>←</i> BFF</div><div class="say">one small JSON shaped exactly like the home screen</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// BFF route (Node/Express)</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/screens/home'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">user</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="p">,</span><span class="w"> </span><span class="nx">offers</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span>
-<span class="w">    </span><span class="nx">users</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">userId</span><span class="p">),</span>
-<span class="w">    </span><span class="nx">ordersApi</span><span class="p">.</span><span class="nx">recent</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">),</span>
-<span class="w">    </span><span class="nx">offersApi</span><span class="p">.</span><span class="nx">forUser</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">userId</span><span class="p">),</span>
-<span class="w">  </span><span class="p">]);</span>
-<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">firstName</span><span class="p">,</span><span class="w"> </span><span class="nx">orders</span><span class="o">:</span><span class="w"> </span><span class="nx">orders</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">o</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">o</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="nx">o</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="p">})),</span><span class="w"> </span><span class="nx">offers</span><span class="w"> </span><span class="p">});</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// BFF route (Node/Express)
+app.get('/screens/home', async (req, res) =&gt; {
+  const [user, orders, offers] = await Promise.all([
+    users.get(req.session.userId),
+    ordersApi.recent(req.session.userId, 3),
+    offersApi.forUser(req.session.userId),
+  ]);
+  res.json({ name: user.firstName, orders: orders.map(o =&gt; ({ id: o.id, status: o.status })), offers });
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

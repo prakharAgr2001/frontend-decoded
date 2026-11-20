@@ -21,28 +21,28 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>A waiter who takes your drink order immediately (urgent) but tells the kitchen the dessert order can wait. If you change your dessert, the kitchen just drops the old one and starts the new one.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Search</span><span class="p">({</span><span class="w"> </span><span class="nx">allItems</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">setQuery</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">setResults</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="nx">allItems</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">isPending</span><span class="p">,</span><span class="w"> </span><span class="nx">startTransition</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useTransition</span><span class="p">();</span>
+<pre class="hl-code"><code class="language-jsx">function Search({ allItems }) {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState(allItems);
+  const [isPending, startTransition] = useTransition();
 
-<span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">onChange</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">setQuery</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span><span class="w">                         </span><span class="c1">// urgent: input updates instantly</span>
-<span class="w">    </span><span class="nx">startTransition</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">allItems</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)));</span><span class="w">   </span><span class="c1">// can be interrupted</span>
-<span class="w">    </span><span class="p">});</span>
-<span class="w">  </span><span class="p">}</span>
+  function onChange(e) {
+    setQuery(e.target.value);                         // urgent: input updates instantly
+    startTransition(() =&gt; {
+      setResults(allItems.filter(i =&gt; i.name.includes(e.target.value)));   // can be interrupted
+    });
+  }
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">query</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">onChange</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">ul</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">opacity</span><span class="o">:</span><span class="w"> </span><span class="nx">isPending</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">0.6</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}}&gt;{</span><span class="nx">results</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">name</span><span class="p">}&lt;/</span><span class="nt">li</span><span class="p">&gt;)}&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
-</code></pre></div>
+  return (&lt;&gt;
+    &lt;input value={query} onChange={onChange} /&gt;
+    &lt;ul style={{ opacity: isPending ? 0.6 : 1 }}&gt;{results.map(r =&gt; &lt;li key={r.id}&gt;{r.name}&lt;/li&gt;)}&lt;/ul&gt;
+  &lt;/&gt;);
+}
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// When the value comes from props, defer it instead</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">deferredQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useDeferredValue</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// When the value comes from props, defer it instead
+const deferredQuery = useDeferredValue(query);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

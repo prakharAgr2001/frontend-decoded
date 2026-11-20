@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Build</b><span>the framework renders every page to HTML once</span></li><li><b>Deploy</b><span>files are uploaded to a CDN</span></li><li><b>Request</b><span>the nearest edge serves the file</span></li><li><b>No server work</b><span>no database calls per visitor</span></li><li><b>Change content</b><span>rebuild + redeploy</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js: generate one static page per blog post at build time</span>
-<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">generateStaticParams</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">posts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getAllPosts</span><span class="p">();</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">posts</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">slug</span><span class="o">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">slug</span><span class="w"> </span><span class="p">}));</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Next.js: generate one static page per blog post at build time
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map(p =&gt; ({ slug: p.slug }));
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

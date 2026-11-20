@@ -33,37 +33,37 @@
 <li><strong>Rendering:</strong> the browser tries to draw ~60 times a second (every ~16.7 ms), but only <em>between</em> tasks. If your task runs 3 seconds, no frames are drawn for 3 seconds. That's the "frozen" page.</li>
 </ul>
 <h3 id="blocking-vs-not-blocking">Blocking vs not blocking</h3>
-<div class="hl-code"><pre><span></span><code><span class="c1">// Freezes the page for 3 seconds: the chef never gets a break.</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">3000</span><span class="p">;</span>
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">end</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<pre class="hl-code"><code class="language-js">// Freezes the page for 3 seconds: the chef never gets a break.
+const end = Date.now() + 3000;
+while (Date.now() &lt; end) {}
 
-<span class="c1">// Doesn't freeze anything: the waiting happens in the browser, not on the chef.</span>
-<span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/orders'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="nx">then</span><span class="p">(</span><span class="nx">render</span><span class="p">);</span>
-<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'3 seconds later'</span><span class="p">),</span><span class="w"> </span><span class="mf">3000</span><span class="p">);</span>
-</code></pre></div>
+// Doesn't freeze anything: the waiting happens in the browser, not on the chef.
+fetch('/api/orders').then(r =&gt; r.json()).then(render);
+setTimeout(() =&gt; console.log('3 seconds later'), 3000);
+</code></pre>
 
 <h3 id="how-to-do-heavy-work-without-freezing">How to do heavy work without freezing</h3>
 <p><strong>1. Break it into chunks</strong> and give the chef a break between them:</p>
-<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processAll</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">heavyWork</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">200</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="c1">// Let clicks, scroll and paint happen, then continue.</span>
-<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">async function processAll(items) {
+  for (let i = 0; i &lt; items.length; i++) {
+    heavyWork(items[i]);
+    if (i % 200 === 0) {
+      // Let clicks, scroll and paint happen, then continue.
+      await new Promise(r =&gt; setTimeout(r, 0));
+    }
+  }
+}
+</code></pre>
 
 <p><strong>2. Hire a second chef</strong> with a Web Worker, which runs on a separate thread (it can't touch the DOM, but it can crunch numbers):</p>
-<div class="hl-code"><pre><span></span><code><span class="c1">// main.js</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">worker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Worker</span><span class="p">(</span><span class="s1">'worker.js'</span><span class="p">);</span>
-<span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">bigArray</span><span class="p">);</span>
-<span class="nx">worker</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">showResult</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+<pre class="hl-code"><code class="language-js">// main.js
+const worker = new Worker('worker.js');
+worker.postMessage(bigArray);
+worker.onmessage = e =&gt; showResult(e.data);
 
-<span class="c1">// worker.js</span>
-<span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">expensiveCalculation</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">));</span>
-</code></pre></div>
+// worker.js
+onmessage = e =&gt; postMessage(expensiveCalculation(e.data));
+</code></pre>
 
 <h2 id="see-it-yourself">See it yourself</h2>
 <ul>
@@ -85,11 +85,11 @@
 </details>
 <details>
 <summary>What's the output order?</summary>
-<div class="hl-code"><pre><span></span><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'A'</span><span class="p">);</span>
-<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'B'</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
-<span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">().</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'C'</span><span class="p">));</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'D'</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">console.log('A');
+setTimeout(() =&gt; console.log('B'), 0);
+Promise.resolve().then(() =&gt; console.log('C'));
+console.log('D');
+</code></pre>
 
 <p><strong>A, D, C, B.</strong> Synchronous code first (A, D). Then all microtasks (the promise: C). Then the next task (the timer: B).</p>
 </details>

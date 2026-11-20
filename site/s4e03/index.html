@@ -23,23 +23,23 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">State too high</div><div class="dg-c">search text in &lt;App&gt;</div><div class="dg-c">Typing re-renders the whole page</div><div class="dg-c">Deleting a feature leaves unused state behind</div></div><div class="dg-col good"><div class="dg-h">Colocated</div><div class="dg-c">search text in &lt;SearchBox&gt;</div><div class="dg-c">Typing re-renders only the search box</div><div class="dg-c">Deleting the component deletes its state</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Two siblings need it → lift to the nearest common parent, not to App</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">ProductPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">size</span><span class="p">,</span><span class="w"> </span><span class="nx">setSize</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">'M'</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">SizePicker</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">size</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">setSize</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">AddToCart</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="p">{</span><span class="nx">size</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">  </span><span class="p">&lt;/&gt;);</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Two siblings need it → lift to the nearest common parent, not to App
+function ProductPage() {
+  const [size, setSize] = useState('M');
+  return (&lt;&gt;
+    &lt;SizePicker value={size} onChange={setSize} /&gt;
+    &lt;AddToCart size={size} /&gt;
+  &lt;/&gt;);
+}
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Heavy parts as children don't re-render when the wrapper's state changes</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">Collapsible</span><span class="p">({</span><span class="w"> </span><span class="nx">children</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">open</span><span class="p">,</span><span class="w"> </span><span class="nx">setOpen</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;</span><span class="nt">section</span><span class="p">&gt;&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setOpen</span><span class="p">(</span><span class="nx">o</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">o</span><span class="p">)}&gt;</span><span class="nx">Toggle</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;{</span><span class="nx">open</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">children</span><span class="p">}&lt;/</span><span class="nt">section</span><span class="p">&gt;);</span>
-<span class="p">}</span>
-<span class="p">&lt;</span><span class="nt">Collapsible</span><span class="p">&gt;&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;&lt;/</span><span class="nt">Collapsible</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">// Heavy parts as children don't re-render when the wrapper's state changes
+function Collapsible({ children }) {
+  const [open, setOpen] = useState(true);
+  return (&lt;section&gt;&lt;button onClick={() =&gt; setOpen(o =&gt; !o)}&gt;Toggle&lt;/button&gt;{open &amp;&amp; children}&lt;/section&gt;);
+}
+&lt;Collapsible&gt;&lt;ExpensiveChart /&gt;&lt;/Collapsible&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

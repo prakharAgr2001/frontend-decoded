@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Caller</b><span>new RTCPeerConnection({ iceServers: [STUN, TURN] })</span></li><li><b>Add media or data</b><span>addTrack(camera) or createDataChannel(&#x27;chat&#x27;)</span></li><li><b>Create offer</b><span>createOffer → setLocalDescription → send via your signaling server</span></li><li><b>Callee answers</b><span>setRemoteDescription → createAnswer → send back</span></li><li><b>Exchange ICE candidates</b><span>both sides, via signaling</span></li><li><b>Connected</b><span>media and data flow peer to peer (or via TURN)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">pc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">RTCPeerConnection</span><span class="p">({</span><span class="w"> </span><span class="nx">iceServers</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">urls</span><span class="o">:</span><span class="w"> </span><span class="s1">'stun:stun.l.google.com:19302'</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">});</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">createDataChannel</span><span class="p">(</span><span class="s1">'chat'</span><span class="p">);</span>
-<span class="nx">pc</span><span class="p">.</span><span class="nx">onicecandidate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">candidate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">signaling</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">candidate</span><span class="o">:</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">candidate</span><span class="w"> </span><span class="p">});</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">offer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">createOffer</span><span class="p">();</span>
-<span class="k">await</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">setLocalDescription</span><span class="p">(</span><span class="nx">offer</span><span class="p">);</span>
-<span class="nx">signaling</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">offer</span><span class="w"> </span><span class="p">});</span><span class="w">                        </span><span class="c1">// your WebSocket delivers it to the other peer</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+const channel = pc.createDataChannel('chat');
+pc.onicecandidate = e =&gt; e.candidate &amp;&amp; signaling.send({ candidate: e.candidate });
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+signaling.send({ offer });                        // your WebSocket delivers it to the other peer
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

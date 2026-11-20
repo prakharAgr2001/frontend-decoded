@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Triggers layout</div><div class="dg-c">width, height, padding, margin</div><div class="dg-c">top, left, font-size</div><div class="dg-c">adding/removing elements, changing text</div><div class="dg-c">reading offsetHeight right after a write</div></div><div class="dg-col good"><div class="dg-h">Skips layout</div><div class="dg-c">color, background (paint only)</div><div class="dg-c">box-shadow, border-color (paint only)</div><div class="dg-c">transform (composite only)</div><div class="dg-c">opacity (composite only)</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Expensive: layout every frame</span>
-<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'px'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-js">// Expensive: layout every frame
+box.style.left = x + 'px';
 
-<span class="c1">// Cheap: composite only</span>
-<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`translateX(</span><span class="si">${</span><span class="nx">x</span><span class="si">}</span><span class="sb">px)`</span><span class="p">;</span>
-</code></pre></div>
+// Cheap: composite only
+box.style.transform = `translateX(${x}px)`;
+</code></pre>
 
 <ul>
 <li>One reflow can spread: changing a child's height can resize its parent and push its siblings.</li>

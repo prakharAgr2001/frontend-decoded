@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Input &amp; JS</b><span>event handlers, timers, your code</span></li><li><b>requestAnimationFrame callbacks</b><span>the right place for visual updates</span></li><li><b>Style + Layout</b><span>recalculate styles and geometry</span></li><li><b>Paint + Composite</b><span>draw and show the frame</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Good: Smooth, time-based movement: same speed on 60 Hz and 120 Hz screens</span>
-<span class="kd">let</span><span class="w"> </span><span class="nx">start</span><span class="p">;</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">step</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">start</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="nx">now</span><span class="p">;</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">((</span><span class="nx">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">start</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span><span class="w">   </span><span class="c1">// 0.2 px per ms</span>
-<span class="w">  </span><span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`translateX(</span><span class="si">${</span><span class="nx">x</span><span class="si">}</span><span class="sb">px)`</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">300</span><span class="p">)</span><span class="w"> </span><span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">step</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="nx">requestAnimationFrame</span><span class="p">(</span><span class="nx">step</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Good: Smooth, time-based movement: same speed on 60 Hz and 120 Hz screens
+let start;
+function step(now) {
+  start ??= now;
+  const x = Math.min((now - start) * 0.2, 300);   // 0.2 px per ms
+  box.style.transform = `translateX(${x}px)`;
+  if (x &lt; 300) requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Context trap</div><div class="dg-c">value={{ user, cart }} (new object each render)</div><div class="dg-c">One AppContext with everything</div><div class="dg-c">Consumers needing only dispatch re-render on state changes</div><div class="dg-c">High-frequency state in context</div></div><div class="dg-col good"><div class="dg-h">Better</div><div class="dg-c">value={useMemo(() =&gt; ({ user, cart }), [user, cart])}</div><div class="dg-c">UserContext, ThemeContext, CartContext</div><div class="dg-c">Separate StateContext and DispatchContext</div><div class="dg-c">Store with selectors (Zustand, Redux)</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">CartState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">CartDispatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<pre class="hl-code"><code class="language-jsx">const CartState = createContext(null);
+const CartDispatch = createContext(null);
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">CartProvider</span><span class="p">({</span><span class="w"> </span><span class="nx">children</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">cart</span><span class="p">,</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useReducer</span><span class="p">(</span><span class="nx">cartReducer</span><span class="p">,</span><span class="w"> </span><span class="p">[]);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">CartDispatch</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">dispatch</span><span class="p">}&gt;</span><span class="w">        </span><span class="p">{</span><span class="cm">/* dispatch never changes */</span><span class="p">}</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">CartState</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">cart</span><span class="p">}&gt;{</span><span class="nx">children</span><span class="p">}&lt;/</span><span class="nt">CartState</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">CartDispatch</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">);</span>
-<span class="p">}</span>
-<span class="c1">// A button that only adds items reads CartDispatch, so it doesn't re-render when the cart changes.</span>
-</code></pre></div>
+function CartProvider({ children }) {
+  const [cart, dispatch] = useReducer(cartReducer, []);
+  return (
+    &lt;CartDispatch.Provider value={dispatch}&gt;        {/* dispatch never changes */}
+      &lt;CartState.Provider value={cart}&gt;{children}&lt;/CartState.Provider&gt;
+    &lt;/CartDispatch.Provider&gt;
+  );
+}
+// A button that only adds items reads CartDispatch, so it doesn't re-render when the cart changes.
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

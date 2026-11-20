@@ -23,9 +23,9 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Hydration</div><div class="dg-c">Download all component code</div><div class="dg-c">Re-run components to rebuild state</div><div class="dg-c">Attach every listener</div><div class="dg-c">Then interactive</div></div><div class="dg-col good"><div class="dg-h">Resumability</div><div class="dg-c">Download almost nothing upfront</div><div class="dg-c">State is already in the HTML</div><div class="dg-c">One global listener</div><div class="dg-c">Load the handler only when clicked</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Qwik output: the handler is a reference to a small lazy-loaded chunk --&gt;</span>
-<span class="p">&lt;</span><span class="nt">button</span> <span class="na">on:click</span><span class="o">=</span><span class="s">"q-chunk-abc.js#s_onClickHandler"</span><span class="p">&gt;</span>Add to cart<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;!-- Qwik output: the handler is a reference to a small lazy-loaded chunk --&gt;
+&lt;button on:click=&quot;q-chunk-abc.js#s_onClickHandler&quot;&gt;Add to cart&lt;/button&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

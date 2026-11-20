@@ -23,11 +23,11 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Hint</div><div class="dg-c">preconnect</div><div class="dg-c">dns-prefetch</div><div class="dg-c">preload</div><div class="dg-c">prefetch</div></div><div class="dg-col good"><div class="dg-h">Use it for</div><div class="dg-c">1–3 critical third-party origins (fonts, image CDN)</div><div class="dg-c">Less important origins (cheap fallback)</div><div class="dg-c">Late-discovered critical files on THIS page (hero image, font)</div><div class="dg-c">Files for the NEXT page (low priority)</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preconnect"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://images.example-cdn.com"</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/fonts/inter.woff2"</span> <span class="na">as</span><span class="o">=</span><span class="s">"font"</span> <span class="na">type</span><span class="o">=</span><span class="s">"font/woff2"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/hero.avif"</span> <span class="na">as</span><span class="o">=</span><span class="s">"image"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"prefetch"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/checkout.js"</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-html">&lt;link rel=&quot;preconnect&quot; href=&quot;https://images.example-cdn.com&quot;&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/fonts/inter.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/hero.avif&quot; as=&quot;image&quot; fetchpriority=&quot;high&quot;&gt;
+&lt;link rel=&quot;prefetch&quot; href=&quot;/checkout.js&quot;&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

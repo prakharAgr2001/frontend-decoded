@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Server</b><span>renderToString(&lt;App /&gt;) produces HTML</span></li><li><b>Browser paints</b><span>content visible, nothing clickable</span></li><li><b>Bundle loads</b><span>the same components arrive as JS</span></li><li><b>hydrateRoot</b><span>React renders in memory and walks the existing DOM</span></li><li><b>Attach handlers</b><span>onClick, state, effects: now it&#x27;s interactive</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// server.js</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderToString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-dom/server'</span><span class="p">;</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">html</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">renderToString</span><span class="p">(&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;);</span>
+<pre class="hl-code"><code class="language-jsx">// server.js
+import { renderToString } from 'react-dom/server';
+const html = renderToString(&lt;App /&gt;);
 
-<span class="c1">// client.js</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">hydrateRoot</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'react-dom/client'</span><span class="p">;</span>
-<span class="nx">hydrateRoot</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'root'</span><span class="p">),</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;);</span>
-</code></pre></div>
+// client.js
+import { hydrateRoot } from 'react-dom/client';
+hydrateRoot(document.getElementById('root'), &lt;App /&gt;);
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

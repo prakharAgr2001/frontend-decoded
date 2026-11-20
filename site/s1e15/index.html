@@ -23,11 +23,11 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Run sync code</b><span>each function call is pushed onto the stack and popped when it returns</span></li><li><b>Hand off async work</b><span>setTimeout, fetch, click listeners → browser Web APIs, off the stack</span></li><li><b>Queue the callback</b><span>when the timer fires or the response arrives, the callback joins the task queue</span></li><li><b>Stack empty? Take the next task</b><span>the event loop moves one task onto the stack, and repeats</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'A'</span><span class="p">);</span>
-<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'B'</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'C'</span><span class="p">);</span>
-<span class="c1">// Output: A, C, B</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">console.log('A');
+setTimeout(() =&gt; console.log('B'), 0);
+console.log('C');
+// Output: A, C, B
+</code></pre>
 
 <p>A runs, the timer is handed to the browser, C runs. The stack is now empty, so the loop picks up the timer's callback: B.</p>
 <h2 id="common-traps">Common traps</h2>
@@ -41,10 +41,10 @@
 <h2 id="quick-quiz">Quick quiz</h2>
 <details>
 <summary>What's the output?</summary>
-<div class="hl-code"><pre><span></span><code><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">1</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e9</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">setTimeout(() =&gt; console.log(1), 0);
+for (let i = 0; i &lt; 1e9; i++) {}
+console.log(2);
+</code></pre>
 
 <p><code>2</code>, then <code>1</code>. The loop blocks the stack, so the timer's callback waits in the queue until the loop and <code>console.log(2)</code> are done.</p>
 </details>

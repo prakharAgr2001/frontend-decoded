@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Client</b><span>GET /messages?since=981</span></li><li><b>Server waits</b><span>until a new message or ~30 s</span></li><li><b>Server responds</b><span>with the new messages (or empty on timeout)</span></li><li><b>Client immediately</b><span>GET /messages?since=&lt;last id&gt;</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">longPoll</span><span class="p">(</span><span class="nx">since</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/messages?since=</span><span class="si">${</span><span class="nx">since</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span><span class="w">     </span><span class="c1">// server holds it open</span>
-<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">msgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
-<span class="w">      </span><span class="nx">msgs</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">render</span><span class="p">);</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">msgs</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span><span class="w"> </span><span class="nx">since</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">msgs</span><span class="p">[</span><span class="nx">msgs</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1</span><span class="p">].</span><span class="nx">id</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">2000</span><span class="p">));</span><span class="w">                 </span><span class="c1">// back off on errors</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">async function longPoll(since = 0) {
+  while (true) {
+    try {
+      const res = await fetch(`/api/messages?since=${since}`);     // server holds it open
+      const msgs = await res.json();
+      msgs.forEach(render);
+      if (msgs.length) since = msgs[msgs.length - 1].id;
+    } catch {
+      await new Promise(r =&gt; setTimeout(r, 2000));                 // back off on errors
+    }
+  }
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

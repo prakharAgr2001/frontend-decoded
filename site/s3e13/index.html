@@ -23,15 +23,15 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Define</b><span>const Orders = lazy(() =&gt; import(&#x27;./pages/Orders&#x27;))</span></li><li><b>Wrap</b><span>&lt;Suspense fallback={&lt;PageSkeleton /&gt;}&gt;</span></li><li><b>Navigate</b><span>the chunk downloads, fallback shows meanwhile</span></li><li><b>Prefetch</b><span>on hover or when the link is visible, so it&#x27;s usually cached already</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">Orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">lazy</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./pages/Orders'</span><span class="p">));</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">prefetchOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./pages/Orders'</span><span class="p">);</span>
+<pre class="hl-code"><code class="language-jsx">const Orders = lazy(() =&gt; import('./pages/Orders'));
+const prefetchOrders = () =&gt; import('./pages/Orders');
 
-<span class="p">&lt;</span><span class="nt">Link</span><span class="w"> </span><span class="na">to</span><span class="o">=</span><span class="s">"/orders"</span><span class="w"> </span><span class="na">onMouseEnter</span><span class="o">=</span><span class="p">{</span><span class="nx">prefetchOrders</span><span class="p">}&gt;</span><span class="nx">Orders</span><span class="p">&lt;/</span><span class="nt">Link</span><span class="p">&gt;</span>
+&lt;Link to=&quot;/orders&quot; onMouseEnter={prefetchOrders}&gt;Orders&lt;/Link&gt;
 
-<span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">PageSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">Routes</span><span class="p">&gt;&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">"/orders"</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Orders</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;&lt;/</span><span class="nt">Routes</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
-</code></pre></div>
+&lt;Suspense fallback={&lt;PageSkeleton /&gt;}&gt;
+  &lt;Routes&gt;&lt;Route path=&quot;/orders&quot; element={&lt;Orders /&gt;} /&gt;&lt;/Routes&gt;
+&lt;/Suspense&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

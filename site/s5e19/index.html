@@ -21,18 +21,18 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Serving a wedding meal. One big curtain until every dish is ready means everyone waits for dessert. Serving each item the moment it's ready means plates landing randomly. Serving by course is the sweet spot.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">Layout</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">ProductHeader</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                                  </span><span class="p">{</span><span class="cm">/* critical, fast */</span><span class="p">}</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">ErrorBoundary</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">ReviewsError</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">ReviewsSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">      </span><span class="p">&lt;</span><span class="nt">Reviews</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">                                    </span><span class="p">{</span><span class="cm">/* slow, own boundary */</span><span class="p">}</span>
-<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;/</span><span class="nt">ErrorBoundary</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">BelowFoldSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">SimilarProducts</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">RecentlyViewed</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">            </span><span class="p">{</span><span class="cm">/* below the fold, grouped */</span><span class="p">}</span>
-<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">Layout</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">&lt;Layout&gt;
+  &lt;ProductHeader /&gt;                                  {/* critical, fast */}
+  &lt;ErrorBoundary fallback={&lt;ReviewsError /&gt;}&gt;
+    &lt;Suspense fallback={&lt;ReviewsSkeleton /&gt;}&gt;
+      &lt;Reviews /&gt;                                    {/* slow, own boundary */}
+    &lt;/Suspense&gt;
+  &lt;/ErrorBoundary&gt;
+  &lt;Suspense fallback={&lt;BelowFoldSkeleton /&gt;}&gt;
+    &lt;SimilarProducts /&gt;&lt;RecentlyViewed /&gt;            {/* below the fold, grouped */}
+  &lt;/Suspense&gt;
+&lt;/Layout&gt;
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Boundary layout</div><div class="dg-c">One for the whole page</div><div class="dg-c">One per component</div><div class="dg-c">Grouped by section</div></div><div class="dg-col good"><div class="dg-h">Effect</div><div class="dg-c">Waits for the slowest request</div><div class="dg-c">Popcorn loading, layout jumps</div><div class="dg-c">Fast critical content, calm loading</div></div></div></figure>
 

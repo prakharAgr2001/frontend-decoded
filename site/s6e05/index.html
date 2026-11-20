@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">GET /chat · Upgrade: websocket · Sec-WebSocket-Key: …</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">101 Switching Protocols</div></div><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">frame: {&quot;type&quot;:&quot;message&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">frame: {&quot;type&quot;:&quot;message&quot;,&quot;from&quot;:&quot;Riya&quot;,&quot;text&quot;:&quot;hey!&quot;}</div></div><div class="dg-note">Same TCP connection, both directions, tiny frame headers</div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">WebSocket</span><span class="p">(</span><span class="s1">'wss://chat.example.com/socket'</span><span class="p">);</span>
-<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'join'</span><span class="p">,</span><span class="w"> </span><span class="nx">room</span><span class="o">:</span><span class="w"> </span><span class="s1">'general'</span><span class="w"> </span><span class="p">}));</span>
+<pre class="hl-code"><code class="language-js">const ws = new WebSocket('wss://chat.example.com/socket');
+ws.onopen = () =&gt; ws.send(JSON.stringify({ type: 'join', room: 'general' }));
 
-<span class="kd">let</span><span class="w"> </span><span class="nx">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
-<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">));</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">queue</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="nx">requestAnimationFrame</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderMessages</span><span class="p">(</span><span class="nx">queue</span><span class="p">);</span><span class="w"> </span><span class="nx">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span><span class="w"> </span><span class="p">});</span><span class="w">  </span><span class="c1">// batch bursts</span>
-<span class="p">};</span>
-<span class="nx">ws</span><span class="p">.</span><span class="nx">onclose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">scheduleReconnect</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">code</span><span class="p">);</span><span class="w">      </span><span class="c1">// not automatic: you must reconnect (E10)</span>
-</code></pre></div>
+let queue = [];
+ws.onmessage = e =&gt; {
+  queue.push(JSON.parse(e.data));
+  if (queue.length === 1) requestAnimationFrame(() =&gt; { renderMessages(queue); queue = []; });  // batch bursts
+};
+ws.onclose = e =&gt; scheduleReconnect(e.code);      // not automatic: you must reconnect (E10)
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

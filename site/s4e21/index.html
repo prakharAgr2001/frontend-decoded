@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Manual immutable update</div><div class="dg-c">setUser(u =&gt; ({ ...u, address: { ...u.address, city: &#x27;Pune&#x27; } }))</div><div class="dg-c">Every level spread by hand</div><div class="dg-c">Easy to forget a level</div></div><div class="dg-col good"><div class="dg-h">With Immer</div><div class="dg-c">setUser(produce(u =&gt; { u.address.city = &#x27;Pune&#x27; }))</div><div class="dg-c">Write the change you mean</div><div class="dg-c">Copies only changed paths</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">produce</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'immer'</span><span class="p">;</span>
+<pre class="hl-code"><code class="language-js">import { produce } from 'immer';
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">produce</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">draft</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">draft</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="p">.</span><span class="nx">city</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Pune'</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">draft</span><span class="p">.</span><span class="nx">cart</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">9</span><span class="p">,</span><span class="w"> </span><span class="nx">qty</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">});</span>
-<span class="p">});</span>
+const next = produce(state, draft =&gt; {
+  draft.user.address.city = 'Pune';
+  draft.cart.items.push({ id: 9, qty: 1 });
+});
 
-<span class="nx">next</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">state</span><span class="p">;</span><span class="w">                    </span><span class="c1">// true: new top-level object</span>
-<span class="nx">next</span><span class="p">.</span><span class="nx">settings</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">settings</span><span class="p">;</span><span class="w">  </span><span class="c1">// true: untouched parts are shared</span>
-</code></pre></div>
+next !== state;                    // true: new top-level object
+next.settings === state.settings;  // true: untouched parts are shared
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

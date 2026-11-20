@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Measure the viewport</b><span>e.g. 12 rows fit on screen</span></li><li><b>Render visible rows + overscan</b><span>~20 DOM nodes instead of 10,000</span></li><li><b>Spacer</b><span>container height = rows × row height, so the scrollbar is right</span></li><li><b>On scroll</b><span>compute the new range, reuse the row elements</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c">/* Lighter alternative: let the browser skip off-screen rendering */</span>
-<span class="p">.</span><span class="nc">row</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">content-visibility</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
-<span class="w">  </span><span class="k">contain-intrinsic-size</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="w"> </span><span class="mi">56</span><span class="kt">px</span><span class="p">;</span><span class="w">   </span><span class="c">/* estimated height so scroll size stays stable */</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-css">/* Lighter alternative: let the browser skip off-screen rendering */
+.row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 56px;   /* estimated height so scroll size stays stable */
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

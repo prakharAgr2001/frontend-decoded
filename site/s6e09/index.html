@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Server sends {&quot;type&quot;:&quot;ping&quot;}</b><span>every 30 s</span></li><li><b>Client gets any message</b><span>resets a 35 s timer</span></li><li><b>Timer fires</b><span>no message for too long → connection is dead</span></li><li><b>Client closes the socket</b><span>and starts the reconnect logic</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">deadTimer</span><span class="p">;</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">deadTimer</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">deadTimer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">close</span><span class="p">(),</span><span class="w"> </span><span class="mf">35</span><span class="nx">_000</span><span class="p">);</span><span class="w">    </span><span class="c1">// 30 s ping + 5 s margin</span>
-<span class="p">}</span>
-<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">);</span>
-<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'ping'</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'pong'</span><span class="w"> </span><span class="p">}));</span>
-<span class="w">  </span><span class="nx">handle</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
-<span class="p">};</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">let deadTimer;
+function resetHeartbeat(ws) {
+  clearTimeout(deadTimer);
+  deadTimer = setTimeout(() =&gt; ws.close(), 35_000);    // 30 s ping + 5 s margin
+}
+ws.onopen = () =&gt; resetHeartbeat(ws);
+ws.onmessage = e =&gt; {
+  resetHeartbeat(ws);
+  const msg = JSON.parse(e.data);
+  if (msg.type === 'ping') return ws.send(JSON.stringify({ type: 'pong' }));
+  handle(msg);
+};
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

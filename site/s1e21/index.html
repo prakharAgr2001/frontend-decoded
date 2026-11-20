@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">One listener per row</div><div class="dg-c">1,000 rows = 1,000 listeners</div><div class="dg-c">New rows need new listeners</div><div class="dg-c">Removed rows must be cleaned up</div></div><div class="dg-col good"><div class="dg-h">One listener on the list</div><div class="dg-c">1,000 rows = 1 listener</div><div class="dg-c">New rows just work</div><div class="dg-c">Nothing to clean up</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#todo-list'</span><span class="p">);</span>
+<pre class="hl-code"><code class="language-js">const list = document.querySelector('#todo-list');
 
-<span class="nx">list</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'.todo'</span><span class="p">);</span><span class="w">      </span><span class="c1">// walk up from what was clicked</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">row</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">list</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">row</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w">    </span><span class="c1">// clicked empty space or outside</span>
+list.addEventListener('click', e =&gt; {
+  const row = e.target.closest('.todo');      // walk up from what was clicked
+  if (!row || !list.contains(row)) return;    // clicked empty space or outside
 
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'.delete'</span><span class="p">))</span><span class="w"> </span><span class="nx">row</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="nx">row</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">toggle</span><span class="p">(</span><span class="s1">'done'</span><span class="p">);</span>
-<span class="p">});</span>
+  if (e.target.closest('.delete')) row.remove();
+  else row.classList.toggle('done');
+});
 
-<span class="c1">// Rows added later work automatically</span>
-<span class="nx">list</span><span class="p">.</span><span class="nx">insertAdjacentHTML</span><span class="p">(</span><span class="s1">'beforeend'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;li class="todo"&gt;New task &lt;button class="delete"&gt;✕&lt;/button&gt;&lt;/li&gt;'</span><span class="p">);</span>
-</code></pre></div>
+// Rows added later work automatically
+list.insertAdjacentHTML('beforeend', '&lt;li class=&quot;todo&quot;&gt;New task &lt;button class=&quot;delete&quot;&gt;✕&lt;/button&gt;&lt;/li&gt;');
+</code></pre>
 
 <ul>
 <li>React already does this for you: it attaches one listener per event type at the root and dispatches to your components.</li>

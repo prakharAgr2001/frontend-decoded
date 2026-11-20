@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Input delay</b><span>main thread is busy with something else (long tasks)</span></li><li><b>Processing</b><span>your event handlers run</span></li><li><b>Presentation delay</b><span>style → layout → paint for the next frame</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">button</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">'loading'</span><span class="p">);</span><span class="w">                 </span><span class="c1">// 1. instant feedback</span>
-<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="o">?</span><span class="p">.()</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">)));</span><span class="w">   </span><span class="c1">// 2. let it paint</span>
-<span class="w">  </span><span class="nx">runExpensiveFilter</span><span class="p">();</span><span class="w">                            </span><span class="c1">// 3. heavy work after</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">button.addEventListener('click', async () =&gt; {
+  button.classList.add('loading');                 // 1. instant feedback
+  await (globalThis.scheduler?.yield?.() ?? new Promise(r =&gt; setTimeout(r)));   // 2. let it paint
+  runExpensiveFilter();                            // 3. heavy work after
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -23,20 +23,20 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Click a &lt;Link&gt;</b><span>the router calls event.preventDefault()</span></li><li><b>Update the URL</b><span>history.pushState({}, &#x27;&#x27;, &#x27;/products/42&#x27;)</span></li><li><b>Render the route</b><span>match the URL to a component</span></li><li><b>Fetch only data</b><span>JSON from the API, not a new HTML page</span></li><li><b>Back button</b><span>popstate event → render the previous route</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// The core of every router, in a few lines</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s1">'a[data-link]'</span><span class="p">);</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">a</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
-<span class="w">  </span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span><span class="p">({},</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">href</span><span class="p">);</span>
-<span class="w">  </span><span class="nx">render</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">);</span>
-<span class="p">});</span>
-<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'popstate'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">render</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">));</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// The core of every router, in a few lines
+document.addEventListener('click', e =&gt; {
+  const a = e.target.closest('a[data-link]');
+  if (!a) return;
+  e.preventDefault();
+  history.pushState({}, '', a.href);
+  render(location.pathname);
+});
+window.addEventListener('popstate', () =&gt; render(location.pathname));
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1"># Server: send index.html for any route the files don't match</span>
-<span class="k">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kn">try_files</span><span class="w"> </span><span class="nv">$uri</span><span class="w"> </span><span class="s">/index.html</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-nginx"># Server: send index.html for any route the files don't match
+location / { try_files $uri /index.html; }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

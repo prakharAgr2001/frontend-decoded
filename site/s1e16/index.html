@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps loop"><li><b>Take ONE task</b><span>e.g. a timer callback or a click handler</span></li><li><b>Run it to the end</b><span>the call stack is empty again</span></li><li><b>Drain ALL microtasks</b><span>promise callbacks, await continuations, new ones added along the way</span></li><li><b>Maybe render</b><span>if a frame is due: rAF → style → layout → paint</span></li></ol><div class="dg-loopback">Then back to step 1, forever</div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
-<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">2</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span><span class="w">          </span><span class="c1">// task</span>
-<span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">().</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">3</span><span class="p">));</span><span class="w"> </span><span class="c1">// microtask</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mf">4</span><span class="p">);</span>
-<span class="c1">// Output: 1, 4, 3, 2</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">console.log(1);
+setTimeout(() =&gt; console.log(2), 0);          // task
+Promise.resolve().then(() =&gt; console.log(3)); // microtask
+console.log(4);
+// Output: 1, 4, 3, 2
+</code></pre>
 
 <p>1 and 4 are synchronous. Then the microtask (3) runs, then the next task: the timer (2).</p>
 <h2 id="common-traps">Common traps</h2>
@@ -39,22 +39,22 @@
 </ul>
 <h2 id="see-it-yourself">See it yourself</h2>
 <p>Paste the code above in the Console. Then try this to watch a timer get starved:</p>
-<div class="hl-code"><pre><span></span><code><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'timer'</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
-<span class="kd">let</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
-<span class="kd">function</span><span class="w"> </span><span class="nx">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">n</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e6</span><span class="p">)</span><span class="w"> </span><span class="nx">queueMicrotask</span><span class="p">(</span><span class="nx">loop</span><span class="p">);</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'done'</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-<span class="nx">loop</span><span class="p">();</span><span class="w">   </span><span class="c1">// 'done' prints before 'timer'</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">setTimeout(() =&gt; console.log('timer'), 0);
+let n = 0;
+function loop() { if (n++ &lt; 1e6) queueMicrotask(loop); else console.log('done'); }
+loop();   // 'done' prints before 'timer'
+</code></pre>
 
 <h2 id="quick-quiz">Quick quiz</h2>
 <details>
 <summary>What's the output?</summary>
-<div class="hl-code"><pre><span></span><code><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'A'</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
-<span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">().</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'B'</span><span class="p">);</span>
-<span class="w">  </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">().</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'C'</span><span class="p">));</span>
-<span class="p">});</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'D'</span><span class="p">);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">setTimeout(() =&gt; console.log('A'), 0);
+Promise.resolve().then(() =&gt; {
+  console.log('B');
+  Promise.resolve().then(() =&gt; console.log('C'));
+});
+console.log('D');
+</code></pre>
 
 <p><code>D, B, C, A</code>. The new microtask C is queued during the drain, so it runs before the timer.</p>
 </details>

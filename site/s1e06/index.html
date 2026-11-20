@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>You request app.js</b><span>DNS sends you to the nearest edge (e.g. Bengaluru, not Virginia)</span></li><li><b>Edge checks its cache</b><span>HIT → sent back in a few ms</span></li><li><b>On a MISS</b><span>edge fetches from your origin once</span></li><li><b>Edge stores it</b><span>for as long as Cache-Control allows</span></li><li><b>Next user nearby</b><span>gets a HIT</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="err"># Static assets with a content hash in the name: cache "forever"</span>
-<span class="err">Cache-Control: public, max-age=31536000, immutable      → app.3f9a1c.js</span>
+<pre class="hl-code"><code class="language-http"># Static assets with a content hash in the name: cache &quot;forever&quot;
+Cache-Control: public, max-age=31536000, immutable      → app.3f9a1c.js
 
-<span class="err"># HTML: always check for a newer version</span>
-<span class="err">Cache-Control: no-cache                                   → index.html</span>
-</code></pre></div>
+# HTML: always check for a newer version
+Cache-Control: no-cache                                   → index.html
+</code></pre>
 
 <ul>
 <li>CDNs also terminate TLS close to the user, so the handshakes are shorter too.</li>

@@ -23,18 +23,18 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">One long task</div><div class="dg-c">400 ms of work in one go</div><div class="dg-c">Tap during it waits up to 400 ms</div><div class="dg-c">No frames painted</div><div class="dg-c">Poor INP</div></div><div class="dg-col good"><div class="dg-h">Chunked with yields</div><div class="dg-c">8 chunks of 50 ms</div><div class="dg-c">Tap waits at most ~50 ms</div><div class="dg-c">Frames painted between chunks</div><div class="dg-c">Good INP</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processRows</span><span class="p">(</span><span class="nx">rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">process</span><span class="p">(</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">yieldToBrowser</span><span class="p">();</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<pre class="hl-code"><code class="language-js">async function processRows(rows) {
+  for (let i = 0; i &lt; rows.length; i++) {
+    process(rows[i]);
+    if (i % 100 === 0) await yieldToBrowser();
+  }
+}
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">yieldToBrowser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="c1">// scheduler.yield() keeps your place in line (Chromium); setTimeout is the fallback</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">scheduler</span><span class="p">.</span><span class="k">yield</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
-<span class="p">}</span>
-</code></pre></div>
+function yieldToBrowser() {
+  // scheduler.yield() keeps your place in line (Chromium); setTimeout is the fallback
+  return globalThis.scheduler?.yield ? scheduler.yield() : new Promise(r =&gt; setTimeout(r, 0));
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

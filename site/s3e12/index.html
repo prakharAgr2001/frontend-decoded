@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">One bundle</div><div class="dg-c">Every page downloads all code</div><div class="dg-c">Change one line → whole bundle re-downloads</div><div class="dg-c">Slow first load</div></div><div class="dg-col good"><div class="dg-h">Split bundles</div><div class="dg-c">Each page downloads its own chunk</div><div class="dg-c">Only the changed chunk is re-downloaded</div><div class="dg-c">Fast first load, later chunks on demand</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Load the chart library only when the user opens the report</span>
-<span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderChart</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./chart.js'</span><span class="p">);</span><span class="w">   </span><span class="c1">// separate chunk</span>
-<span class="w">  </span><span class="nx">renderChart</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Load the chart library only when the user opens the report
+button.addEventListener('click', async () =&gt; {
+  const { renderChart } = await import('./chart.js');   // separate chunk
+  renderChart(data);
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

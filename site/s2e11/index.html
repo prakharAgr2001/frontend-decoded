@@ -23,16 +23,16 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Server HTML for all sections</b><span>page fully visible</span></li><li><b>Hydrate boundary by boundary</b><span>React yields between them</span></li><li><b>User taps a not-yet-ready section</b><span>React bumps it to the front</span></li><li><b>Hydrate it, replay the click</b><span>the tap isn&#x27;t lost</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">Layout</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">Header</span><span class="w"> </span><span class="p">/&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Spinner</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">Comments</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">          </span><span class="p">{</span><span class="cm">/* hydrates independently */</span><span class="p">}</span>
-<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Spinner</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
-<span class="w">    </span><span class="p">&lt;</span><span class="nt">Recommendations</span><span class="w"> </span><span class="p">/&gt;</span><span class="w">   </span><span class="p">{</span><span class="cm">/* hydrates independently */</span><span class="p">}</span>
-<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">Layout</span><span class="p">&gt;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">&lt;Layout&gt;
+  &lt;Header /&gt;
+  &lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+    &lt;Comments /&gt;          {/* hydrates independently */}
+  &lt;/Suspense&gt;
+  &lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+    &lt;Recommendations /&gt;   {/* hydrates independently */}
+  &lt;/Suspense&gt;
+&lt;/Layout&gt;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

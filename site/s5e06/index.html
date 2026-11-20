@@ -23,9 +23,9 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Load page 1</b><span>items 1–10</span></li><li><b>A new post arrives at the top</b><span>old item 10 becomes item 11</span></li><li><b>Load page 2 (offset 10)</b><span>starts with item 11, which you already saw</span></li><li><b>Result</b><span>a duplicate in the feed</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">-- Page 1000 still makes the database walk past 9,990 rows</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">posts</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">OFFSET</span><span class="w"> </span><span class="mi">9990</span><span class="p">;</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-sql">-- Page 1000 still makes the database walk past 9,990 rows
+SELECT * FROM posts ORDER BY created_at DESC LIMIT 10 OFFSET 9990;
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

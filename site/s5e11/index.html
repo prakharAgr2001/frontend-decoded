@@ -21,16 +21,16 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Ordering at a food court. You don't wait for your dosa before ordering juice: you order both at different counters, and you're done when the slower one is ready.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="c1">// Sequential: ~ 300 + 400 + 200 = 900 ms</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getUser</span><span class="p">();</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getOrders</span><span class="p">();</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">offers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">getOffers</span><span class="p">();</span>
+<pre class="hl-code"><code class="language-js">// Sequential: ~ 300 + 400 + 200 = 900 ms
+const user = await getUser(); const orders = await getOrders(); const offers = await getOffers();
 
-<span class="c1">// Parallel: ~ 400 ms (the slowest)</span>
-<span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">user2</span><span class="p">,</span><span class="w"> </span><span class="nx">orders2</span><span class="p">,</span><span class="w"> </span><span class="nx">offers2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span><span class="nx">getUser</span><span class="p">(),</span><span class="w"> </span><span class="nx">getOrders</span><span class="p">(),</span><span class="w"> </span><span class="nx">getOffers</span><span class="p">()]);</span>
+// Parallel: ~ 400 ms (the slowest)
+const [user2, orders2, offers2] = await Promise.all([getUser(), getOrders(), getOffers()]);
 
-<span class="c1">// Partial results: one failure doesn't lose the others</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">allSettled</span><span class="p">([</span><span class="nx">getUser</span><span class="p">(),</span><span class="w"> </span><span class="nx">getOrders</span><span class="p">(),</span><span class="w"> </span><span class="nx">getOffers</span><span class="p">()]);</span>
-<span class="nx">results</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'fulfilled'</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">show</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">showError</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">reason</span><span class="p">));</span>
-</code></pre></div>
+// Partial results: one failure doesn't lose the others
+const results = await Promise.allSettled([getUser(), getOrders(), getOffers()]);
+results.forEach(r =&gt; r.status === 'fulfilled' ? show(r.value) : showError(r.reason));
+</code></pre>
 
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Promise.all</div><div class="dg-c">Rejects on the first failure</div><div class="dg-c">Use when every result is required</div><div class="dg-c">Good: checkout needs cart + address + price</div></div><div class="dg-col good"><div class="dg-h">Promise.allSettled</div><div class="dg-c">Never rejects</div><div class="dg-c">Use when partial results are useful</div><div class="dg-c">Good: dashboard widgets</div></div></div></figure>
 

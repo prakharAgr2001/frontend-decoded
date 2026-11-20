@@ -23,13 +23,13 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Build</b><span>minifier (Terser, esbuild) shrinks the JS</span></li><li><b>Request</b><span>browser sends accept-encoding: br, gzip</span></li><li><b>Response</b><span>server/CDN sends content-encoding: br</span></li><li><b>Browser</b><span>decompresses, then parses the full code</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="err">GET /assets/app.js</span>
-<span class="err">accept-encoding: gzip, deflate, br, zstd</span>
+<pre class="hl-code"><code class="language-http">GET /assets/app.js
+accept-encoding: gzip, deflate, br, zstd
 
-<span class="err">200 OK</span>
-<span class="err">content-encoding: br</span>
-<span class="err">content-type: text/javascript</span>
-</code></pre></div>
+200 OK
+content-encoding: br
+content-type: text/javascript
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>User taps Like</b><span>heart turns red instantly (cache updated)</span></li><li><b>Request sent</b><span>in the background</span></li><li><b>Success</b><span>nothing visible changes</span></li><li><b>Failure</b><span>roll back the heart and show &quot;Couldn&#x27;t like, try again&quot;</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">qc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useQueryClient</span><span class="p">();</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">like</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMutation</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">mutationFn</span><span class="o">:</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/posts/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">/like`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'PUT'</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="nx">onMutate</span><span class="o">:</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">cancelQueries</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]</span><span class="w"> </span><span class="p">});</span><span class="w">            </span><span class="c1">// stop old data overwriting ours</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">getQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]);</span>
-<span class="w">    </span><span class="nx">qc</span><span class="p">.</span><span class="nx">setQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">liked</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">likes</span><span class="o">:</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">likes</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}));</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="p">};</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">onError</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">setQueryData</span><span class="p">([</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">],</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">prev</span><span class="p">),</span><span class="w">   </span><span class="c1">// rollback (next episode)</span>
-<span class="w">  </span><span class="nx">onSettled</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">qc</span><span class="p">.</span><span class="nx">invalidateQueries</span><span class="p">({</span><span class="w"> </span><span class="nx">queryKey</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'post'</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">]</span><span class="w"> </span><span class="p">}),</span>
-<span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">const qc = useQueryClient();
+const like = useMutation({
+  mutationFn: id =&gt; fetch(`/api/posts/${id}/like`, { method: 'PUT' }),
+  onMutate: async id =&gt; {
+    await qc.cancelQueries({ queryKey: ['post', id] });            // stop old data overwriting ours
+    const prev = qc.getQueryData(['post', id]);
+    qc.setQueryData(['post', id], p =&gt; ({ ...p, liked: true, likes: p.likes + 1 }));
+    return { prev };
+  },
+  onError: (err, id, ctx) =&gt; qc.setQueryData(['post', id], ctx.prev),   // rollback (next episode)
+  onSettled: (data, err, id) =&gt; qc.invalidateQueries({ queryKey: ['post', id] }),
+});
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

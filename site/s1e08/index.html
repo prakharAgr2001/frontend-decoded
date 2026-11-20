@@ -23,15 +23,15 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Bytes → characters</b><span>the HTML arrives over the network in chunks</span></li><li><b>Tokens → nodes</b><span>&lt;div&gt;, &lt;p&gt;, text… become objects</span></li><li><b>DOM tree</b><span>nodes linked as parent/child, what JS sees as document</span></li><li><b>CSS → CSSOM</b><span>every stylesheet parsed into a tree of rules</span></li><li><b>DOM + CSSOM → render tree</b><span>ready for layout (next episode)</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Blocks parsing until downloaded AND run --&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"app.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<pre class="hl-code"><code class="language-html">&lt;!-- Blocks parsing until downloaded AND run --&gt;
+&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
 
-<span class="cm">&lt;!-- Downloads in parallel, runs after parsing, in order: best default --&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+&lt;!-- Downloads in parallel, runs after parsing, in order: best default --&gt;
+&lt;script src=&quot;app.js&quot; defer&gt;&lt;/script&gt;
 
-<span class="cm">&lt;!-- Downloads in parallel, runs as soon as it arrives (order not guaranteed): good for analytics --&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"analytics.js"</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</code></pre></div>
+&lt;!-- Downloads in parallel, runs as soon as it arrives (order not guaranteed): good for analytics --&gt;
+&lt;script src=&quot;analytics.js&quot; async&gt;&lt;/script&gt;
+</code></pre>
 
 <ul>
 <li>The parser streams: it builds the DOM as bytes arrive, it doesn't wait for the whole file.</li>

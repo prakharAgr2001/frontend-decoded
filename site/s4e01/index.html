@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 1 · State management</span>
 <h1><span class="hl">What is state</span></h1>
-<div class="meta"><span>2 min read</span></div>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df-nCaVjhzp/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
 <div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
 <div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
 <ul>
@@ -23,12 +23,12 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>Initial state</b><span>const [count, setCount] = useState(0)</span></li><li><b>Event</b><span>user clicks &quot;+&quot;</span></li><li><b>Update</b><span>setCount(c =&gt; c + 1)</span></li><li><b>Re-render</b><span>React calls the component again with count = 1</span></li><li><b>Commit</b><span>only the changed text node updates in the DOM</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Cart</span><span class="p">({</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">coupon</span><span class="p">,</span><span class="w"> </span><span class="nx">setCoupon</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span><span class="w">                  </span><span class="c1">// state: changes, shown on screen</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">sum</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">sum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">price</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// derived: computed, not stored</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">Total</span><span class="o">:</span><span class="w"> </span><span class="err">₹</span><span class="p">{</span><span class="nx">total</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">coupon</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="sb">`(code </span><span class="si">${</span><span class="nx">coupon</span><span class="si">}</span><span class="sb">)`</span><span class="p">}&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">function Cart({ items }) {
+  const [coupon, setCoupon] = useState('');                  // state: changes, shown on screen
+  const total = items.reduce((sum, i) =&gt; sum + i.price, 0);  // derived: computed, not stored
+  return &lt;p&gt;Total: ₹{total} {coupon &amp;&amp; `(code ${coupon})`}&lt;/p&gt;;
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

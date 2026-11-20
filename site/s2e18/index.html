@@ -23,14 +23,14 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Single-region server</div><div class="dg-c">Request travels to one region (e.g. US)</div><div class="dg-c">Full Node.js, big memory</div><div class="dg-c">Close to the database</div><div class="dg-c">Good for heavy rendering</div></div><div class="dg-col good"><div class="dg-h">Edge</div><div class="dg-c">Request handled near the user (e.g. Mumbai)</div><div class="dg-c">Light runtime, small limits</div><div class="dg-c">Far from the database (unless data is replicated)</div><div class="dg-c">Good for fast, light logic</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Next.js middleware runs at the edge: redirect by country before rendering</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">middleware</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">geo</span><span class="o">?</span><span class="p">.</span><span class="nx">country</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">country</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'IN'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">nextUrl</span><span class="p">.</span><span class="nx">pathname</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'/in'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">Response</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">URL</span><span class="p">(</span><span class="s1">'/in'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">nextUrl</span><span class="p">.</span><span class="nx">pathname</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">));</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Next.js middleware runs at the edge: redirect by country before rendering
+export function middleware(req) {
+  const country = req.geo?.country;
+  if (country === 'IN' &amp;&amp; !req.nextUrl.pathname.startsWith('/in')) {
+    return Response.redirect(new URL('/in' + req.nextUrl.pathname, req.url));
+  }
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

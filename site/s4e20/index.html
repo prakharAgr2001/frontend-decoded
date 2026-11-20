@@ -23,18 +23,18 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><ol class="dg-steps"><li><b>idle</b><span>SUBMIT → submitting</span></li><li><b>submitting</b><span>SUCCESS → success, FAIL → error (SUBMIT ignored)</span></li><li><b>error</b><span>RETRY → submitting</span></li><li><b>success</b><span>final state</span></li></ol></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">machine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">idle</span><span class="o">:</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="nx">SUBMIT</span><span class="o">:</span><span class="w"> </span><span class="s1">'submitting'</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">submitting</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SUCCESS</span><span class="o">:</span><span class="w"> </span><span class="s1">'success'</span><span class="p">,</span><span class="w"> </span><span class="nx">FAIL</span><span class="o">:</span><span class="w"> </span><span class="s1">'error'</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">error</span><span class="o">:</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">RETRY</span><span class="o">:</span><span class="w"> </span><span class="s1">'submitting'</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">success</span><span class="o">:</span><span class="w">    </span><span class="p">{},</span>
-<span class="p">};</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">transition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">machine</span><span class="p">[</span><span class="nx">status</span><span class="p">][</span><span class="nx">event</span><span class="p">]</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">status</span><span class="p">;</span><span class="w">   </span><span class="c1">// unknown event → stay</span>
+<pre class="hl-code"><code class="language-js">const machine = {
+  idle:       { SUBMIT: 'submitting' },
+  submitting: { SUCCESS: 'success', FAIL: 'error' },
+  error:      { RETRY: 'submitting' },
+  success:    {},
+};
+const transition = (status, event) =&gt; machine[status][event] ?? status;   // unknown event → stay
 
-<span class="kd">function</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="nx">transition</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
-<span class="p">}</span>
-</code></pre></div>
+function reducer(state, event) {
+  return { ...state, status: transition(state.status, event.type) };
+}
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

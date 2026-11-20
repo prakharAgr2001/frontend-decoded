@@ -21,19 +21,19 @@
 <h2 id="the-analogy">The analogy</h2>
 <p>Cancelling a cab booking. The driver turns around instead of just being ignored when they arrive. But if they've already dropped your parcel off, cancelling doesn't bring it back.</p>
 <h2 id="how-it-works">How it works</h2>
-<div class="hl-code"><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AbortController</span><span class="p">();</span>
-<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="w"> </span><span class="p">})</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">setResults</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'AbortError'</span><span class="p">)</span><span class="w"> </span><span class="nx">setError</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w">   </span><span class="c1">// a cancel isn't an error</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span><span class="w">                                       </span><span class="c1">// new query or unmount → cancel</span>
-<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">]);</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-jsx">useEffect(() =&gt; {
+  const controller = new AbortController();
+  fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+    .then(r =&gt; r.json())
+    .then(setResults)
+    .catch(err =&gt; { if (err.name !== 'AbortError') setError(err); });   // a cancel isn't an error
+  return () =&gt; controller.abort();                                       // new query or unmount → cancel
+}, [query]);
+</code></pre>
 
-<div class="hl-code"><pre><span></span><code><span class="c1">// Timeout after 5 s</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/report'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">AbortSignal</span><span class="p">.</span><span class="nx">timeout</span><span class="p">(</span><span class="mf">5000</span><span class="p">)</span><span class="w"> </span><span class="p">});</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-js">// Timeout after 5 s
+const res = await fetch('/api/report', { signal: AbortSignal.timeout(5000) });
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>

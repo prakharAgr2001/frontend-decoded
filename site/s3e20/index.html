@@ -23,19 +23,19 @@
 <h2 id="how-it-works">How it works</h2>
 <figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">font-display</div><div class="dg-c">block</div><div class="dg-c">swap</div><div class="dg-c">optional</div></div><div class="dg-col good"><div class="dg-h">What users see</div><div class="dg-c">Invisible text for up to ~3 s, then the font</div><div class="dg-c">Fallback text immediately, swaps when loaded (possible shift)</div><div class="dg-c">Font only if it loads very quickly, else fallback for this visit</div></div></div></figure>
 
-<div class="hl-code"><pre><span></span><code><span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="o">;</span>
-<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">url</span><span class="o">(</span><span class="s1">'/fonts/inter-latin.woff2'</span><span class="o">)</span><span class="w"> </span><span class="nt">format</span><span class="o">(</span><span class="s1">'woff2'</span><span class="o">);</span>
-<span class="w">  </span><span class="nt">font-display</span><span class="o">:</span><span class="w"> </span><span class="nt">swap</span><span class="o">;</span>
-<span class="p">}</span>
-<span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span><span class="w">                        </span><span class="c">/* fallback sized like Inter, so the swap doesn't shift text */</span>
-<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="o">;</span>
-<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">local</span><span class="o">(</span><span class="s1">'Arial'</span><span class="o">);</span>
-<span class="w">  </span><span class="nt">size-adjust</span><span class="o">:</span><span class="w"> </span><span class="nt">107</span><span class="o">%;</span>
-<span class="w">  </span><span class="nt">ascent-override</span><span class="o">:</span><span class="w"> </span><span class="nt">90</span><span class="o">%;</span>
-<span class="p">}</span>
-<span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="p">,</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
+<pre class="hl-code"><code class="language-css">@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {                        /* fallback sized like Inter, so the swap doesn't shift text */
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+}
+body { font-family: 'Inter', 'Inter Fallback', sans-serif; }
+</code></pre>
 
 <h2 id="common-traps">Common traps</h2>
 <ul>
