@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 8 · Web performance</span>
 <h1><span class="hl">IQ: measuring performance</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zSQyAZSJ/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zSQyAZSJ/" target="_blank" rel="noopener">Watch the reel</a><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>This is a revision episode: four interview questions on <strong>measuring performance</strong>.</li>
+<li>Know the Core Web Vitals thresholds, why lab and field disagree, how to debug a slow LCP, and how to fix a banner causing CLS.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I measure with field data first: Core Web Vitals at the 75th percentile, LCP 2.5 s, INP 200 ms, CLS 0.1. Lab tools help me find causes. For each problem I break the metric into parts, like LCP's TTFB, load delay, load time and render delay, and fix the biggest part rather than guessing.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What are the Core Web Vitals, their thresholds, and at what percentile?</summary>
+<p>LCP ≤ 2.5 s (loading), INP ≤ 200 ms (responsiveness), CLS ≤ 0.1 (visual stability), all assessed at the 75th percentile of real visits, mobile and desktop separately.</p>
+</details>
+<details>
+<summary>Lighthouse gives 98, but field INP is poor. Why?</summary>
+<p>Lighthouse doesn't interact with the page, so it can't measure INP (TBT is only a proxy). It uses one simulated device, while real users run slower phones, have extensions, use the page for minutes and click things. Field data is also a 28-day window, so it may reflect older code.</p>
+</details>
+<details>
+<summary>The hero image downloads fast, but LCP is still slow. How do you debug it?</summary>
+<p>Break LCP into parts. Slow TTFB → server/CDN/caching. Big load delay → the image is discovered late: put it in the HTML as an <code>&lt;img&gt;</code>, add <code>fetchpriority="high"</code> or a preload, remove lazy loading. Big render delay → render-blocking CSS/JS or client-side rendering is holding the paint.</p>
+</details>
+<details>
+<summary>A cookie banner causes CLS. What are your options?</summary>
+<p>Reserve its space from the first paint, render it as an overlay with <code>position: fixed</code> so it doesn't push content, or animate it in with <code>transform</code>, which doesn't shift layout.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>CWV + thresholds at p75 · Lighthouse 98 but poor INP (no interactions, TBT is a proxy, real devices, 28 days) · slow LCP with fast image download (TTFB, load delay → in HTML + preload/fetchpriority, render delay) · banner CLS (reserve, overlay, transform).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e07/"><small>← PREVIOUS</small>Lab vs field</a>
 <a class="r" href="../s3e09/"><small>NEXT →</small>Critical rendering path</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

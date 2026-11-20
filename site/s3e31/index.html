@@ -6,13 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 31 · Web performance</span>
 <h1><span class="hl">Performance budgets</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62OBuGR_e/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62OBuGR_e/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A <strong>performance budget</strong> is an agreed limit your team won't exceed, e.g. <strong>JS ≤ 170 KB compressed, LCP ≤ 2.5 s, TBT ≤ 200 ms</strong>.</li>
+<li>Types: <strong>quantity</strong> (KB, number of requests), <strong>timings</strong> (LCP, INP), <strong>rule-based</strong> (Lighthouse score).</li>
+<li>Enforce it in <strong>CI</strong> so a pull request that breaks the budget fails, just like a failing test.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A performance budget sets limits on things like bundle size, request counts, or metric timings, so performance doesn't slowly regress. I set initial budgets from current field data, slightly better than today, and tighten them over time. They're enforced automatically in CI with tools like Lighthouse CI assertions or size-limit, so a pull request that exceeds the budget fails and the team has to discuss the trade-off before merging.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A monthly spending budget. Without one, small purchases add up and you only notice at the end of the month. A budget makes every new expense a conscious decision.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Measure today</b><span>field LCP/INP + current bundle sizes</span></li><li><b>Set budgets</b><span>a little better than today</span></li><li><b>Automate</b><span>Lighthouse CI / size-limit in the PR pipeline</span></li><li><b>Fail the build</b><span>when a change exceeds the budget</span></li><li><b>Ratchet down</b><span>tighten as you improve</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// .size-limit.json</span>
+<span class="p">[{</span><span class="w"> </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist/assets/index-*.js"</span><span class="p">,</span><span class="w"> </span><span class="nt">"limit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"170 KB"</span><span class="w"> </span><span class="p">}]</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// lighthouserc.json (assertions)</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">"ci"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"assert"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"assertions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"largest-contentful-paint"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"error"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"maxNumericValue"</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span><span class="w"> </span><span class="p">}],</span>
+<span class="w">  </span><span class="nt">"total-blocking-time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"error"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"maxNumericValue"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Budgets nobody enforces</strong> are just wishes. Put them in CI.</li>
+<li><strong>Unrealistic budgets</strong> get ignored. Start from where you are.</li>
+<li><strong>Testing only on fast machines.</strong> Validate on a real mid-range Android phone.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Add <code>size-limit</code> to a project and run it in a GitHub Action: open a PR that adds a big library and watch the check fail.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What are the three kinds of performance budgets?</summary>
+<p>Quantity-based (KB, requests), milestone timings (LCP, TBT, INP), and rule-based (Lighthouse scores).</p>
+</details>
+<details>
+<summary>How do you choose initial budget values?</summary>
+<p>From current measurements, set slightly better than today, then tighten over time.</p>
+</details>
+<details>
+<summary>How do you enforce a budget?</summary>
+<p>Automated checks in CI (Lighthouse CI, size-limit, bundler limits) that fail the build when exceeded.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Agreed limits, e.g. JS ≤ 170 KB compressed, LCP ≤ 2.5 s, TBT ≤ 200 ms. Kinds: quantity, milestone timings, rule-based scores.</li>
 <li>Enforce in CI: Lighthouse CI assertions, size-limit → fail the PR.</li>
 <li>IQ: start from current field data, set slightly better, ratchet down, test on a real mid-range phone.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e30/"><small>← PREVIOUS</small>Chunking long tasks</a>
 <a class="r" href="../s3e32/"><small>NEXT →</small>IQ: runtime</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

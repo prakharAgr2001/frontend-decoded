@@ -6,13 +6,61 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 14 · Web performance</span>
 <h1><span class="hl">Tree shaking</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60F2zk03n/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60F2zk03n/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Tree shaking</strong>: the bundler follows imports from your entry file, <strong>keeps exports that are used, and drops the rest</strong>.</li>
+<li>It needs <strong>ES modules</strong> (<code>import</code>/<code>export</code>), which are static. CommonJS <code>require()</code> usually can't be shaken.</li>
+<li><code>import _ from 'lodash'</code> pulls in about 70 KB; <code>import { debounce } from 'lodash-es'</code> pulls in only what you use.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Tree shaking is dead-code elimination based on the static structure of ES module imports and exports. The bundler marks which exports are actually used and removes the unused ones during minification. It fails with CommonJS modules, with code that has side effects the bundler must keep, with dynamic property access, and with barrel files that re-export everything. Marking packages as side-effect-free in package.json and importing specific functions helps it work.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Packing for a trip by following a checklist of what you'll actually wear. Anything not on the list stays in the cupboard. But if an item is glued to something you need (side effects), it comes along too.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Shakes poorly</div><div class="dg-c">const _ = require(&#x27;lodash&#x27;)</div><div class="dg-c">import * as utils from &#x27;./utils&#x27; with dynamic access</div><div class="dg-c">Barrel file: export * from &#x27;./everything&#x27;</div><div class="dg-c">Package with side effects</div></div><div class="dg-col good"><div class="dg-h">Shakes well</div><div class="dg-c">import { debounce } from &#x27;lodash-es&#x27;</div><div class="dg-c">named imports used directly</div><div class="dg-c">import from the specific file</div><div class="dg-c">&quot;sideEffects&quot;: false in package.json</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// package.json of your library</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">"sideEffects"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="c1">// or list files that DO have side effects:</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">"sideEffects"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.css"</span><span class="p">,</span><span class="w"> </span><span class="s2">"./src/polyfills.js"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Barrel files</strong> (<code>index.js</code> with <code>export * from …</code>) can make the bundler keep far more than you use.</li>
+<li><strong>CSS imports are side effects.</strong> Marking everything side-effect-free can drop your CSS.</li>
+<li><strong>Only works in production builds</strong> with minification on; dev bundles keep everything.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Build your app and open a bundle analyzer (e.g. <code>vite-bundle-visualizer</code> or <code>webpack-bundle-analyzer</code>). Look for whole libraries where you only use one function.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does tree shaking need ES modules?</summary>
+<p>ES imports/exports are static, so the bundler can know what's used at build time. require() is dynamic and evaluated at runtime.</p>
+</details>
+<details>
+<summary>What does "sideEffects": false tell the bundler?</summary>
+<p>That importing a module has no effect besides its exports, so unused modules can be dropped completely.</p>
+</details>
+<details>
+<summary>Give two reasons unused code might stay in the bundle.</summary>
+<p>CommonJS modules, side effects, barrel re-exports, or dynamic property access on a namespace import.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Bundler follows imports from the entry, keeps used exports, drops the rest. Needs <strong>ES modules</strong> (static); CommonJS <code>require</code> usually can't be shaken.</li>
 <li>Side effects: mark <code>"sideEffects": false</code> (or a list) in package.json. <code>import _ from 'lodash'</code> ≈ 70 KB vs <code>import { debounce } from 'lodash-es'</code>.</li>
 <li>Trap: barrel files (<code>export * from …</code>) can pull whole libraries in → import from the file directly.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e13/"><small>← PREVIOUS</small>Lazy routes</a>
 <a class="r" href="../s3e15/"><small>NEXT →</small>Bundle diet</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

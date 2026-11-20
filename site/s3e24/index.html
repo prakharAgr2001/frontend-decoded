@@ -6,13 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 24 · Web performance</span>
 <h1><span class="hl">Throttle</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61RC8oX8c/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61RC8oX8c/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Throttle</strong> = run <strong>at most once per interval</strong>, steadily, <strong>while</strong> the events keep coming.</li>
+<li>Use it for scroll progress bars, drag handlers, and continuous position updates.</li>
+<li>Debounce waits for silence; throttle keeps a steady rhythm. For visuals, <code>requestAnimationFrame</code> is often even better.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Throttling limits a function to at most once per time window while events keep firing, which suits continuous interactions like scrolling or dragging where you want regular updates rather than a single update at the end. A naive throttle drops the final event, so I add a trailing call to capture the last state. For anything visual I prefer requestAnimationFrame, which naturally runs once per frame, and for visibility checks I use IntersectionObserver instead of scroll listeners.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A metro that leaves every 3 minutes no matter how many people rush in. Debounce would be a metro that only leaves once nobody has entered for 3 minutes.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Debounce</div><div class="dg-c">Runs once, after the burst ends</div><div class="dg-c">Search box, autosave</div><div class="dg-c">300 events → 1 call</div></div><div class="dg-col good"><div class="dg-h">Throttle</div><div class="dg-c">Runs regularly during the burst</div><div class="dg-c">Scroll progress, drag, resize preview</div><div class="dg-c">300 events over 3 s with 100 ms → ~30 calls</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">throttle</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span><span class="w"> </span><span class="nx">interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">timer</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span><span class="w"> </span><span class="nx">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">interval</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="nx">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">last</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">remaining</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">now</span><span class="p">;</span><span class="w"> </span><span class="nx">fn</span><span class="p">(...</span><span class="nx">args</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="nx">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span><span class="w"> </span><span class="nx">fn</span><span class="p">(...</span><span class="nx">args</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">remaining</span><span class="p">);</span><span class="w">   </span><span class="c1">// trailing call</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'scroll'</span><span class="p">,</span><span class="w"> </span><span class="nx">throttle</span><span class="p">(</span><span class="nx">updateProgressBar</span><span class="p">,</span><span class="w"> </span><span class="mf">100</span><span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">passive</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Naive throttle drops the last event</strong>, so the final scroll position is never shown. Add a trailing call.</li>
+<li><strong>Throttling with timers for animation.</strong> Use <code>requestAnimationFrame</code> so updates align with frames.</li>
+<li><strong>Scroll listeners to detect visibility.</strong> <code>IntersectionObserver</code> does it without running code on every scroll.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Log inside a scroll handler with and without throttle and scroll quickly: hundreds of logs vs a steady handful.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which would you use for a scroll progress bar, debounce or throttle?</summary>
+<p>Throttle (or requestAnimationFrame), because it needs regular updates while scrolling.</p>
+</details>
+<details>
+<summary>What's the "trailing call" in throttle?</summary>
+<p>One final call after the last event, so the last state isn't lost when it fell inside the wait window.</p>
+</details>
+<details>
+<summary>What's better than throttling scroll to detect when an element appears?</summary>
+<p>IntersectionObserver.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>At most once per interval, steadily during the storm (scroll progress, drag). Debounce = after silence; throttle = regular.</li>
 <li>Better for visuals: <code>requestAnimationFrame</code>; for visibility: <code>IntersectionObserver</code>.</li>
 <li>Trap: naive throttle drops the last call → add a trailing call.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e23/"><small>← PREVIOUS</small>Debounce</a>
 <a class="r" href="../s3e25/"><small>NEXT →</small>Virtualization</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 21 · Web performance</span>
 <h1><span class="hl">Third-party cost</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df604wGjsjN/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df604wGjsjN/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Third-party scripts (chat widgets, analytics, ads, A/B tools) run on <strong>your main thread</strong>: they cause long tasks (INP), late banners (CLS) and extra connections.</li>
+<li><strong>Measure first</strong>: block them in DevTools and compare.</li>
+<li>Tame them: <strong>facades</strong> (fake button until clicked), <strong>load after interaction</strong>, self-host, or move them off the main thread (Partytown).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Third-party scripts compete with my own code for the main thread and the network, so they often cause the worst long tasks and layout shifts. I measure their impact by blocking them and comparing metrics, then decide per script: remove it, load it after the page is interactive or on first interaction, replace heavy embeds with a lightweight facade, reserve space for anything that renders, and in some cases run them in a web worker with a tool like Partytown. Async loading alone doesn't help, because the script still executes on the main thread.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Letting a guest cook in your kitchen during dinner rush. Even if they arrive quietly (async), once they start cooking they use your one stove.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Default embed</div><div class="dg-c">Loads 500 KB chat widget on page load</div><div class="dg-c">Runs JS on your main thread at startup</div><div class="dg-c">Hurts LCP and INP for everyone</div></div><div class="dg-col good"><div class="dg-h">Facade</div><div class="dg-c">Shows a lightweight &quot;Chat&quot; button image</div><div class="dg-c">Loads the real widget only on click</div><div class="dg-c">Costs only the users who chat</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Load the chat widget only when the user shows intent</span>
+<span class="nx">chatButton</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">s</span><span class="p">.</span><span class="nx">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'https://chat.example.com/widget.js'</span><span class="p">;</span>
+<span class="w">  </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span>
+<span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">once</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"It's async, so it's fine."</strong> async only avoids blocking HTML parsing; it still runs on your main thread.</li>
+<li><strong>Tag managers</strong> quietly grow to dozens of scripts. Audit them regularly.</li>
+<li><strong>Embeds without reserved space</strong> (YouTube, chat bubbles, cookie bars) cause CLS.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → right-click a third-party request → <strong>Block request domain</strong> → reload and compare the Performance trace. The Performance panel also has a <strong>"3rd parties"</strong> insight listing their cost.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why doesn't async solve third-party performance?</summary>
+<p>It only prevents parser blocking; when the script runs, it still occupies the main thread.</p>
+</details>
+<details>
+<summary>What's a facade?</summary>
+<p>A lightweight static placeholder that looks like the widget and loads the real one only when the user interacts with it.</p>
+</details>
+<details>
+<summary>How do you measure one script's impact?</summary>
+<p>Block its domain in DevTools (or remove it in a test) and compare metrics with and without it.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Third-party JS runs on <em>your</em> main thread: long tasks (INP), late banners (CLS), extra origins (connections).</li>
 <li>Measure: DevTools request blocking → compare. Tame: facades, delay until interaction, self-host, Partytown (web worker). See it: Performance "3rd parties" insight.</li>
 <li>Trap: <code>async</code> only avoids parser blocking; the script still runs on the main thread.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e20/"><small>← PREVIOUS</small>Web fonts</a>
 <a class="r" href="../s3e22/"><small>NEXT →</small>IQ: images, fonts, third parties</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

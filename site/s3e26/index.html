@@ -6,13 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 26 · Web performance</span>
 <h1><span class="hl">Web Workers</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61iPbFD0g/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61iPbFD0g/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A <strong>Web Worker</strong> runs JavaScript on <strong>another thread</strong>, so heavy work doesn't freeze the page.</li>
+<li>Workers <strong>can't touch the DOM</strong>. They talk to the page with <code>postMessage</code> and <code>onmessage</code>.</li>
+<li>Good for parsing big files, image processing, search indexes, encryption, diffing.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Web Workers run scripts in a background thread with their own event loop. They can't access the DOM, but they can do CPU-heavy work like parsing, compression, image manipulation or building search indexes, and communicate with the main thread through postMessage. Messages are copied using structured cloning, which is expensive for large data, so for big binary data I transfer ownership of ArrayBuffers instead of copying. This keeps the main thread free for input and rendering.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Hiring a second chef who works in a back kitchen. They can't serve customers (no DOM), but they can do all the heavy chopping and send the results out through a window.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Create</b><span>new Worker(new URL(&#x27;./worker.js&#x27;, import.meta.url), { type: &#x27;module&#x27; })</span></li><li><b>Send work</b><span>worker.postMessage(data)</span></li><li><b>Worker computes</b><span>on its own thread</span></li><li><b>Send result back</b><span>postMessage(result) → main thread&#x27;s onmessage</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// main.js</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">worker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Worker</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">URL</span><span class="p">(</span><span class="s1">'./search-worker.js'</span><span class="p">,</span><span class="w"> </span><span class="k">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">url</span><span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'module'</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'build'</span><span class="p">,</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">});</span>
+<span class="nx">input</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'query'</span><span class="p">,</span><span class="w"> </span><span class="nx">q</span><span class="o">:</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="p">}));</span>
+<span class="nx">worker</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">renderResults</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+
+<span class="c1">// search-worker.js</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'build'</span><span class="p">)</span><span class="w"> </span><span class="nx">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="p">...</span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'query'</span><span class="p">)</span><span class="w"> </span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">index</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">q</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">())).</span><span class="nx">slice</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">50</span><span class="p">));</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Copying huge data.</strong> postMessage clones by default; transfer ArrayBuffers: <code>postMessage(buf, [buf])</code>.</li>
+<li><strong>Trying to update the DOM from a worker.</strong> Send results back and let the main thread render.</li>
+<li><strong>Using a worker for tiny tasks.</strong> Message overhead can cost more than the work itself.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record while the worker runs: it appears on its own <strong>Worker</strong> track, separate from the Main track.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Can a Web Worker read document.querySelector?</summary>
+<p>No. Workers have no access to the DOM.</p>
+</details>
+<details>
+<summary>How do you send a large ArrayBuffer without copying it?</summary>
+<p>Pass it in the transfer list: <code>worker.postMessage(buf, [buf])</code>. Ownership moves to the worker.</p>
+</details>
+<details>
+<summary>What kinds of work suit a worker?</summary>
+<p>CPU-heavy, DOM-free work: parsing, compression, image processing, search indexing, crypto, diffing.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>JS on another thread; no DOM; talk via <code>postMessage</code> / <code>onmessage</code>. Good for parsing, image processing, search indexes, crypto, diffing.</li>
 <li>See it: Performance panel shows a separate Worker track.</li>
 <li>Trap: postMessage copies data (structured clone) → transfer <code>ArrayBuffer</code>s: <code>postMessage(buf, [buf])</code>.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e25/"><small>← PREVIOUS</small>Virtualization</a>
 <a class="r" href="../s3e27/"><small>NEXT →</small>Why React re-renders</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

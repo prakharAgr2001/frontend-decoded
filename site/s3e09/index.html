@@ -6,13 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 9 · Web performance</span>
 <h1><span class="hl">Critical rendering path</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zcfijW9P/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zcfijW9P/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>The <strong>critical rendering path</strong> is everything the browser needs before the first pixels: <strong>HTML → DOM, CSS → CSSOM → render tree → paint</strong>.</li>
+<li><strong>CSS is render-blocking</strong> (no paint until it's loaded). A plain <strong><code>&lt;script&gt;</code> is parser-blocking</strong> (HTML parsing stops until it runs).</li>
+<li>Shrink the path: <strong>inline critical CSS</strong>, load the rest without blocking, and <strong><code>defer</code></strong> scripts.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>The critical rendering path is the sequence from receiving HTML to the first paint: building the DOM, building the CSSOM, combining them into the render tree, then layout and paint. Stylesheets block rendering and synchronous scripts block parsing, and a script also waits for any stylesheet before it. To speed up first paint I inline the small amount of CSS needed above the fold, load the remaining CSS asynchronously or with media queries, and defer scripts so they don't block parsing.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Opening a shop in the morning. You can't open the shutters until the essentials are on the shelves (critical CSS). The stockroom can be organised after customers walk in.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>HTML arrives</b><span>parsing builds the DOM</span></li><li><b>CSS found</b><span>download + build CSSOM (blocks first paint)</span></li><li><b>Plain script found</b><span>parsing stops until it downloads and runs</span></li><li><b>Render tree</b><span>DOM + CSSOM combined</span></li><li><b>First paint</b><span>only now</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span><span class="c">/* critical above-the-fold CSS, inlined */</span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"stylesheet"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/print.css"</span> <span class="na">media</span><span class="o">=</span><span class="s">"print"</span><span class="p">&gt;</span>         <span class="cm">&lt;!-- doesn't block screen rendering --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/rest.css"</span> <span class="na">as</span><span class="o">=</span><span class="s">"style"</span> <span class="na">onload</span><span class="o">=</span><span class="s">"this.rel='stylesheet'"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>A script after a stylesheet waits for that CSS</strong>, because scripts may read styles. So CSS can indirectly block parsing too.</li>
+<li><strong>Huge inlined CSS</strong> makes the HTML heavier and isn't cached. Inline only what's needed above the fold.</li>
+<li><strong><code>@import</code> inside CSS</strong> creates a chain: one file must download before the next is discovered.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Lighthouse → <strong>"Eliminate render-blocking resources"</strong> lists the CSS/JS delaying first paint. In the Performance panel, request details show <strong>Render blocking: Blocking</strong>.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why is CSS render-blocking but not parser-blocking?</summary>
+<p>The browser can keep building the DOM, but it won't paint without styles to avoid a flash of unstyled content.</p>
+</details>
+<details>
+<summary>How can CSS end up blocking parsing?</summary>
+<p>A synchronous script that follows a stylesheet waits for that stylesheet to load, and the parser waits for the script.</p>
+</details>
+<details>
+<summary>Name two ways to load non-critical CSS without blocking render.</summary>
+<p>Use a media attribute that doesn't match (e.g. <code>media="print"</code>, then switch), or preload it and swap <code>rel</code> to stylesheet on load.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>HTML → DOM, CSS → CSSOM → render tree → first pixels. CSS is <strong>render-blocking</strong>; plain <code>&lt;script&gt;</code> is <strong>parser-blocking</strong>.</li>
 <li>Shrink it: inline critical CSS, load the rest non-blocking, <code>media="print"</code> for non-critical sheets, <code>defer</code> scripts.</li>
 <li>See it: Lighthouse "Render blocking requests"; Performance panel request details "Render blocking". Trap: a script after a stylesheet waits for that CSS → CSS can block parsing too.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e08/"><small>← PREVIOUS</small>IQ: measuring performance</a>
 <a class="r" href="../s3e10/"><small>NEXT →</small>async vs defer</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

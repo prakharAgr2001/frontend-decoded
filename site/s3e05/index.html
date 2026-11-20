@@ -6,13 +6,62 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 5 · Web performance</span>
 <h1><span class="hl">INP</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6y2JHgagL/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6y2JHgagL/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>INP (Interaction to Next Paint)</strong> = time from a <strong>click, tap or key press</strong> to the <strong>next frame painted</strong> on screen. Good ≤ 200 ms.</li>
+<li>It has three parts: <strong>input delay</strong> (main thread busy) + <strong>processing</strong> (your handlers) + <strong>presentation delay</strong> (style, layout, paint).</li>
+<li>It reflects roughly your <strong>worst</strong> interaction during the visit, not the average.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>INP measures responsiveness across all clicks, taps and key presses during a page visit, and reports roughly the slowest one. Each interaction is input delay while the main thread is busy, then the event handlers' processing time, then the presentation delay until the next frame paints. To improve it I show visual feedback first and defer heavy work by yielding, for example with scheduler.yield, I break up long tasks, reduce rendering work, and move heavy computation off the main thread.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Pressing a lift button. INP isn't about how fast the lift arrives; it's about how fast the <strong>button lights up</strong> to say "got it". A button that lights up instantly feels responsive even if the lift takes a while.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Input delay</b><span>main thread is busy with something else (long tasks)</span></li><li><b>Processing</b><span>your event handlers run</span></li><li><b>Presentation delay</b><span>style → layout → paint for the next frame</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">button</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">'loading'</span><span class="p">);</span><span class="w">                 </span><span class="c1">// 1. instant feedback</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="o">?</span><span class="p">.()</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">)));</span><span class="w">   </span><span class="c1">// 2. let it paint</span>
+<span class="w">  </span><span class="nx">runExpensiveFilter</span><span class="p">();</span><span class="w">                            </span><span class="c1">// 3. heavy work after</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Scrolling and hovering don't count.</strong> Only clicks, taps and keyboard input.</li>
+<li><strong>Lighthouse can't measure INP</strong> (it doesn't interact). Use field data or record interactions yourself.</li>
+<li><strong>Huge re-renders</strong> in React on a click are a classic INP problem: smaller components, transitions, virtualisation.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> panel → live metrics view shows INP as you click around, with a list of interactions and their timing breakdown.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What are the three phases of an interaction?</summary>
+<p>Input delay, processing time, presentation delay.</p>
+</details>
+<details>
+<summary>Does scrolling affect INP?</summary>
+<p>No. Only clicks, taps and key presses are measured.</p>
+</details>
+<details>
+<summary>How can you improve INP without making the work faster?</summary>
+<p>Show feedback immediately, then yield to the browser so it paints before running the heavy work.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Input → next paint. Parts: input delay (main thread busy) + processing (handlers) + presentation delay (style/layout/paint).</li>
 <li>Roughly your <em>worst</em> interaction of the visit, not an average. Fix: feedback first, <code>await scheduler.yield()</code>, heavy work after; break long tasks.</li>
 <li>See it: Performance panel live metrics → interactions list. Trap: scroll and hover are not counted — only click, tap, key press.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e04/"><small>← PREVIOUS</small>CLS</a>
 <a class="r" href="../s3e06/"><small>NEXT →</small>TTFB · FCP · TBT</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

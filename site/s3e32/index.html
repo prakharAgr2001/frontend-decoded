@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 32 · Web performance</span>
 <h1><span class="hl">IQ: runtime</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62VkNj5LO/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62VkNj5LO/" target="_blank" rel="noopener">Watch the reel</a><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>runtime performance</strong>.</li>
+<li>Know debounce vs throttle, how to render a 10,000-row table, why React re-renders, and how to fix a 400 ms click handler.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For runtime performance I reduce how often work runs with debounce, throttle or requestAnimationFrame, render less with virtualization, avoid unnecessary React renders by fixing component structure before memoizing, and keep interactions under 200 ms by giving instant feedback and then chunking, deferring or offloading the heavy work.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Debounce vs throttle, with examples?</summary>
+<p>Debounce runs once after events stop (search box, autosave). Throttle runs at most once per interval during events (scroll progress, drag). For visuals use requestAnimationFrame; for visibility use IntersectionObserver.</p>
+</details>
+<details>
+<summary>How would you render a table with 10,000 rows?</summary>
+<p>Virtualize it (render visible rows + overscan), or use content-visibility: auto, or paginate. Mention the trade-offs: find-in-page, accessibility, variable row heights.</p>
+</details>
+<details>
+<summary>Why does a React component re-render, and how do you reduce it?</summary>
+<p>State change, context change, or parent re-render. Reduce by moving state down, passing children as props, splitting context, memoizing where profiling shows benefit, or using the React Compiler.</p>
+</details>
+<details>
+<summary>A click handler takes 400 ms. How do you fix INP?</summary>
+<p>Show feedback immediately, then yield (scheduler.yield) before heavy work; chunk the work; move pure computation to a Web Worker; mark non-urgent React updates as transitions; reduce the work itself (virtualize, cache).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Debounce vs throttle (+ rAF, IntersectionObserver) · 10k-row table (virtualize, content-visibility, paginate, trade-offs) · re-renders (causes, move state down, memo where measured, Compiler) · 400 ms click handler (feedback + yield, chunk, worker, transition).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e31/"><small>← PREVIOUS</small>Performance budgets</a>
 <a class="r" href="../s3e33/"><small>NEXT →</small>Finale: one product page, made fast</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

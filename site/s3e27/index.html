@@ -6,13 +6,72 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 27 · Web performance</span>
 <h1><span class="hl">Why React re-renders</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61qazkgZ7/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61qazkgZ7/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A React component re-renders when: its <strong>state changes</strong>, a <strong>context</strong> it uses changes, or its <strong>parent re-renders</strong>.</li>
+<li>"Props changed" is <strong>not</strong> the trigger: by default children re-render whenever the parent does.</li>
+<li><strong>Render ≠ DOM update.</strong> React only commits the real differences to the DOM.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A component re-renders when its own state updates, when a context value it consumes changes, or when its parent re-renders, regardless of whether props changed, unless it's memoized. Rendering just means calling the component function to produce a new element tree; React then diffs it and commits only actual changes to the DOM. To reduce unnecessary renders I fix the structure first: move state down to where it's used, or pass expensive children as props so they aren't re-created, and use memoization only where profiling shows it helps.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A teacher who asks the whole class to redo their homework whenever one student changes their answer. Most students hand in the same work again (render), and only the changed answer gets updated on the board (DOM commit).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>setState in Parent</b><span>Parent re-renders</span></li><li><b>All children re-render too</b><span>even if their props are identical</span></li><li><b>React diffs the output</b><span>compares old and new trees</span></li><li><b>Commit</b><span>only real differences touch the DOM</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Problem: typing re-renders the expensive chart</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">Page</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">setText</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">text</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setText</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">&lt;/&gt;);</span>
+<span class="p">}</span>
+
+<span class="c1">// Fix: move the state down into its own component</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">SearchBox</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">setText</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">text</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setText</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;;</span>
+<span class="p">}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">Page</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;&lt;</span><span class="nt">SearchBox</span><span class="w"> </span><span class="p">/&gt;&lt;</span><span class="nt">ExpensiveChart</span><span class="w"> </span><span class="p">/&gt;&lt;/&gt;);</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Setting state to an equal value</strong>: React bails out using <code>Object.is</code>. But a new object with the same contents is a different value and re-renders.</li>
+<li><strong>"Re-render means the DOM was rebuilt."</strong> No, renders are cheap until they're frequent or the component is heavy.</li>
+<li><strong>Context with a big object</strong> re-renders every consumer on any change.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → ⚙ → tick <strong>Highlight updates when components render</strong>. Then use the <strong>Profiler</strong> → "Why did this render?" to see the cause for each component.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What are the three causes of a re-render?</summary>
+<p>Its own state changes, a consumed context changes, or its parent re-renders.</p>
+</details>
+<details>
+<summary>Does a child re-render if its props didn't change?</summary>
+<p>Yes, when its parent re-renders, unless the child is wrapped in React.memo.</p>
+</details>
+<details>
+<summary>setCount(5) when count is already 5: re-render?</summary>
+<p>No. React bails out because Object.is(5, 5) is true.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>State change · context change · <strong>parent re-render</strong> (props changing is <em>not</em> the trigger). Render ≠ DOM update (commit applies only real changes).</li>
 <li>Fix structurally: move state down, pass components as children. See it: React DevTools "Highlight updates" + Profiler "Why did this render?".</li>
 <li>IQ: same value via <code>Object.is</code> → bail out; a new object with the same contents re-renders.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e26/"><small>← PREVIOUS</small>Web Workers</a>
 <a class="r" href="../s3e28/"><small>NEXT →</small>Memo myths</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,59 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 2 · Web performance</span>
 <h1><span class="hl">Core Web Vitals</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6ygSEDXtW/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6ygSEDXtW/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Google's <strong>Core Web Vitals</strong> are three metrics for real user experience:</li>
+<li><strong>LCP</strong> (loading) ≤ <strong>2.5 s</strong> · <strong>INP</strong> (responsiveness) ≤ <strong>200 ms</strong> · <strong>CLS</strong> (visual stability) ≤ <strong>0.1</strong>.</li>
+<li>They're graded at the <strong>75th percentile of real Chrome visits</strong> (CrUX data), separately for mobile and desktop. INP replaced FID in March 2024.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Core Web Vitals are Google's user-centric metrics. Largest Contentful Paint measures loading, with good at 2.5 seconds or less. Interaction to Next Paint measures responsiveness to clicks, taps and key presses, with good at 200 ms or less. Cumulative Layout Shift measures unexpected movement, with good at 0.1 or less. They're assessed at the 75th percentile of real user visits from the Chrome UX Report, mobile and desktop separately, and they're a factor in Google Search ranking.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant review with three scores: <strong>how fast your food arrived</strong> (LCP), <strong>how quickly the waiter responds when you call</strong> (INP), and <strong>whether the table wobbles and spills your drink</strong> (CLS).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Metric</div><div class="dg-c">LCP: biggest content element painted</div><div class="dg-c">INP: interaction → next paint</div><div class="dg-c">CLS: unexpected layout movement</div></div><div class="dg-col good"><div class="dg-h">Good / Poor</div><div class="dg-c">≤ 2.5 s / &gt; 4 s</div><div class="dg-c">≤ 200 ms / &gt; 500 ms</div><div class="dg-c">≤ 0.1 / &gt; 0.25</div></div></div></figure>
+
+<ul>
+<li>A page "passes" when <strong>all three</strong> are good at p75.</li>
+<li>Data comes from real Chrome users over a rolling 28-day window (CrUX), so fixes take weeks to show fully.</li>
+</ul>
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>FID is gone.</strong> INP replaced it in March 2024 and is much harder to pass.</li>
+<li><strong>Lab ≠ field.</strong> Lighthouse can't measure INP (no real interactions); use field data to judge.</li>
+<li><strong>Mobile and desktop are separate.</strong> Passing on desktop says little about mobile.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p><strong>PageSpeed Insights</strong> → enter any URL → the top section "Discover what your real users are experiencing" shows field LCP, INP and CLS at p75.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Name the three Core Web Vitals and their "good" thresholds.</summary>
+<p>LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1.</p>
+</details>
+<details>
+<summary>Which percentile is used to assess a page?</summary>
+<p>The 75th percentile of page visits.</p>
+</details>
+<details>
+<summary>What metric did INP replace?</summary>
+<p>First Input Delay (FID), in March 2024.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><strong>LCP</strong> (loading) ≤ 2.5 s · <strong>INP</strong> (responsiveness) ≤ 200 ms · <strong>CLS</strong> (visual stability) ≤ 0.1.</li>
 <li>Graded at the <strong>75th percentile</strong> of real Chrome visits (CrUX), mobile and desktop separately.</li>
 <li>See it: PageSpeed Insights → "Discover what your real users are experiencing". Trap: INP replaced FID in March 2024.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e01/"><small>← PREVIOUS</small>100 ms = money</a>
 <a class="r" href="../s3e03/"><small>NEXT →</small>LCP</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

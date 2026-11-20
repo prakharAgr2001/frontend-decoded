@@ -6,13 +6,76 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 29 · Web performance</span>
 <h1><span class="hl">useTransition + React Compiler</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df616XUE48o/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df616XUE48o/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong><code>startTransition</code></strong> marks a state update as <strong>non-urgent</strong>. React renders it in the background and can <strong>interrupt</strong> it if the user types again. <code>isPending</code> lets you show subtle feedback.</li>
+<li><strong><code>useDeferredValue</code></strong> does the same when you don't control the state setter (e.g. a prop).</li>
+<li>The <strong>React Compiler</strong> (v1.0, late 2025) adds memoization <strong>automatically at build time</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>useTransition lets me split updates into urgent ones, like updating the input value, and non-urgent ones, like filtering a large list. Updates inside startTransition render at lower priority and are interruptible, so typing stays responsive, and isPending indicates background work. useDeferredValue gives a lagging copy of a value for the same purpose. The React Compiler analyses components at build time and inserts memoization automatically, reducing the need for manual useMemo and useCallback. Neither makes the work itself smaller.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A waiter who takes your drink order immediately (urgent) but tells the kitchen the dessert order can wait. If you change your dessert, the kitchen just drops the old one and starts the new one.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">Search</span><span class="p">({</span><span class="w"> </span><span class="nx">allItems</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">setQuery</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">setResults</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="nx">allItems</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">isPending</span><span class="p">,</span><span class="w"> </span><span class="nx">startTransition</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useTransition</span><span class="p">();</span>
+
+<span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">onChange</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">setQuery</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span><span class="w">                         </span><span class="c1">// urgent: input updates instantly</span>
+<span class="w">    </span><span class="nx">startTransition</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setResults</span><span class="p">(</span><span class="nx">allItems</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)));</span><span class="w">   </span><span class="c1">// can be interrupted</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(&lt;&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">query</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">onChange</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ul</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">opacity</span><span class="o">:</span><span class="w"> </span><span class="nx">isPending</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">0.6</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}}&gt;{</span><span class="nx">results</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">name</span><span class="p">}&lt;/</span><span class="nt">li</span><span class="p">&gt;)}&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/&gt;);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// When the value comes from props, defer it instead</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">deferredQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useDeferredValue</span><span class="p">(</span><span class="nx">query</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Transitions don't make work faster</strong>, only interruptible. Still virtualize big lists and do less.</li>
+<li><strong>Controlled input inside a transition.</strong> Keep the input's own state update outside <code>startTransition</code>.</li>
+<li><strong>Compiler isn't magic.</strong> It skips components that break the Rules of React.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Type quickly into a filter over 10,000 items with and without <code>startTransition</code> (CPU 4x slowdown). Without it, typing lags; with it, the input stays smooth. With the compiler on, React DevTools shows a <strong>Memo ✨</strong> badge on optimised components.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does startTransition change about an update?</summary>
+<p>It marks it as non-urgent so React renders it at lower priority and can interrupt it for urgent updates like typing.</p>
+</details>
+<details>
+<summary>When would you use useDeferredValue instead?</summary>
+<p>When you don't own the state setter, e.g. the value comes in as a prop.</p>
+</details>
+<details>
+<summary>What does the React Compiler do?</summary>
+<p>It automatically memoizes components and values at build time, reducing manual useMemo/useCallback/React.memo.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>startTransition(() =&gt; setFilter(v))</code> marks non-urgent updates; renders are interruptible; <code>isPending</code> for subtle feedback. <code>useDeferredValue</code> when you don't own the setter.</li>
 <li>React Compiler (v1.0, late 2025) auto-memoizes at build time; DevTools shows a "Memo" badge.</li>
 <li>Trap: transitions don't make work faster, only interruptible → still virtualize / do less.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e28/"><small>← PREVIOUS</small>Memo myths</a>
 <a class="r" href="../s3e30/"><small>NEXT →</small>Chunking long tasks</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

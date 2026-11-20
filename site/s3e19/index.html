@@ -6,13 +6,61 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 19 · Web performance</span>
 <h1><span class="hl">LCP image priority</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60qoiEqZt/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60qoiEqZt/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Images start at <strong>Low priority</strong> and are only boosted after layout shows they're in the viewport. That's too late for the hero.</li>
+<li>Add <strong><code>fetchpriority="high"</code></strong> to the LCP image. Google's test on Google Flights improved LCP from <strong>2.6 s to 1.9 s</strong>.</li>
+<li>The image must be <strong>discoverable early</strong>: a plain <code>&lt;img&gt;</code> in the HTML, or a <code>&lt;link rel="preload"&gt;</code>. Never lazy, never waiting on client JS.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Browsers fetch images at low priority until layout confirms they're visible, so the LCP hero often starts downloading late. I put the hero as a real img tag in the server HTML so the preload scanner finds it immediately, add fetchpriority high, and never lazy-load it. If the image is referenced only from CSS or created by JavaScript, I add a preload link with fetchpriority high. I use high priority only for one or two critical images, since marking everything high defeats the purpose.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Airport boarding. Normally everyone boards by row, but you can hand the hero image a <strong>priority pass</strong> so it skips the queue. Give priority passes to everyone and it's just a queue again.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Late hero</div><div class="dg-c">Background image in CSS</div><div class="dg-c">Injected by React after JS runs</div><div class="dg-c">loading=&quot;lazy&quot;</div><div class="dg-c">Low priority until layout</div></div><div class="dg-col good"><div class="dg-h">Early hero</div><div class="dg-c">&lt;img&gt; in the HTML</div><div class="dg-c">In server-rendered HTML or preloaded</div><div class="dg-c">No lazy loading</div><div class="dg-c">fetchpriority=&quot;high&quot;</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"/hero-1200.avif"</span> <span class="na">width</span><span class="o">=</span><span class="s">"1200"</span> <span class="na">height</span><span class="o">=</span><span class="s">"600"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"Sale banner"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Hero only referenced in CSS? Preload it --&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">as</span><span class="o">=</span><span class="s">"image"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/hero-1200.avif"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>fetchpriority="high"</code> on many images</strong> = nothing is high anymore.</li>
+<li><strong>Carousels</strong> where the first slide is set by JS: the browser can't find it early.</li>
+<li><strong>Lazy-loading everything</strong> by default, including above-the-fold images.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → enable the <strong>Priority</strong> column → reload. The hero should show <strong>High</strong> and start near the top of the waterfall.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What priority do images normally start with?</summary>
+<p>Low, boosted to high only once layout shows they're in the viewport.</p>
+</details>
+<details>
+<summary>Why can't the preload scanner find a CSS background hero?</summary>
+<p>The URL is inside a stylesheet that must be downloaded and parsed first, then matched to elements.</p>
+</details>
+<details>
+<summary>How many images should get fetchpriority="high"?</summary>
+<p>Usually just the LCP image (one, maybe two).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Images start Low and are boosted only after layout. <code>fetchpriority="high"</code> on the hero (Chrome team test on Google Flights: LCP 2.6 s → 1.9 s).</li>
 <li>Must be discoverable by the preload scanner: plain <code>&lt;img&gt;</code> in HTML, or <code>&lt;link rel="preload" as="image" fetchpriority="high"&gt;</code>. Never lazy, don't wait for client JS.</li>
 <li>Trap: high priority on everything = nothing is high priority.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e18/"><small>← PREVIOUS</small>Responsive images</a>
 <a class="r" href="../s3e20/"><small>NEXT →</small>Web fonts</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,12 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 18 · Web performance</span>
 <h1><span class="hl">Responsive images</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60j6UFLoQ/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60j6UFLoQ/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong><code>srcset</code></strong> lists image files with their widths; <strong><code>sizes</code></strong> tells the browser how wide the image will be displayed. The browser picks the <strong>smallest file that still looks sharp</strong>, including screen density (DPR).</li>
+<li><strong><code>&lt;picture&gt;</code></strong> lets you offer modern formats (<strong>AVIF/WebP</strong>) with a JPEG fallback, or different crops per screen (art direction).</li>
+<li>Without <code>sizes</code>, the browser assumes the image is full screen width (<code>100vw</code>) and often downloads the biggest file.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For responsive images I provide multiple widths in srcset and describe the rendered width with sizes, so the browser can choose the smallest file that's sharp for the device's pixel density. I use the picture element to serve AVIF or WebP with a JPEG fallback, and for art direction when mobile needs a different crop. I always set width and height to avoid layout shift, and I serve images from an image CDN that resizes and converts automatically.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Ordering a pizza by table size. <code>srcset</code> is the menu of sizes; <code>sizes</code> tells the waiter how big your table is. Without that, they bring the family size to a table for one.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">picture</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">source</span> <span class="na">type</span><span class="o">=</span><span class="s">"image/avif"</span> <span class="na">srcset</span><span class="o">=</span><span class="s">"/p-400.avif 400w, /p-800.avif 800w, /p-1600.avif 1600w"</span>
+          <span class="na">sizes</span><span class="o">=</span><span class="s">"(max-width: 600px) 100vw, 50vw"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"/p-800.jpg"</span>
+       <span class="na">srcset</span><span class="o">=</span><span class="s">"/p-400.jpg 400w, /p-800.jpg 800w, /p-1600.jpg 1600w"</span>
+       <span class="na">sizes</span><span class="o">=</span><span class="s">"(max-width: 600px) 100vw, 50vw"</span>
+       <span class="na">width</span><span class="o">=</span><span class="s">"800"</span> <span class="na">height</span><span class="o">=</span><span class="s">"600"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"Blue running shoes"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">picture</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<figure class="dg"><ol class="dg-steps"><li><b>Browser reads sizes</b><span>e.g. on a phone: 100vw = 390 CSS px</span></li><li><b>Multiplies by DPR</b><span>390 × 3 = 1170 device px needed</span></li><li><b>Picks from srcset</b><span>the 1600w file (smallest one ≥ 1170)</span></li><li><b>Tries formats in order</b><span>AVIF if supported, else JPEG</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Missing <code>sizes</code></strong> → the browser assumes 100vw and downloads the largest candidate.</li>
+<li><strong>Using <code>x</code> descriptors for fluid images.</strong> <code>1x/2x</code> suits fixed-size images like logos; use <code>w</code> for layout-dependent ones.</li>
+<li><strong>Forgetting width/height</strong> causes layout shift.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Elements</strong> → hover an <code>&lt;img&gt;</code>: it shows rendered size vs intrinsic size. If intrinsic is much bigger, you're over-downloading. Lighthouse flags this as "Properly size images".</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What does sizes tell the browser?</summary>
+<p>How wide the image will be displayed at different viewport widths, so it can choose the right srcset file before layout.</p>
+</details>
+<details>
+<summary>Why use picture instead of just img?</summary>
+<p>To offer modern formats with fallbacks (AVIF/WebP → JPEG) or different crops for different screens.</p>
+</details>
+<details>
+<summary>A phone (DPR 3) shows an image 360 px wide. Which width should it download?</summary>
+<p>About 1080 px (360 × 3), so the closest srcset candidate at or above that.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>srcset</code> (files + <code>w</code> widths) + <code>sizes</code> (display width) → browser picks the smallest sharp file, including DPR. <code>&lt;picture&gt;</code> for AVIF/WebP + JPEG fallback and art direction (<code>media</code>).</li>
 <li>See it: Elements → hover <code>&lt;img&gt;</code>: rendered vs intrinsic size; Lighthouse "Properly size images". Trap: no <code>sizes</code> → assumes <code>100vw</code> → biggest file.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e17/"><small>← PREVIOUS</small>IQ: loading + bundles</a>
 <a class="r" href="../s3e19/"><small>NEXT →</small>LCP image priority</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

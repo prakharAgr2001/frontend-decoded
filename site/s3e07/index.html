@@ -6,13 +6,61 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 7 · Web performance</span>
 <h1><span class="hl">Lab vs field</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zIKKE4Ws/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zIKKE4Ws/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Lab data</strong> (Lighthouse): one run, simulated mid-range phone, throttled network, clean browser. <strong>Repeatable</strong>, good for debugging.</li>
+<li><strong>Field data</strong> (CrUX, RUM): <strong>real users</strong> on real devices, over 28 days, at p75. This is what users and Google actually judge you on.</li>
+<li>They often disagree, and <strong>field data wins</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Lab tools like Lighthouse run a controlled test on a simulated device, which makes them repeatable and great for diagnosing issues, but they only cover the initial load, one device profile and no real interactions, so there's no INP. Field data comes from real users, through the Chrome UX Report or my own real user monitoring with the web-vitals library, aggregated at the 75th percentile. I use field data to decide what's wrong and lab tools to debug and verify fixes.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A car's fuel economy on the official test track versus what you actually get in Bangalore traffic. The test is useful for comparing cars; your real mileage is what matters to your wallet.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Lab (Lighthouse)</div><div class="dg-c">One simulated device and network</div><div class="dg-c">Only the first page load</div><div class="dg-c">No INP (TBT as a proxy)</div><div class="dg-c">Instant results</div><div class="dg-c">Debug and verify</div></div><div class="dg-col good"><div class="dg-h">Field (CrUX / RUM)</div><div class="dg-c">Thousands of real devices and networks</div><div class="dg-c">Whole visit, including interactions</div><div class="dg-c">Real INP</div><div class="dg-c">28-day rolling window</div><div class="dg-c">Judge and prioritise</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Your own real-user monitoring</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">onLCP</span><span class="p">,</span><span class="w"> </span><span class="nx">onINP</span><span class="p">,</span><span class="w"> </span><span class="nx">onCLS</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'web-vitals'</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">send</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">navigator</span><span class="p">.</span><span class="nx">sendBeacon</span><span class="p">(</span><span class="s1">'/analytics'</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">m</span><span class="p">));</span>
+<span class="nx">onLCP</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span><span class="w"> </span><span class="nx">onINP</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span><span class="w"> </span><span class="nx">onCLS</span><span class="p">(</span><span class="nx">send</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Lighthouse 98, but Search Console says poor."</strong> Real users have slower devices and interact with the page; lab can't see that.</li>
+<li><strong>Expecting fixes to show instantly.</strong> CrUX is a 28-day window, so improvements fade in over weeks.</li>
+<li><strong>Low-traffic pages</strong> may have no CrUX data; your own RUM fills the gap.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>PageSpeed Insights shows both: the top section is <strong>field</strong> (real users), the bottom is <strong>lab</strong> (Lighthouse). Compare them for the same URL.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why can't Lighthouse measure INP?</summary>
+<p>It loads the page without interacting with it, so there are no clicks or taps to measure. It reports TBT as a proxy.</p>
+</details>
+<details>
+<summary>What's CrUX?</summary>
+<p>The Chrome UX Report: field performance data from opted-in Chrome users, aggregated per origin/URL over 28 days.</p>
+</details>
+<details>
+<summary>When do you use lab tools if field data is what counts?</summary>
+<p>To debug, reproduce and verify fixes quickly in a controlled environment before field data catches up.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Lab (Lighthouse): one run, simulated mid-range phone, throttled, clean browser → repeatable, for debugging.</li>
 <li>Field (CrUX / RUM): real users, 28 days, p75. They disagree: lab has no INP, only first screen, one device.</li>
 <li>RUM: <code>import { onLCP, onINP, onCLS } from 'web-vitals'</code> + <code>navigator.sendBeacon</code>. Trap: CrUX is a 28-day rolling window → fixes fade in over weeks.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e06/"><small>← PREVIOUS</small>TTFB · FCP · TBT</a>
 <a class="r" href="../s3e08/"><small>NEXT →</small>IQ: measuring performance</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

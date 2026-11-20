@@ -6,13 +6,74 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 23 · Web performance</span>
 <h1><span class="hl">Debounce</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61JjuEsQo/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61JjuEsQo/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Debounce</strong> = run the function <strong>once, after the user stops</strong> for a set time (e.g. 300 ms of quiet).</li>
+<li>Use it for search-as-you-type, autosave, and window resize recalculations.</li>
+<li>It reduces calls, but it <strong>doesn't fix race conditions</strong>: an older response can still arrive after a newer one.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Debouncing delays a function until a burst of events has stopped for a given wait time. Each new event clears the pending timer and starts a new one, so the function runs only once after the last event. It's ideal for search inputs, autosave and resize handling. It reduces work and requests, but responses can still arrive out of order, so I also cancel stale requests with AbortController or ignore responses that don't match the latest query.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A lift door. Every time someone else walks in, the door timer restarts. The door closes only after nobody has entered for a few seconds.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>User types &quot;r&quot;</b><span>start a 300 ms timer</span></li><li><b>Types &quot;re&quot;</b><span>cancel the timer, start again</span></li><li><b>Types &quot;react&quot;</b><span>cancel, start again</span></li><li><b>Stops typing for 300 ms</b><span>function runs once, with &quot;react&quot;</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">debounce</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span><span class="w"> </span><span class="nx">wait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">timer</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">fn</span><span class="p">(...</span><span class="nx">args</span><span class="p">),</span><span class="w"> </span><span class="nx">wait</span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="nx">controller</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">search</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">debounce</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="nx">q</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">controller</span><span class="o">?</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span><span class="w">                         </span><span class="c1">// cancel the previous request</span>
+<span class="w">  </span><span class="nx">controller</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AbortController</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/search?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">controller</span><span class="p">.</span><span class="nx">signal</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="nx">render</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+<span class="p">},</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span>
+
+<span class="nx">input</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">search</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">));</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Race conditions remain.</strong> Abort old requests or check the query when the response arrives.</li>
+<li><strong>Creating a new debounced function on every React render</strong> resets it each time. Create it once (<code>useMemo</code>/<code>useRef</code>).</li>
+<li><strong>Debouncing visual feedback.</strong> Debounce the expensive work, not the UI that should respond instantly.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Type in a search box with DevTools → <strong>Network</strong> open: without debounce you see a request per keystroke; with it, one request after you pause.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>When does a debounced function run?</summary>
+<p>After no new calls have happened for the wait period, once, with the latest arguments.</p>
+</details>
+<details>
+<summary>Why use AbortController with debounced search?</summary>
+<p>To cancel older in-flight requests so a slow, stale response can't overwrite newer results.</p>
+</details>
+<details>
+<summary>Debounce vs throttle in one line?</summary>
+<p>Debounce runs once after activity stops; throttle runs at most once per interval while activity continues.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Run once after the user stops (e.g. 300 ms of quiet). Search boxes, autosave, resize.</li>
 <li><code>clearTimeout(timer); timer = setTimeout(() =&gt; fn(...args), wait);</code></li>
 <li>Trap: debounce doesn't fix race conditions → AbortController or ignore stale responses.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e22/"><small>← PREVIOUS</small>IQ: images, fonts, third parties</a>
 <a class="r" href="../s3e24/"><small>NEXT →</small>Throttle</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

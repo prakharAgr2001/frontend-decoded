@@ -6,13 +6,75 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 30 · Web performance</span>
 <h1><span class="hl">Chunking long tasks</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62IB8DR26/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62IB8DR26/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>To stop one long task from freezing the page, <strong>break it into chunks</strong> and <strong>yield</strong> to the browser between them.</li>
+<li>Slice by <strong>time</strong> (~10 ms), not by a fixed item count.</li>
+<li><strong><code>await scheduler.yield()</code></strong> continues near the front of the queue; <code>setTimeout</code> goes to the back. <code>await Promise.resolve()</code> <strong>does not yield at all</strong> (it's a microtask).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I break long work into time-sliced chunks of roughly 5 to 10 milliseconds and yield back to the browser between them, so input and rendering can happen. scheduler.yield is the best option where supported, because the continuation is prioritised ahead of other queued tasks, while setTimeout puts it at the back of the queue. scheduler.postTask lets me set priorities like user-blocking or background. Awaiting a resolved promise doesn't yield, since microtasks run before the browser renders.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Mopping a long corridor while people need to walk through. Mop a few metres, step aside to let people pass, then continue, instead of blocking the whole corridor until it's done.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processAll</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">10</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">process</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">deadline</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">yieldToMain</span><span class="p">();</span><span class="w">                      </span><span class="c1">// let input + paint happen</span>
+<span class="w">      </span><span class="nx">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">10</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">yieldToMain</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">scheduler</span><span class="o">?</span><span class="p">.</span><span class="k">yield</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">scheduler</span><span class="p">.</span><span class="k">yield</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">resolve</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// Priorities</span>
+<span class="nx">scheduler</span><span class="p">.</span><span class="nx">postTask</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">sendAnalytics</span><span class="p">(),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="s1">'background'</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Doesn&#x27;t yield</div><div class="dg-c">await Promise.resolve() (microtask)</div><div class="dg-c">queueMicrotask(next)</div><div class="dg-c">One 800 ms loop</div></div><div class="dg-col good"><div class="dg-h">Yields</div><div class="dg-c">await scheduler.yield()</div><div class="dg-c">setTimeout(next, 0)</div><div class="dg-c">Many ~10 ms slices</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Microtasks don't yield.</strong> The browser only renders and handles input between tasks.</li>
+<li><strong>Fixed item counts.</strong> 100 items may take 2 ms on a laptop and 60 ms on a cheap phone; slice by time.</li>
+<li><strong>Yielding inside a loop that mutates shared state</strong> can leave UI half-updated; design chunks to be safe.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong>: one big task with a red corner before; many small tasks with gaps after chunking.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why doesn't await Promise.resolve() help a long task?</summary>
+<p>It schedules a microtask, which runs before the browser can render or process input, so the main thread never gets a break.</p>
+</details>
+<details>
+<summary>Advantage of scheduler.yield over setTimeout?</summary>
+<p>The continuation goes near the front of the queue, so your work resumes promptly instead of waiting behind other tasks.</p>
+</details>
+<details>
+<summary>Why slice by time instead of by item count?</summary>
+<p>Device speed varies a lot; a time budget keeps chunks short on slow phones too.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Slice by time (~10 ms), not item count; <code>await scheduler.yield()</code> continues near the front of the queue (setTimeout goes to the back).</li>
 <li><code>scheduler.postTask(fn, { priority: 'user-blocking' | 'user-visible' | 'background' })</code>. See it: many small tasks with gaps instead of one red-cornered block.</li>
 <li>Trap: <code>await Promise.resolve()</code> is a microtask — it does not yield to rendering or input.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e29/"><small>← PREVIOUS</small>useTransition + React Compiler</a>
 <a class="r" href="../s3e31/"><small>NEXT →</small>Performance budgets</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 22 · Web performance</span>
 <h1><span class="hl">IQ: images, fonts, third parties</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61C52AH9e/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61C52AH9e/" target="_blank" rel="noopener">Watch the reel</a><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>images, fonts and third-party scripts</strong>.</li>
+<li>Know why <code>sizes</code> matters, the slow-hero checklist, how to avoid both invisible text and font shifts, and how to add a chat widget safely.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For images I serve responsive, modern formats with srcset and sizes, make the hero discoverable with high priority and never lazy-load it. For fonts I self-host, subset and preload the critical one, with a metric-matched fallback. For third parties I measure their cost and load them late or behind facades, reserving space for anything they render.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does sizes matter on a responsive image?</summary>
+<p>Without it, the browser assumes the image is 100vw wide and picks a much larger file than needed.</p>
+</details>
+<details>
+<summary>Checklist for a slow hero image (LCP)?</summary>
+<p>It's an <code>&lt;img&gt;</code> in the HTML (not CSS/JS), has fetchpriority="high" or a preload, isn't lazy-loaded, is correctly sized via srcset/sizes, uses AVIF/WebP, and is served from a CDN.</p>
+</details>
+<details>
+<summary>How do you avoid both invisible text and font layout shift?</summary>
+<p>Use font-display swap with a size-adjusted fallback font (or optional), self-host and preload the key woff2 file, and subset it.</p>
+</details>
+<details>
+<summary>Marketing wants a chat widget. How do you add it without hurting performance?</summary>
+<p>Measure its cost, load it behind a facade or after first interaction/idle, reserve space for its button to avoid CLS, and keep it off the critical path. Re-check field INP and CLS after launch.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Why <code>sizes</code> · slow hero LCP checklist (HTML, fetchpriority/preload, not lazy, right size/format/CDN) · no FOIT + no font CLS · adding a chat widget safely (measure, facade, after interaction, reserve space).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e21/"><small>← PREVIOUS</small>Third-party cost</a>
 <a class="r" href="../s3e23/"><small>NEXT →</small>Debounce</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

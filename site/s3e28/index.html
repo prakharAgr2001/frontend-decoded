@@ -6,13 +6,67 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 28 · Web performance</span>
 <h1><span class="hl">Memo myths</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61x95jksF/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df61x95jksF/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong><code>React.memo</code></strong> skips re-rendering a component if its props are shallowly equal. <strong><code>useMemo</code></strong> caches a computed value. <strong><code>useCallback</code></strong> keeps a function's identity stable.</li>
+<li>Memoization <strong>isn't free</strong>: it stores values and compares props on every render.</li>
+<li><strong>Inline objects and arrow functions break <code>memo</code></strong>, because they're new on every render.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>React.memo prevents a component from re-rendering when its props are shallowly equal, useMemo caches the result of an expensive calculation between renders, and useCallback caches a function so its reference stays stable. They help only when the skipped work is expensive and the props really are stable, which usually means passing memoized objects and callbacks. Memoization adds memory and comparison overhead, so I apply it based on profiler evidence, not by default. useMemo is a performance hint, not a guarantee.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Keeping a photocopy of an answer sheet. Useful if the calculation is long and you check it often. Pointless if the answer takes two seconds to work out, and you still pay for the paper.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Breaks memo</div><div class="dg-c">&lt;Row style={{ color: &#x27;red&#x27; }} /&gt;</div><div class="dg-c">&lt;Row onSelect={() =&gt; select(id)} /&gt;</div><div class="dg-c">Memo on a cheap component</div></div><div class="dg-col good"><div class="dg-h">Keeps memo working</div><div class="dg-c">const style = useMemo(() =&gt; ({ color: &#x27;red&#x27; }), [])</div><div class="dg-c">const onSelect = useCallback(() =&gt; select(id), [id])</div><div class="dg-c">Memo on a measured, expensive one</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">Row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">React</span><span class="p">.</span><span class="nx">memo</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="nx">Row</span><span class="p">({</span><span class="w"> </span><span class="nx">item</span><span class="p">,</span><span class="w"> </span><span class="nx">onSelect</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">onSelect</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">)}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">}&lt;/</span><span class="nt">li</span><span class="p">&gt;;</span>
+<span class="p">});</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">List</span><span class="p">({</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">selected</span><span class="p">,</span><span class="w"> </span><span class="nx">setSelected</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">onSelect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setSelected</span><span class="p">(</span><span class="nx">id</span><span class="p">),</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">sorted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">[...</span><span class="nx">items</span><span class="p">].</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">localeCompare</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">name</span><span class="p">)),</span><span class="w"> </span><span class="p">[</span><span class="nx">items</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;{</span><span class="nx">sorted</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Row</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="na">item</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}</span><span class="w"> </span><span class="na">onSelect</span><span class="o">=</span><span class="p">{</span><span class="nx">onSelect</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;)}&lt;/</span><span class="nt">ul</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Memoizing everything</strong> adds overhead and makes code harder to read.</li>
+<li><strong>Relying on useMemo for correctness.</strong> React may discard cached values; it's only an optimisation.</li>
+<li><strong>The React Compiler</strong> now does much of this automatically (next episode).</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>React DevTools → <strong>Profiler</strong> → record an interaction → <strong>Ranked</strong> view shows which components took the most time. Memoize those, then record again to compare.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does an inline object prop defeat React.memo?</summary>
+<p>A new object is created every render, so shallow comparison sees a different reference each time.</p>
+</details>
+<details>
+<summary>useMemo vs useCallback?</summary>
+<p>useMemo caches a computed value; useCallback caches a function reference (useCallback(fn, deps) ≈ useMemo(() =&gt; fn, deps)).</p>
+</details>
+<details>
+<summary>When is memoization worth it?</summary>
+<p>When profiling shows a component or calculation is expensive and it re-renders often with the same inputs.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>React.memo</code> (shallow props), <code>useMemo</code> (value), <code>useCallback</code> (function identity). Memo isn't free: storage + comparison every render.</li>
 <li>Inline objects/arrow functions break memo → stabilize with useMemo/useCallback. Memoize on evidence (Profiler ranked view).</li>
 <li>Trap: useMemo is a performance hint, never a correctness guarantee — React may discard the cache.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e27/"><small>← PREVIOUS</small>Why React re-renders</a>
 <a class="r" href="../s3e29/"><small>NEXT →</small>useTransition + React Compiler</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,13 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 20 · Web performance</span>
 <h1><span class="hl">Web fonts</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60xX9kvTc/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60xX9kvTc/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>While a web font loads, the browser either hides text (<strong>FOIT</strong>, flash of invisible text) or shows a fallback then swaps (<strong>FOUT</strong>, flash of unstyled text).</li>
+<li><code>font-display</code> controls this: <strong><code>block</code></strong> (hide briefly), <strong><code>swap</code></strong> (fallback now, swap later), <strong><code>optional</code></strong> (use the font only if it's already fast).</li>
+<li><code>swap</code> can cause <strong>layout shift</strong>; fix with a size-matched fallback (<code>size-adjust</code>, <code>ascent-override</code>).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Web fonts can cause invisible text or a visible swap. font-display swap shows a fallback immediately and replaces it, which avoids invisible text but can shift layout if the fonts have different metrics, so I define a fallback font-face with size-adjust and metric overrides to match. To make fonts arrive sooner I self-host woff2 files, subset them, and preload the one or two most important ones. For the best Core Web Vitals, font-display optional avoids both invisible text and late shifts, at the cost of sometimes not showing the brand font on slow first visits.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A guest speaker running late. <strong>block</strong>: the stage stays silent until they arrive. <strong>swap</strong>: a stand-in starts talking, then the real speaker takes over mid-sentence. <strong>optional</strong>: if they're not here in time, the stand-in does the whole talk.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">font-display</div><div class="dg-c">block</div><div class="dg-c">swap</div><div class="dg-c">optional</div></div><div class="dg-col good"><div class="dg-h">What users see</div><div class="dg-c">Invisible text for up to ~3 s, then the font</div><div class="dg-c">Fallback text immediately, swaps when loaded (possible shift)</div><div class="dg-c">Font only if it loads very quickly, else fallback for this visit</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="o">;</span>
+<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">url</span><span class="o">(</span><span class="s1">'/fonts/inter-latin.woff2'</span><span class="o">)</span><span class="w"> </span><span class="nt">format</span><span class="o">(</span><span class="s1">'woff2'</span><span class="o">);</span>
+<span class="w">  </span><span class="nt">font-display</span><span class="o">:</span><span class="w"> </span><span class="nt">swap</span><span class="o">;</span>
+<span class="p">}</span>
+<span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span><span class="w">                        </span><span class="c">/* fallback sized like Inter, so the swap doesn't shift text */</span>
+<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="o">;</span>
+<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">local</span><span class="o">(</span><span class="s1">'Arial'</span><span class="o">);</span>
+<span class="w">  </span><span class="nt">size-adjust</span><span class="o">:</span><span class="w"> </span><span class="nt">107</span><span class="o">%;</span>
+<span class="w">  </span><span class="nt">ascent-override</span><span class="o">:</span><span class="w"> </span><span class="nt">90</span><span class="o">%;</span>
+<span class="p">}</span>
+<span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="p">,</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Preloading many fonts</strong> competes with the hero image. Preload one or two at most.</li>
+<li><strong>Google Fonts from another origin</strong> adds connection time; self-hosting avoids it.</li>
+<li><strong>Shipping all character sets.</strong> Subset to the scripts you need (e.g. Latin, Devanagari).</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → filter <strong>Font</strong> → throttle to Slow 4G and reload: watch the text flash or swap. Rendering tab → <strong>Layout Shift Regions</strong> shows swap shifts.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>FOIT vs FOUT?</summary>
+<p>FOIT: text is invisible until the font loads. FOUT: fallback text shows first, then swaps to the web font.</p>
+</details>
+<details>
+<summary>How do you prevent layout shift from a font swap?</summary>
+<p>Use a fallback font-face with size-adjust and ascent/descent overrides so it takes the same space as the web font.</p>
+</details>
+<details>
+<summary>Why can font-display: optional be best for Core Web Vitals?</summary>
+<p>It never hides text and never swaps late, so no FOIT and no font-related layout shift.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>FOIT (invisible text while loading) vs FOUT (fallback, then swap). <code>font-display</code>: block · swap · optional.</li>
 <li>Swap can cause CLS → matched fallback with <code>size-adjust</code>, <code>ascent-override</code>. Arrive sooner: self-host, preload 1–2 files, woff2, subset.</li>
 <li>IQ: safest for CWV is often <code>optional</code> (no invisible text, no late shift) — trade-off: slow first visits may never show the brand font.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e19/"><small>← PREVIOUS</small>LCP image priority</a>
 <a class="r" href="../s3e21/"><small>NEXT →</small>Third-party cost</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

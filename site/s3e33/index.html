@@ -6,11 +6,53 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 33 · Web performance</span>
 <h1><span class="hl">Finale: one product page, made fast</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62eeiFQc0/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df62eeiFQc0/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Making one product page fast follows a fixed order: <strong>measure → loading → bundle → hero image → layout shifts → third parties → interactions → budget</strong>.</li>
+<li>Each step targets a specific metric: TTFB/LCP, INP or CLS.</li>
+<li>Finish with a <strong>budget in CI</strong> so the gains don't disappear.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I start with field data to see which Core Web Vital fails. For loading, I serve HTML from a CDN with caching, inline critical CSS, defer scripts and preconnect to key origins. I shrink the bundle with route splitting, lazy features and lighter dependencies, compressed with Brotli. The hero image is a responsive AVIF with fetchpriority high. I reserve space for images, ads and fonts to keep CLS low, put third-party scripts behind facades or after interaction, and keep interactions responsive with instant feedback, transitions, virtualization and workers. Then I lock it in with performance budgets in CI.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Servicing a car in the right order: check the dashboard warnings first (measure), then the engine (loading), then lose the extra weight (bundle), then the tyres and alignment (images and shifts), and finally set a service schedule (budget) so it doesn't slide back.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Measure</b><span>field CWV at p75; lab to debug</span></li><li><b>Loading</b><span>CDN + caching for TTFB, critical CSS, defer, preconnect</span></li><li><b>Bundle</b><span>split routes, lazy features, lighter deps, Brotli</span></li><li><b>Hero</b><span>AVIF srcset + sizes, fetchpriority=&quot;high&quot;, never lazy</span></li><li><b>Shifts</b><span>width/height, reserved ad slots, size-matched font fallback</span></li><li><b>Third parties</b><span>facades, load after interaction</span></li><li><b>Interactions</b><span>feedback first, transitions, virtualize, workers, chunking</span></li><li><b>Budget</b><span>Lighthouse CI + size-limit in every PR</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Optimising without measuring.</strong> Fix the metric that's actually failing first.</li>
+<li><strong>One-off clean-ups.</strong> Without budgets, performance regresses within months.</li>
+<li><strong>Ignoring mobile.</strong> Test on a mid-range Android phone on 4G.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Run PageSpeed Insights on any big e-commerce product page and map each failed audit to one of the steps above.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the first step in improving a slow page?</summary>
+<p>Measure with field data to find which metric is failing, then use lab tools to find the cause.</p>
+</details>
+<details>
+<summary>Three fixes that improve LCP?</summary>
+<p>Faster TTFB (CDN, caching), discoverable high-priority hero image, smaller properly sized modern image formats, less render-blocking CSS/JS.</p>
+</details>
+<details>
+<summary>How do you keep a page fast after optimising it?</summary>
+<p>Performance budgets enforced in CI and ongoing real-user monitoring.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Measure (CWV, field vs lab) → loading (CDN TTFB, critical CSS, defer, preconnect) → bundle (split, lazy, diet, Brotli) → hero (AVIF srcset, fetchpriority) → shifts (reserve space, font fallback) → third parties (facade, delay) → interactions (feedback first, transition, virtualize, worker, chunking) → budget in CI.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e32/"><small>← PREVIOUS</small>IQ: runtime</a>
 </div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

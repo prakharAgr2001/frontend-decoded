@@ -6,12 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 13 · Web performance</span>
 <h1><span class="hl">Lazy routes</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z_T4jXgU/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z_T4jXgU/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>In React, <strong>lazy routes</strong> use <code>React.lazy(() =&gt; import('./Page'))</code> wrapped in <code>&lt;Suspense fallback&gt;</code>.</li>
+<li>Hide the delay by <strong>prefetching</strong> the route's chunk on hover or when the link is visible (Next.js <code>&lt;Link&gt;</code> does this in production).</li>
+<li>After a deploy, old tabs may request chunks that no longer exist: handle <strong><code>ChunkLoadError</code></strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I lazy-load routes with React.lazy and a dynamic import, wrapped in a Suspense boundary with a fallback that holds the layout. To avoid a visible delay on navigation, I prefetch chunks when a link is hovered or enters the viewport. I never lazy-load the landing route itself. In production I keep old chunk files available for a while after deploys and catch chunk load failures to reload the page, because users with an old tab open will request files from the previous build.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant that starts cooking your dessert when you glance at the dessert menu, so it's ready the moment you order it.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Define</b><span>const Orders = lazy(() =&gt; import(&#x27;./pages/Orders&#x27;))</span></li><li><b>Wrap</b><span>&lt;Suspense fallback={&lt;PageSkeleton /&gt;}&gt;</span></li><li><b>Navigate</b><span>the chunk downloads, fallback shows meanwhile</span></li><li><b>Prefetch</b><span>on hover or when the link is visible, so it&#x27;s usually cached already</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">Orders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">lazy</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./pages/Orders'</span><span class="p">));</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">prefetchOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./pages/Orders'</span><span class="p">);</span>
+
+<span class="p">&lt;</span><span class="nt">Link</span><span class="w"> </span><span class="na">to</span><span class="o">=</span><span class="s">"/orders"</span><span class="w"> </span><span class="na">onMouseEnter</span><span class="o">=</span><span class="p">{</span><span class="nx">prefetchOrders</span><span class="p">}&gt;</span><span class="nx">Orders</span><span class="p">&lt;/</span><span class="nt">Link</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">Suspense</span><span class="w"> </span><span class="na">fallback</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">PageSkeleton</span><span class="w"> </span><span class="p">/&gt;}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Routes</span><span class="p">&gt;&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">"/orders"</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Orders</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;&lt;/</span><span class="nt">Routes</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Suspense</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Lazy-loading the landing route</strong> delays the first paint for everyone.</li>
+<li><strong>Fallbacks that don't hold layout</strong> cause layout shift when the page arrives.</li>
+<li><strong>ChunkLoadError after deploys.</strong> Keep old chunks for a while, and on failure reload once.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In a React app with lazy routes, DevTools → <strong>Network</strong> → JS filter → navigate: a new chunk loads per route. Hover a prefetched link and watch it load before the click.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which component must wrap a lazy component?</summary>
+<p><code>&lt;Suspense&gt;</code> with a fallback.</p>
+</details>
+<details>
+<summary>How do you make lazy routes feel instant?</summary>
+<p>Prefetch the chunk on hover, focus or when the link enters the viewport.</p>
+</details>
+<details>
+<summary>Why do users get ChunkLoadError after a deploy?</summary>
+<p>Their open tab still references the old build's chunk filenames, which were removed by the new deploy.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>const Orders = lazy(() =&gt; import('./pages/Orders'))</code> inside <code>&lt;Suspense fallback&gt;</code>. Hide the delay: prefetch on hover / in viewport (Next.js <code>&lt;Link&gt;</code> does this in production).</li>
 <li>Rules: never lazy-load the landing route; fallbacks must hold layout. Trap: after a deploy, old tabs hit <code>ChunkLoadError</code> → keep old chunks, catch + reload.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e12/"><small>← PREVIOUS</small>Code splitting</a>
 <a class="r" href="../s3e14/"><small>NEXT →</small>Tree shaking</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

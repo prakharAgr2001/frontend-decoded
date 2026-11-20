@@ -6,12 +6,60 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 11 · Web performance</span>
 <h1><span class="hl">Resource hints</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zyAmDjoU/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zyAmDjoU/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong><code>preconnect</code></strong>: do DNS + TCP + TLS to another origin early. <strong><code>dns-prefetch</code></strong>: DNS only (cheaper).</li>
+<li><strong><code>preload</code></strong>: download a resource <strong>this page needs</strong>, found late, at high priority. Needs <code>as</code>.</li>
+<li><strong><code>prefetch</code></strong>: download something for the <strong>next page</strong>, at lowest priority.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Resource hints let me tell the browser about work before it would discover it. preconnect sets up the connection to a critical third-party origin, like a font or image CDN. dns-prefetch does only the DNS lookup and is a cheaper fallback. preload fetches a resource the current page definitely needs but discovers late, such as the hero image or a font, with the right as attribute. prefetch downloads resources for a likely next navigation at idle priority. Overusing preload hurts because it competes for bandwidth.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Planning a trip. <strong>preconnect</strong> = book the cab in advance. <strong>preload</strong> = pack the passport first because you definitely need it today. <strong>prefetch</strong> = keep tomorrow's clothes ready in case you go out.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Hint</div><div class="dg-c">preconnect</div><div class="dg-c">dns-prefetch</div><div class="dg-c">preload</div><div class="dg-c">prefetch</div></div><div class="dg-col good"><div class="dg-h">Use it for</div><div class="dg-c">1–3 critical third-party origins (fonts, image CDN)</div><div class="dg-c">Less important origins (cheap fallback)</div><div class="dg-c">Late-discovered critical files on THIS page (hero image, font)</div><div class="dg-c">Files for the NEXT page (low priority)</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preconnect"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://images.example-cdn.com"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/fonts/inter.woff2"</span> <span class="na">as</span><span class="o">=</span><span class="s">"font"</span> <span class="na">type</span><span class="o">=</span><span class="s">"font/woff2"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/hero.avif"</span> <span class="na">as</span><span class="o">=</span><span class="s">"image"</span> <span class="na">fetchpriority</span><span class="o">=</span><span class="s">"high"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"prefetch"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/checkout.js"</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Preloading everything</strong> steals bandwidth from what matters; Chrome warns about preloads not used within a few seconds.</li>
+<li><strong>Font preload without <code>crossorigin</code></strong> downloads the font twice (fonts are fetched in CORS mode).</li>
+<li><strong>Too many preconnects</strong> waste sockets and CPU on connections you may not use.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → right-click headers → enable <strong>Priority</strong>. Add a preload and watch the resource move earlier with High priority.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>preload vs prefetch?</summary>
+<p>preload is for the current page, high priority, things needed soon. prefetch is for a future navigation, lowest priority.</p>
+</details>
+<details>
+<summary>Why must font preloads include crossorigin?</summary>
+<p>Fonts are requested in CORS mode; without crossorigin the preload doesn't match the real request, so the font downloads twice.</p>
+</details>
+<details>
+<summary>What does preconnect save?</summary>
+<p>The DNS lookup, TCP handshake and TLS handshake to that origin, done before the first request needs them.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><code>preconnect</code> (DNS+TCP+TLS early) · <code>dns-prefetch</code> (DNS only) · <code>preload</code> (this page, late-discovered, high priority, needs <code>as</code>) · <code>prefetch</code> (next page, lowest priority).</li>
 <li>See it: Network → Priority column. Trap: preloading everything steals bandwidth; Chrome warns about unused preloads; font preload needs <code>crossorigin</code> or it downloads twice.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e10/"><small>← PREVIOUS</small>async vs defer</a>
 <a class="r" href="../s3e12/"><small>NEXT →</small>Code splitting</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

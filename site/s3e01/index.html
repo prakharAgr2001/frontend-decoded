@@ -6,14 +6,60 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 1 · Web performance</span>
 <h1><span class="hl">100 ms = money</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yZdjlB9J/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yZdjlB9J/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Speed is money: Google's research found <strong>53% of mobile visits are abandoned</strong> when a page takes over 3 seconds. An often-quoted Amazon test found <strong>+100 ms ≈ −1% sales</strong>.</li>
+<li>Human time limits: <strong>0.1 s</strong> feels instant, <strong>1 s</strong> keeps you in flow, <strong>10 s</strong> and attention is gone.</li>
+<li>Performance has two jobs: <strong>be fast</strong> (send less, do less) and <strong>feel fast</strong> (show useful content early, respond instantly).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Performance directly affects business metrics like conversion and bounce rate, especially on mobile networks. I think of it as two goals: actually being fast, by sending fewer bytes and doing less work on the main thread, and feeling fast, by showing meaningful content early and giving immediate feedback on interactions. I measure with real-user data at the 75th percentile rather than averages, because averages hide the slow users who are most likely to leave.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A queue at a bank. Even if total service time is the same, a counter that greets you instantly and hands you a token <em>feels</em> faster than one where you stand in silence. Real speed and perceived speed both matter.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>0.1 s</b><span>feels instant: button presses, typing</span></li><li><b>1 s</b><span>still feels connected: page transitions</span></li><li><b>10 s</b><span>attention lost: users leave or switch tabs</span></li></ol></figure>
+
+<ul>
+<li><strong>Be fast:</strong> smaller bundles, compressed images, fewer requests, caching, less main-thread work.</li>
+<li><strong>Feel fast:</strong> skeletons instead of spinners, render above-the-fold first, instant button feedback, optimistic UI.</li>
+</ul>
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Using averages.</strong> An average of 1.5 s can hide 25% of users waiting 5 s. Report the <strong>75th percentile (p75)</strong>.</li>
+<li><strong>Testing on a fast laptop and fibre.</strong> Most users are on mid-range Android phones and mobile data.</li>
+<li><strong>Spinners for everything.</strong> A skeleton that matches the final layout feels faster than a blank spinner.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → throttling <strong>Slow 4G</strong> (and <strong>Performance</strong> → CPU 4x slowdown) → reload your site. That's closer to what many users see.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why report p75 instead of the average?</summary>
+<p>Averages hide the slow tail. p75 means 75% of visits were at least this fast, so it captures the experience of slower users too.</p>
+</details>
+<details>
+<summary>What's the difference between being fast and feeling fast?</summary>
+<p>Being fast reduces actual load and processing time. Feeling fast changes what users see and when (early content, instant feedback), so waiting is less noticeable.</p>
+</details>
+<details>
+<summary>What are the 0.1 s, 1 s and 10 s limits?</summary>
+<p>0.1 s feels instantaneous, 1 s keeps the user's flow of thought, 10 s is the limit of attention.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Google research: 53% of mobile visits are abandoned if a page takes &gt; 3 s. Often-quoted Amazon finding: +100 ms ≈ −1% sales.</li>
 <li>Response-time limits (Nielsen): 0.1 s feels instant · 1 s keeps flow · 10 s loses attention.</li>
 <li>Two jobs: <strong>be fast</strong> (send less, do less on the main thread) and <strong>feel fast</strong> (useful content early, instant feedback).</li>
 <li>Try: DevTools → Network → throttling "Slow 4G" → reload. Trap: averages hide slow users → report <strong>p75</strong>.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s3e02/"><small>NEXT →</small>Core Web Vitals</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

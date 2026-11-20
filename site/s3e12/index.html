@@ -6,12 +6,61 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 12 · Web performance</span>
 <h1><span class="hl">Code splitting</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z4uUlJwY/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6z4uUlJwY/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Code splitting</strong> breaks one big bundle into smaller chunks that load <strong>only when needed</strong>, using dynamic <code>import()</code>.</li>
+<li>Split by <strong>route</strong>, by <strong>heavy feature</strong> (charts, editors, maps), and by <strong>below-the-fold</strong> components. Shared libraries go in a vendor chunk.</li>
+<li>Goal: the first page downloads and runs only its own code.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Code splitting uses dynamic imports so the bundler emits separate chunks that are loaded on demand. I usually split by route first, then lazy-load heavy, rarely used features like rich text editors, charts or maps, and keep shared dependencies in a common chunk so they're cached across routes. The DevTools Coverage tab shows how much downloaded code never runs, which is a good signal for what to split. I avoid splitting too finely, because many tiny chunks create request waterfalls.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A travel guidebook split into city booklets. You carry only the city you're visiting today instead of the whole 800-page book.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">One bundle</div><div class="dg-c">Every page downloads all code</div><div class="dg-c">Change one line → whole bundle re-downloads</div><div class="dg-c">Slow first load</div></div><div class="dg-col good"><div class="dg-h">Split bundles</div><div class="dg-c">Each page downloads its own chunk</div><div class="dg-c">Only the changed chunk is re-downloaded</div><div class="dg-c">Fast first load, later chunks on demand</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Load the chart library only when the user opens the report</span>
+<span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderChart</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">import</span><span class="p">(</span><span class="s1">'./chart.js'</span><span class="p">);</span><span class="w">   </span><span class="c1">// separate chunk</span>
+<span class="w">  </span><span class="nx">renderChart</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Too many tiny chunks</strong> → request waterfalls (chunk A loads, then discovers it needs chunk B).</li>
+<li><strong>Splitting what's always needed</strong> just adds a delay.</li>
+<li><strong>No loading state.</strong> Lazy chunks take time; show a fallback.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → ⋮ → More tools → <strong>Coverage</strong> → reload. Red bars are code that was downloaded but never executed, your splitting opportunities.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What creates a split point in modern bundlers?</summary>
+<p>A dynamic <code>import()</code> expression.</p>
+</details>
+<details>
+<summary>What should you split first?</summary>
+<p>Routes, then large features used by few users or only after interaction.</p>
+</details>
+<details>
+<summary>What's the risk of over-splitting?</summary>
+<p>Many small requests and dependency waterfalls that can make loading slower.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Dynamic <code>import()</code> → separate chunk loaded on demand. Split by route, heavy feature, below the fold; shared libs in a vendor chunk.</li>
 <li>See it: DevTools → Coverage (red = downloaded, never ran). Trap: too many tiny chunks → request waterfalls.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e11/"><small>← PREVIOUS</small>Resource hints</a>
 <a class="r" href="../s3e13/"><small>NEXT →</small>Lazy routes</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

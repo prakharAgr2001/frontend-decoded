@@ -6,13 +6,60 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 10 · Web performance</span>
 <h1><span class="hl">async vs defer</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zjZimR77/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zjZimR77/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Plain <code>&lt;script&gt;</code></strong>: stop parsing, download, run, then continue.</li>
+<li><strong><code>async</code></strong>: download in parallel, <strong>run as soon as it arrives</strong>, in any order.</li>
+<li><strong><code>defer</code></strong>: download in parallel, <strong>run after parsing finishes, in document order</strong>, before <code>DOMContentLoaded</code>. <code>type="module"</code> scripts are deferred by default.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A classic script blocks HTML parsing while it downloads and executes. async downloads in parallel and executes as soon as it's ready, which can be before or after parsing and in any order, so it suits independent scripts like analytics. defer also downloads in parallel but waits until the document is parsed and runs scripts in order, so it's the right default for application code that depends on the DOM or on other scripts. Module scripts behave like defer by default.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Guests arriving at a wedding. <strong>Plain:</strong> the ceremony stops every time a guest walks in. <strong>async:</strong> guests walk in whenever they arrive and start dancing immediately, in random order. <strong>defer:</strong> guests wait outside and walk in together, in the order on the list, after the ceremony.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Attribute</div><div class="dg-c">none</div><div class="dg-c">async</div><div class="dg-c">defer</div><div class="dg-c">type=&quot;module&quot;</div></div><div class="dg-col good"><div class="dg-h">Behaviour</div><div class="dg-c">Blocks parsing while downloading and running</div><div class="dg-c">Parallel download, runs on arrival, no order guarantee</div><div class="dg-c">Parallel download, runs after parsing, in order</div><div class="dg-c">Deferred by default (add async to change)</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/vendor.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/app.js"</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>            <span class="cm">&lt;!-- runs after vendor.js --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"https://analytics.example.com/a.js"</span> <span class="na">async</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Dependent scripts with <code>async</code></strong> break randomly, because the order changes with network timing.</li>
+<li><strong><code>defer</code> does nothing on inline scripts.</strong> It only applies to scripts with <code>src</code>.</li>
+<li><strong><code>async</code> doesn't make the script cheap.</strong> It still runs on the main thread when it arrives.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Performance</strong> → record a load: plain scripts appear as gaps in HTML parsing; deferred scripts run as a group after parsing.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Which attribute keeps execution order?</summary>
+<p><code>defer</code> (and module scripts by default). <code>async</code> does not.</p>
+</details>
+<details>
+<summary>Where would you use async?</summary>
+<p>For independent third-party scripts like analytics that don't depend on other scripts or on the DOM being complete.</p>
+</details>
+<details>
+<summary>When do deferred scripts run relative to DOMContentLoaded?</summary>
+<p>After parsing completes and before the DOMContentLoaded event fires.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>plain: stop parsing, fetch, run. <strong>async</strong>: fetch in parallel, run on arrival, no order. <strong>defer</strong>: fetch in parallel, run after parsing, in document order, before DOMContentLoaded.</li>
 <li>defer → app code; async → independent scripts (analytics). <code>type="module"</code> is deferred by default.</li>
 <li>Trap: async scripts that depend on each other break randomly; <code>defer</code> does nothing on inline scripts.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e09/"><small>← PREVIOUS</small>Critical rendering path</a>
 <a class="r" href="../s3e11/"><small>NEXT →</small>Resource hints</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

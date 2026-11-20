@@ -6,13 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 16 · Web performance</span>
 <h1><span class="hl">Minify + Brotli</span></h1>
-<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60Uw1H5D3/" target="_blank" rel="noopener">Watch the reel</a></div><div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df60Uw1H5D3/" target="_blank" rel="noopener">Watch the reel</a><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Minify:</strong> remove whitespace and comments, shorten local variable names. <strong>Compress:</strong> gzip or <strong>Brotli</strong> (usually 15–20% smaller than gzip for text).</li>
+<li>The browser says what it accepts (<code>accept-encoding: gzip, deflate, br, zstd</code>); the server replies with <code>content-encoding: br</code>.</li>
+<li>Compress <strong>text</strong> (HTML, CSS, JS, JSON, SVG). Don't re-compress <strong>JPEG, PNG, MP4 or WOFF2</strong>: they're already compressed.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Minification shrinks code itself by removing whitespace and comments and mangling local names, while compression encodes the bytes for transfer. Browsers advertise supported encodings in accept-encoding, and servers or CDNs respond with Brotli or gzip, indicated by content-encoding. Brotli typically beats gzip on text assets, and static assets can be pre-compressed at build time at maximum level. Already-compressed formats like images, video and woff2 fonts gain nothing from it.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Packing clothes for a trip. <strong>Minify</strong> = fold them neatly and remove the hangers. <strong>Compress</strong> = vacuum-seal the bag. You don't vacuum-seal something that's already vacuum-sealed.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Build</b><span>minifier (Terser, esbuild) shrinks the JS</span></li><li><b>Request</b><span>browser sends accept-encoding: br, gzip</span></li><li><b>Response</b><span>server/CDN sends content-encoding: br</span></li><li><b>Browser</b><span>decompresses, then parses the full code</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="err">GET /assets/app.js</span>
+<span class="err">accept-encoding: gzip, deflate, br, zstd</span>
+
+<span class="err">200 OK</span>
+<span class="err">content-encoding: br</span>
+<span class="err">content-type: text/javascript</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Compressing images or fonts again</strong> wastes CPU for no gain.</li>
+<li><strong>Dynamic Brotli at max level</strong> is slow per request; pre-compress static files at build time instead.</li>
+<li><strong>Missing compression on JSON APIs.</strong> Large API responses benefit just as much as JS.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> → enable <strong>Big request rows</strong>: each row shows transferred size (compressed) above resource size (real). Check <code>content-encoding</code> in the response headers.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Minification vs compression?</summary>
+<p>Minification changes the code to be smaller; compression encodes the bytes for transfer and is undone by the browser.</p>
+</details>
+<details>
+<summary>Which header tells you how a response was compressed?</summary>
+<p><code>content-encoding</code> (e.g. br or gzip).</p>
+</details>
+<details>
+<summary>Should you Brotli-compress PNG files?</summary>
+<p>No. PNG, JPEG, MP4 and WOFF2 are already compressed.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Minify: strip whitespace/comments, rename locals. Compress: gzip, Brotli (≈ 15–20% smaller than gzip on text).</li>
 <li><code>accept-encoding: gzip, deflate, br, zstd</code> → <code>content-encoding: br</code>. See it: Network → big request rows show transferred vs real size.</li>
 <li>Trap: don't compress JPEG/PNG/MP4/WOFF2 — already compressed. Compress text: HTML, CSS, JS, JSON, SVG.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s3e15/"><small>← PREVIOUS</small>Bundle diet</a>
 <a class="r" href="../s3e17/"><small>NEXT →</small>IQ: loading + bundles</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>
