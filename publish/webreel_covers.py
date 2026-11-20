@@ -27,6 +27,7 @@ C = {  # id: (title lines, hook, key-frame second)
     'WR20': (['ONE TYPO', 'BROKE THE WEB'], 'the S3 outage of 2017', 1.0),
     'WR21': (['ONE REGEX', '27 MIN OF 502s'], 'how Cloudflare went down', 1.0),
     'WR22': (['EXCEL RENAMED', 'HUMAN GENES'], 'well, scientists had to', 1.0),
+    'WR23': (['GHOST 8 PEOPLE?', 'NO MORE MATCHES'], "Hinge's real rate limiter", 1.2),
     'WR11': (['AN AI SEES', 'IT FIRST'], 'what Bumble does to some photos', 1.4),
 }
 def cover(ep):

@@ -236,5 +236,12 @@
   "video": "videos/WR22.mp4",
   "cover": "covers/WR22.jpg",
   "caption": "Scientists renamed human genes because Excel kept turning them into dates. 🧬\n\nGene symbols like SEPT1 and MARCH1 were auto-converted by Excel into dates (1-Sep, 1-Mar). A 2016 study found such errors in about a fifth of papers with Excel gene lists. In 2020 the HGNC renamed them: SEPT1 → SEPTIN1, MARCH1 → MARCHF1.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR23",
+  "posted": false,
+  "video": "videos/WR23.mp4",
+  "cover": "covers/WR23.jpg",
+  "caption": "Ghost 8 people on Hinge and it stops you from matching. 👻\n\nHinge's 'Your Turn Limits' (tested May 2024, global Sept 2024): once 8+ matches are waiting on your reply, you must reply or end a chat before matching again. Hinge said 44% of daters call unresponsive matches a top problem, and the test raised responsiveness on the app by 20%.\n\nSystem design view: it's a rate limiter on your attention. Cap the in-flight work, and everything in the queue gets served.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
  }
 ]
