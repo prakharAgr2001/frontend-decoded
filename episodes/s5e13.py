@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E13', tag='S5 · E13', short='ABORTCONTROLLER')
+EP = dict(id='S5E13', tag='S5 · E13', short='ABORTCONTROLLER', hook='cancel the request for real')
 
 
 def hook(c):

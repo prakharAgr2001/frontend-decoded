@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E10', tag='S5 · E10', short='WATERFALLS')
+EP = dict(id='S5E10', tag='S5 · E10', short='WATERFALLS', hook='fast requests, slow page')
 
 STAIRS = [('/api/me', 0.0, 0.25), ('/users/42/posts', 0.25, 0.5), ('/posts/7/comments', 0.5, 0.75), ('/authors?ids=…', 0.75, 1.0)]
 

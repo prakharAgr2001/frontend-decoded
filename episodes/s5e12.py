@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E12', tag='S5 · E12', short='RACE CONDITIONS')
+EP = dict(id='S5E12', tag='S5 · E12', short='RACE CONDITIONS', hook='when the old response wins')
 
 
 def hook(c):

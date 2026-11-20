@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E17', tag='S5 · E17', short='SKELETON SCREENS')
+EP = dict(id='S5E17', tag='S5 · E17', short='SKELETON SCREENS', hook='why grey boxes feel faster')
 
 
 def skel_page(c, x0, y0, x1):

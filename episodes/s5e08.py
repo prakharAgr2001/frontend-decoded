@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E08', tag='S5 · E08', short='INFINITE SCROLL vs PAGES')
+EP = dict(id='S5E08', tag='S5 · E08', short='INFINITE SCROLL vs PAGES', hook='Instagram scrolls, Amazon pages')
 
 COLS = [BLUE, ORANGE, GRN, PURPLE, TEAL, PINK]
 

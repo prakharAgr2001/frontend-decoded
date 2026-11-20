@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S5E20', tag='S5 · E20', short='IQ: ASYNC EDGE CASES')
+EP = dict(id='S5E20', tag='S5 · E20', short='IQ: ASYNC EDGE CASES', hook='4 async edge-case questions')
 
 SCENES = [
     (scene_iq_intro('ASYNC EDGE CASES'),

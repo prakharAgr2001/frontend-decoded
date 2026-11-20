@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E15', tag='S5 · E15', short='DEDUPLICATION')
+EP = dict(id='S5E15', tag='S5 · E15', short='DEDUPLICATION', hook='3 components, 1 request')
 
 
 def hook(c):

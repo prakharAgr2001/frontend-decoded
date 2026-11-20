@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E06', tag='S5 · E06', short='THE OFFSET BUG')
+EP = dict(id='S5E06', tag='S5 · E06', short='THE OFFSET BUG', hook='why page 2 repeats a post')
 
 COLS = [BLUE, ORANGE, GRN, PURPLE, TEAL, PINK]
 

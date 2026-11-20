@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E19', tag='S5 · E19', short='SUSPENSE BOUNDARIES')
+EP = dict(id='S5E19', tag='S5 · E19', short='SUSPENSE BOUNDARIES', hook='where loading states go')
 
 PARTS = [('header', 'header', 0, 70), ('gallery', 'gallery', 90, 300), ('price', 'price', 410, 70), ('reviews', 'reviews', 500, 130),
          ('recommendations', 'recs', 650, 110)]

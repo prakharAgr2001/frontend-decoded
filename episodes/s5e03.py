@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E03', tag='S5 · E03', short='REST vs GRAPHQL vs tRPC', cap={'tRPC': 'tRPC'})
+EP = dict(id='S5E03', tag='S5 · E03', short='REST vs GRAPHQL vs tRPC', cap={'tRPC': 'tRPC'}, hook='which API style should you pick?')
 
 
 def hook(c):

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E07', tag='S5 · E07', short='CURSOR PAGINATION')
+EP = dict(id='S5E07', tag='S5 · E07', short='CURSOR PAGINATION', hook='"10 older than this one"')
 
 
 def hook(c):

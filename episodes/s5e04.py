@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E04', tag='S5 · E04', short='BACKEND FOR FRONTEND')
+EP = dict(id='S5E04', tag='S5 · E04', short='BACKEND FOR FRONTEND', hook='one call, five services')
 
 SVC = ['user', 'orders', 'offers', 'recs', 'wallet']
 

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E02', tag='S5 · E02', short='GRAPHQL')
+EP = dict(id='S5E02', tag='S5 · E02', short='GRAPHQL', hook='ask for exactly what you need')
 
 FIELDS = ['"id"', '"name"', '"avatar"', '"email"', '"phone"', '"bio"', '"created_at"', '"plan"', '"locale"', '"settings"', '"followers"', '"…"']
 

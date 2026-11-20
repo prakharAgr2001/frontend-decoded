@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E18', tag='S5 · E18', short='PARTIAL FAILURE')
+EP = dict(id='S5E18', tag='S5 · E18', short='PARTIAL FAILURE', hook='one widget breaks, not the page')
 
 W6 = ['profile', 'orders', 'wallet', 'offers', 'recs', 'activity']
 

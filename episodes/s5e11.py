@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E11', tag='S5 · E11', short='PARALLEL REQUESTS')
+EP = dict(id='S5E11', tag='S5 · E11', short='PARALLEL REQUESTS', hook='stop awaiting one at a time')
 
 
 def hook(c):

@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S5E09', tag='S5 · E09', short='IQ: PAGINATION')
+EP = dict(id='S5E09', tag='S5 · E09', short='IQ: PAGINATION', hook='4 pagination questions')
 
 SCENES = [
     (scene_iq_intro('PAGINATION'),

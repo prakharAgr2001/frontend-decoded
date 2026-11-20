@@ -1,6 +1,6 @@
 from engine.lib import *
 
-EP = dict(id='S5E05', tag='S5 · E05', short='IQ: API DESIGN')
+EP = dict(id='S5E05', tag='S5 · E05', short='IQ: API DESIGN', hook='4 API design questions')
 
 SCENES = [
     (scene_iq_intro('API DESIGN'),

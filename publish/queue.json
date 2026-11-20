@@ -949,5 +949,152 @@
   "video": "videos/S4E23.mp4",
   "cover": "covers/S4E23.jpg",
   "caption": "Season 4 finale: one food order, from search to doorstep, and every kind of state it touches 🛵\n💬 Comment NOTES for the full season cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E01",
+  "posted": false,
+  "video": "videos/S5E01.mp4",
+  "cover": "covers/S5E01.jpg",
+  "caption": "Open any app's Network tab. Almost every row speaks the same language 📡\nSeason 5 of Tech, Explained: data fetching & APIs. First up, REST: one URL per resource, five verbs, and why fetch doesn't throw on a 404.\nInterview trap: PUT vs POST isn't create vs update. It's idempotency.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E02",
+  "posted": false,
+  "video": "videos/S5E02.mp4",
+  "cover": "covers/S5E02.jpg",
+  "caption": "Your profile page makes 3 requests and downloads 40 fields it never shows 🥪\nGraphQL lets the client ask for exactly the shape it needs, in one request to one endpoint.\nTrap: a GraphQL response can be 200 OK and still have failed. Check the errors array.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E03",
+  "posted": false,
+  "video": "videos/S5E03.mp4",
+  "cover": "covers/S5E03.jpg",
+  "caption": "A public API, a 40-screen mobile app, and a 2-dev TypeScript repo should NOT pick the same API style 🤔\nFixed menu, order form, or shouting to your sibling: when to use each.\nTrap: GraphQL isn't \"faster\" than REST.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E04",
+  "posted": false,
+  "video": "videos/S5E04.mp4",
+  "cover": "covers/S5E04.jpg",
+  "caption": "Your home screen needs 5 services. Should the phone really make 5 calls on a patchy network? ✈️\nA BFF is a small server, owned by the frontend team, that turns 5 calls into 1 screen-shaped response.\nTrap: never put pricing rules in it.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E05",
+  "posted": false,
+  "video": "videos/S5E05.mp4",
+  "cover": "covers/S5E05.jpg",
+  "caption": "4 API design questions they actually ask in frontend interviews 🎯\nIdempotency, the GraphQL N+1 problem, BFFs, and when NOT to pick GraphQL. Pause and answer before each reveal.\nTell me your score below 👇\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E06",
+  "posted": false,
+  "video": "videos/S5E06.mp4",
+  "cover": "covers/S5E06.jpg",
+  "caption": "You load page 2 of a feed, and the first post is the one you just saw. Nobody wrote a bug 🐛\nOffset pagination breaks the moment someone posts while you scroll. And deep pages get slower and slower.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E07",
+  "posted": false,
+  "video": "videos/S5E07.mp4",
+  "cover": "covers/S5E07.jpg",
+  "caption": "Instead of \"skip 10\", ask for \"10 posts older than this one\" 🔖\nCursor pagination: no duplicates, and page 1000 is as fast as page 1. See it live in any Reddit .json URL.\nTrap: two posts with the same timestamp.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E08",
+  "posted": false,
+  "video": "videos/S5E08.mp4",
+  "cover": "covers/S5E08.jpg",
+  "caption": "Instagram scrolls forever. Amazon still shows page numbers. Both are right 🍣📖\nWhen infinite scroll wins, when pages win, how to build it with one IntersectionObserver, and the back-button trap.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E09",
+  "posted": false,
+  "video": "videos/S5E09.mp4",
+  "cover": "covers/S5E09.jpg",
+  "caption": "4 pagination questions that trip up even senior frontend devs 🎯\nDuplicates, missing posts, jump-to-page-50, and infinite scroll without a scroll listener.\nTell me your score below 👇\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E10",
+  "posted": false,
+  "video": "videos/S5E10.mp4",
+  "cover": "covers/S5E10.jpg",
+  "caption": "Every request is fast. The page still takes 3 seconds. Why? 🌊\nRequest waterfalls: when each fetch waits for the one before it. Spot the staircase in DevTools and fix fetch-on-render.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E11",
+  "posted": false,
+  "video": "videos/S5E11.mp4",
+  "cover": "covers/S5E11.jpg",
+  "caption": "3 independent requests. Why are you waiting for one before starting the next? 🍜\nPromise.all makes total time = the slowest request. Plus its sharp edge, and the method most people forget.\nTrap: three awaits on three lines are NOT parallel.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E12",
+  "posted": false,
+  "video": "videos/S5E12.mp4",
+  "cover": "covers/S5E12.jpg",
+  "caption": "You click Riya, then Arjun. The header says Arjun, but the posts are Riya's 😬\nResponses arrive in network order, not the order you asked. Here's the 4-line fix in React.\nTrap: debounce does NOT fix this.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E13",
+  "posted": false,
+  "video": "videos/S5E13.mp4",
+  "cover": "covers/S5E13.jpg",
+  "caption": "Ignoring a stale response isn't enough. The request is still downloading in the background 🛑\nAbortController cancels it for real. Watch the \"(canceled)\" rows in DevTools.\nTrap: aborting a payment doesn't un-charge the card.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E14",
+  "posted": false,
+  "video": "videos/S5E14.mp4",
+  "cover": "covers/S5E14.jpg",
+  "caption": "Your server blinks for 1 second. 10,000 phones retry instantly, and now it's an outage 💥\nExponential backoff + jitter: how to try again politely, and what you should never retry.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E15",
+  "posted": false,
+  "video": "videos/S5E15.mp4",
+  "cover": "covers/S5E15.jpg",
+  "caption": "Your Network tab shows /api/me three times, at the same millisecond 🍕\nRequest deduplication: one request, shared by every component that needs it.\nTrap: why your effect fetches twice in development (it's not a bug).\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E16",
+  "posted": false,
+  "video": "videos/S5E16.mp4",
+  "cover": "covers/S5E16.jpg",
+  "caption": "One user opens 10 tabs. Every request comes back 429 Too Many Requests 🚦\nRate limits, the token bucket, GitHub's live rate-limit headers, and why you should always read Retry-After.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E17",
+  "posted": false,
+  "video": "videos/S5E17.mp4",
+  "cover": "covers/S5E17.jpg",
+  "caption": "Two apps load in exactly 1.5 seconds. Users swear one is faster 🦴\nWhy skeletons beat spinners, how they cause layout shift, and when NOT to use them.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E18",
+  "posted": false,
+  "video": "videos/S5E18.mp4",
+  "cover": "covers/S5E18.jpg",
+  "caption": "One widget's API goes down, and your whole dashboard turns into a white screen ⚡\nError boundaries, Promise.allSettled, and deciding what's critical.\nTrap: why your error boundary doesn't catch a failed fetch.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E19",
+  "posted": false,
+  "video": "videos/S5E19.mp4",
+  "cover": "covers/S5E19.jpg",
+  "caption": "One giant spinner, or 5 pieces popping in like popcorn? Neither 🍿\nWhere to put Suspense boundaries so the page loads in sensible groups.\nTrap: why your Suspense fallback never shows.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E20",
+  "posted": false,
+  "video": "videos/S5E20.mp4",
+  "cover": "covers/S5E20.jpg",
+  "caption": "4 async questions that separate juniors from seniors in frontend interviews 🎯\nall vs allSettled, search races, retrying a checkout POST, and the one-big-spinner page.\nTell me your score below 👇\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+ },
+ {
+  "id": "S5E21",
+  "posted": false,
+  "video": "videos/S5E21.mp4",
+  "cover": "covers/S5E21.jpg",
+  "caption": "Season 5 finale: one food search page, and every data-fetching fix from this season 🔍\nREST + BFF, cursors, aborts, parallel loads, retries, dedup, skeletons and Suspense, all in one reel.\n💬 Comment NOTES for the full season cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
  }
 ]

@@ -1,7 +1,7 @@
 from engine.lib import *
 from engine.s5_extra import *
 
-EP = dict(id='S5E21', tag='S5 · E21', short='FINALE: ONE SEARCH PAGE', tail=3.0)
+EP = dict(id='S5E21', tag='S5 · E21', short='FINALE: ONE SEARCH PAGE', tail=3.0, hook='one search page, every fix')
 
 
 def mini(c, stage):
