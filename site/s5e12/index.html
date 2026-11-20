@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 12 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Race conditions</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Responses arrive in <strong>network order</strong>, not request order → an old, slow response can overwrite a newer one.</li>
 <li>React fix: <code>let ignore = false; … if (!ignore) setX(d); return () =&gt; { ignore = true; }</code>.</li>
 <li>Trap: debounce doesn't fix races (S3E23) — ignore or cancel stale requests; React Query keys data by query.</li>

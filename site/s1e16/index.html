@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 16 · How the browser really works</span>
 <h1><span class="hl">Microtasks vs tasks</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4E7htmsGV/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
 <li>Tasks: timers, events. Microtasks: promise callbacks, <code>queueMicrotask</code>.</li>
 <li>After each task the loop drains ALL microtasks (incl. new ones), then may render, then next task. <code>1,timeout 2,promise 3,4</code> → 1 4 3 2.</li>
 <li>Trap: microtask starvation freezes the page.</li>

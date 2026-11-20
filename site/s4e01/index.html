@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 1 · State management</span>
 <h1><span class="hl">What is state</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>State = data your UI remembers right now that can change while the page is open. Rule: if it changes and the screen must show it, it's state.</li>
 <li>React's idea: <strong>UI = f(state)</strong>. Don't edit the screen; change state (<code>setX</code>) and React re-renders, touching only what differs in the DOM.</li>
 <li>Trap: don't store what you can compute. <code>const total = items.reduce(...)</code>, not <code>useState(total)</code> → two sources of truth drift.</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 10 · Web performance</span>
 <h1><span class="hl">async vs defer</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6zjZimR77/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
 <li>plain: stop parsing, fetch, run. <strong>async</strong>: fetch in parallel, run on arrival, no order. <strong>defer</strong>: fetch in parallel, run after parsing, in document order, before DOMContentLoaded.</li>
 <li>defer → app code; async → independent scripts (analytics). <code>type="module"</code> is deferred by default.</li>
 <li>Trap: async scripts that depend on each other break randomly; <code>defer</code> does nothing on inline scripts.</li>

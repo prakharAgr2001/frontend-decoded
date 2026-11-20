@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 18 · State management</span>
 <h1><span class="hl">URL state</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>If it should be shareable, bookmarkable, or reachable with Back → put it in the URL (path + query).</li>
 <li><code>useSearchParams</code>: read from and write to the URL; it's the single source of truth (no useState copy).</li>
 <li><code>replace</code> while typing, <code>push</code> for committed choices. Not in the URL: secrets/PII (logs, history, referrers), huge objects, ephemeral UI. Values are strings → parse + validate.</li>

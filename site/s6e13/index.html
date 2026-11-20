@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 13 · Real-time</span>
 <h1><span class="hl">Scaling WebSockets</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Sockets are stateful: Alice on server A, Bob on server B. Fix: <strong>pub/sub</strong> (Redis, Kafka, NATS): A publishes to <code>user:bob</code>, B is subscribed and pushes down Bob's socket.</li>
 <li>Keep socket servers dumb, scale out; load balancer must support Upgrade + long idle timeouts.</li>
 <li>Deploys drop every socket on a server → drain gradually, clients reconnect with jitter.</li>

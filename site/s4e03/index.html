@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 3 · State management</span>
 <h1><span class="hl">Colocation</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Keep state as close as possible to where it's used — and no higher. Lift only to the <strong>closest common parent</strong>.</li>
 <li>State at the top → every update re-renders from the top (S3·E27). Move it down, or pass heavy parts as <code>children</code>.</li>
 <li>Bonus: delete a component and its state goes too. Global only for truly app-wide values (user, theme, locale) — and even then, not one giant object.</li>

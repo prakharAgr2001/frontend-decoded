@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 10 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Waterfalls</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Request 2 waits for request 1 → staircase in the Network waterfall; each step costs a round trip (~100–300 ms on mobile).</li>
 <li>React: parent fetches in an effect → renders child → child fetches = <strong>fetch-on-render</strong>. Fix: start early (route loader, hoist, prefetch) = fetch-then-render.</li>
 <li>Trap: true dependency (needs user id) → move the join to the server (one endpoint / BFF) so it happens next to the DB.</li>

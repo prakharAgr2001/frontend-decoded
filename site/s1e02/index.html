@@ -6,12 +6,131 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 2 · How the browser really works</span>
 <h1><span class="hl">DNS</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4DF4WmWFp/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#why-frontend-engineers-should-care">Why frontend engineers should care</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>Computers talk using <strong>IP addresses</strong> (<code>142.250.183.14</code>), humans type <strong>names</strong> (<code>google.com</code>). DNS turns one into the other.</li>
+<li>Your browser asks a <strong>resolver</strong>, which walks a chain of servers: <strong>root → TLD (.com) → the domain's own name server</strong>.</li>
+<li>Every answer comes with a <strong>TTL</strong> (time to live). Everyone along the way caches it until it expires. That is why DNS is fast most of the time, and why changes take time to reach everyone.</li>
+</ul>
+<h2 id="the-analogy">The analogy</h2>
+<p>Think of your phone's contacts app. You tap "Mom", the phone dials <code>+91 98xxx xxxxx</code>. You never remember the number; the app does.</p>
+<p>DNS is the contacts app of the internet, except nobody has the full list. So when your browser meets a name it hasn't seen, it has to ask around: first a general directory that knows who handles <code>.com</code> names, then the <code>.com</code> office that knows who handles <code>google.com</code>, then Google's own server that finally says the number.</p>
+<h2 id="how-it-actually-works">How it actually works</h2>
+<p>When you type <code>www.example.com</code> and press Enter, your browser does not go to the internet straight away. It checks the cheapest places first:</p>
+<ol>
+<li><strong>Browser cache.</strong> Chrome remembers recent answers for a short while.</li>
+<li><strong>Operating system cache</strong> (and the <code>hosts</code> file on your laptop).</li>
+<li><strong>The recursive resolver.</strong> Usually run by your ISP (Jio, Airtel) or a public one like <code>8.8.8.8</code> (Google) or <code>1.1.1.1</code> (Cloudflare). This server does the legwork for you.</li>
+</ol>
+<p>If the resolver doesn't have the answer cached, it walks the tree:</p>
+<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Resolver</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> Root server</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> Root server</div><div class="say">No idea, but ask the .com servers</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> .com TLD</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> .com TLD</div><div class="say">Ask ns1.example.com, it&#x27;s in charge</div></div><div class="dg-msg"><div class="who">Resolver <i>→</i> ns1.example.com</div><div class="say">Where is www.example.com?</div></div><div class="dg-msg reply"><div class="who">Resolver <i>←</i> ns1.example.com</div><div class="say">93.184.215.14 (keep it for 3600 s)</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Resolver</div><div class="say">93.184.215.14</div></div><div class="dg-note">📌 The resolver caches every answer, so the next lookup skips most of this</div></div></figure>
+
+<ul>
+<li><strong>Root servers</strong> know who runs every top-level domain (<code>.com</code>, <code>.in</code>, <code>.org</code>). There are 13 named root server identities, each copied to hundreds of locations worldwide.</li>
+<li><strong>TLD servers</strong> know which name servers are in charge of each domain under them.</li>
+<li>The <strong>authoritative name server</strong> is the one the domain owner controls (Cloudflare, Route 53, GoDaddy…). It holds the real records.</li>
+</ul>
+<p>The resolver remembers every step. The next person asking for any <code>.com</code> name skips the root, and anyone asking for <code>example.com</code> within the TTL gets an instant answer.</p>
+<h3 id="the-records-youll-actually-meet">The records you'll actually meet</h3>
+<table>
+<thead>
+<tr>
+<th>Record</th>
+<th>Maps</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td>name → IPv4 address</td>
+<td><code>example.com → 93.184.215.14</code></td>
+</tr>
+<tr>
+<td><code>AAAA</code></td>
+<td>name → IPv6 address</td>
+<td><code>example.com → 2606:2800:…</code></td>
+</tr>
+<tr>
+<td><code>CNAME</code></td>
+<td>name → another name (alias)</td>
+<td><code>www.shop.com → shop.netlify.app</code></td>
+</tr>
+<tr>
+<td><code>MX</code></td>
+<td>where email for the domain goes</td>
+<td><code>→ mail.google.com</code></td>
+</tr>
+<tr>
+<td><code>TXT</code></td>
+<td>free text, used for verification</td>
+<td>Google / SPF verification strings</td>
+</tr>
+<tr>
+<td><code>NS</code></td>
+<td>which servers are authoritative</td>
+<td><code>→ ns1.cloudflare.com</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ttl-the-reason-dns-propagation-exists">TTL: the reason "DNS propagation" exists</h3>
+<p>Each answer says how long it may be cached, for example <code>TTL 3600</code> = one hour. If you move your site to a new server and update the <code>A</code> record, people whose resolver cached the old answer keep going to the old server until their copy expires. Nothing is "propagating"; old caches are simply timing out.</p>
+<h2 id="why-frontend-engineers-should-care">Why frontend engineers should care</h2>
+<p>A DNS lookup on a cold cache costs anything from ~20 ms to a few hundred ms, and it happens <strong>before</strong> a single byte of your page can download. Every new domain your page uses (fonts, analytics, ad scripts, an image CDN) can cost another lookup.</p>
+<p>You can tell the browser to start early:</p>
+<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- Look up the name early (cheap) --&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"dns-prefetch"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://fonts.gstatic.com"</span><span class="p">&gt;</span>
+<span class="cm">&lt;!-- Look up + connect (TCP + TLS) early: use for the 1–3 domains you will definitely hit --&gt;</span>
+<span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preconnect"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://fonts.gstatic.com"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2 id="see-it-yourself">See it yourself</h2>
+<ul>
+<li>Terminal: <code>nslookup google.com</code> or <code>dig google.com</code> (shows the TTL counting down if you run it twice).</li>
+<li>Trace the full walk: <code>dig +trace google.com</code>.</li>
+<li>Chrome DevTools → <strong>Network</strong> → click the first request → <strong>Timing</strong> tab → the <strong>DNS Lookup</strong> bar. Reload with cache disabled to see it grow.</li>
+</ul>
+<h2 id="real-world-story">Real-world story</h2>
+<p>On 4 October 2021, Facebook, Instagram and WhatsApp disappeared for about six hours. A maintenance command cut Facebook's data centers off, and its DNS servers, built to step back when they couldn't reach the data centers, withdrew themselves from the internet. With nobody able to answer "where is facebook.com?", the apps simply couldn't be found. (We made a reel about it: <em>The day Facebook vanished</em>.)</p>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>Changing DNS with a long TTL.</strong> Lower the TTL (say to 300 s) a day <em>before</em> a migration, switch, then raise it again.</li>
+<li><strong>Putting a <code>CNAME</code> on the root domain</strong> (<code>example.com</code> itself). The standard doesn't allow it next to other records; use your provider's <code>ALIAS</code>/"CNAME flattening" instead.</li>
+<li><strong>Assuming DNS is free.</strong> Third-party scripts on five different domains = five lookups on a slow phone network.</li>
+</ul>
+<h2 id="interview-questions">Interview questions</h2>
+<details>
+<summary>Walk me through what DNS does when I type a URL.</summary>
+<p>Browser cache → OS cache/hosts file → recursive resolver. On a miss, the resolver asks a root server (which points to the TLD servers), then the TLD server (which points to the domain's authoritative servers), then the authoritative server, which returns the record with a TTL. Every layer caches the answer.</p>
+</details>
+<details>
+<summary>Recursive vs iterative queries?</summary>
+<p>Your device sends a <strong>recursive</strong> query: "give me the final answer". The resolver then makes <strong>iterative</strong> queries to root, TLD and authoritative servers, each of which only points to the next server.</p>
+</details>
+<details>
+<summary>Does DNS use UDP or TCP?</summary>
+<p>Mostly UDP on port 53, because it's one small question and one small answer. It falls back to TCP for large responses and zone transfers. Newer setups use DNS over HTTPS (DoH) or over TLS (DoT) to encrypt lookups.</p>
+</details>
+<details>
+<summary>A vs CNAME?</summary>
+<p><code>A</code> points a name straight at an IP address. <code>CNAME</code> points a name at another name, which then has to be resolved too (an extra step, but you only update one place when the target's IP changes).</p>
+</details>
+<details>
+<summary>How can a frontend reduce DNS cost?</summary>
+<p>Use fewer third-party domains, self-host fonts and critical scripts, and add <code>dns-prefetch</code>/<code>preconnect</code> for the few domains you can't avoid.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Phonebook of the internet: domain → IP address.</li>
 <li>Resolver walks root → TLD (.com) → authoritative name servers. Answers carry a <strong>TTL</strong>; cached until it expires.</li>
 <li>Try: <code>nslookup google.com</code>. Trap: after a server move some users hit the old IP until TTL expires → lower TTL before migrating.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e01/"><small>← PREVIOUS</small>URL to pixels</a>
 <a class="r" href="../s1e03/"><small>NEXT →</small>TCP handshake</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

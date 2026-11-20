@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 6 · Real-time</span>
 <h1><span class="hl">WebRTC</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Browser ↔ browser audio, video, data. See it: on a Meet call open <code>chrome://webrtc-internals</code>.</li>
 <li>Signaling (your choice, usually a WebSocket) swaps <strong>offer/answer (SDP)</strong> + <strong>ICE candidates</strong>. STUN = "what's my public address", TURN = relay when direct fails.</li>
 <li>Code: <code>new RTCPeerConnection({ iceServers })</code> → <code>createDataChannel</code> / <code>addTrack</code> → <code>createOffer</code> → <code>setLocalDescription</code> → send via signaling.</li>

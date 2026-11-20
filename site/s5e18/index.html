@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 18 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Partial failure</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>An error thrown during render with no boundary unmounts the whole tree. Wrap each widget in an <strong>ErrorBoundary</strong> with fallback + retry.</li>
 <li>Data: <code>Promise.allSettled</code>. Decide what's critical (price → error page) vs optional (recommendations → hide).</li>
 <li>Trap: boundaries don't catch event-handler or async errors → put the error in state and throw during render, or <code>throwOnError</code> in your data library.</li>

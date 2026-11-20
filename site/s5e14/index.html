@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 14 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Retries + backoff</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Exponential backoff: 1 s, 2 s, 4 s, 8 s… capped. Add <strong>jitter</strong> (random delay) to avoid the thundering herd.</li>
 <li>Retry network errors, timeouts/408, 429 (after Retry-After), 5xx like 503. Don't retry 400/401/404.</li>
 <li>React Query: queries retry 3× with <code>min(1000·2^n, 30000)</code> by default; mutations retry 0×. Trap: retry a POST only with an idempotency key.</li>

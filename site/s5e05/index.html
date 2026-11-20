@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 5 · Data fetching &amp; APIs</span>
 <h1><span class="hl">IQ: API design</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Idempotent: GET, PUT, DELETE (POST no, PATCH not guaranteed) → matters for retries; POST needs an <code>Idempotency-Key</code>.</li>
 <li>GraphQL N+1 (1 query for posts + 1 per author) → batch with <strong>DataLoader</strong>.</li>
 <li>Mobile screen needing 4 services → BFF. When not GraphQL: CDN caching critical, simple CRUD, one TS team (tRPC).</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 11 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Parallel requests</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Independent requests: start all, then <code>await Promise.all([...])</code> → total ≈ slowest, not the sum. HTTP/2 multiplexes; HTTP/1.1 ≈ 6 connections per host.</li>
 <li><code>Promise.all</code> rejects on the first failure (good results lost). <code>Promise.allSettled</code> → <code>{status, value | reason}</code> for each.</li>
 <li>Trap: <code>await a(); await b(); await c();</code> is sequential. Create the promises first, then await them together.</li>

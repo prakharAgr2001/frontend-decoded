@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 12 · State management</span>
 <h1><span class="hl">React Query</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li><code>useQuery({ queryKey, queryFn })</code> → <code>data</code>, <code>isPending</code>, <code>error</code>. Key = cache address; same key = one request (dedupe).</li>
 <li>Stale-while-revalidate: show cache now, refetch in background, swap if changed.</li>
 <li><code>staleTime</code> (fresh window, default 0) vs <code>gcTime</code> (unused data kept, default 5 min). Refetch on focus, reconnect, mount-when-stale.</li>

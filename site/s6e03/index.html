@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 3 · Real-time</span>
 <h1><span class="hl">Long polling</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Server holds the request open until there's news (or ~30 s timeout → empty response), client immediately asks again.</li>
 <li>Near-instant, plain HTTP. Costs: full request + headers per message, one open request per user.</li>
 <li>Trap: messages in the gap between polls → send a cursor (<code>?since=&lt;last id&gt;</code>) so the server returns everything after it.</li>

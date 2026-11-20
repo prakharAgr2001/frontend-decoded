@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 14 · Real-time</span>
 <h1><span class="hl">Presence</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Online/offline from connections + heartbeats + <strong>TTL</strong> (<code>SET presence:riya online EX 60</code>, renewed by each heartbeat).</li>
 <li>Count connections, not users (laptop closed, phone open = online). Debounce offline to avoid flapping.</li>
 <li>Fan-out: only to users currently viewing; throttle "typing…" (~1 event / 3 s, auto-expires).</li>

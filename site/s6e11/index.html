@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 11 · Real-time</span>
 <h1><span class="hl">Ordering</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>One socket = TCP order. Many paths (devices, reconnects, HTTP + socket) = no order guarantee. Sender clocks lie.</li>
 <li>Server assigns a <strong>sequence number per chat</strong>. Client: drop <code>seq &lt;= last</code>, buffer gaps and fetch missing ranges, apply in order.</li>
 <li>Trap: <code>async</code> onmessage handler that awaits (decrypt) can finish message 2 before 1 → queue and process one at a time.</li>

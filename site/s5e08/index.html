@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 8 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Infinite scroll vs pages</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Infinite: great for browsing on phones; footer unreachable, back button loses place, memory grows. Pages: hunting, shareable "page 3" URL, crawlable. Middle: <strong>Load more</strong>.</li>
 <li>Build: <code>IntersectionObserver</code> on a sentinel with <code>rootMargin: '600px'</code>; long lists → virtualization (S3E25).</li>
 <li>Trap: back button → top of feed. Keep loaded pages + scroll position (query cache or URL) and restore; don't refetch from page 1.</li>

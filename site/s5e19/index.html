@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 19 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Suspense boundaries</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>A suspending component shows the nearest <code>&lt;Suspense fallback&gt;</code> until everything inside is ready. Streaming (S2E13) sends the shell then each boundary; selective hydration (S2E11).</li>
 <li>One boundary = waits for the slowest; one per component = popcorn + jumps. Group: critical first, own boundary for heavy parts, below-the-fold together.</li>
 <li>Pair each Suspense boundary with an ErrorBoundary. Trap: <code>useEffect</code> fetching never suspends → use <code>use(promise)</code>, a framework loader, or <code>useSuspenseQuery</code>.</li>

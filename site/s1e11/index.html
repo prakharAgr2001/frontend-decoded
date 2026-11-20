@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 11 · How the browser really works</span>
 <h1><span class="hl">Layout thrashing</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EMKqAfwG/" target="_blank" rel="noopener">▶ Watch the reel</a></div><div class="sheet"><ul>
 <li>Read/write/read/write in a loop → a layout per read. Fix: batch all reads, then all writes; schedule writes in <code>requestAnimationFrame</code>.</li>
 <li>Shows as "Forced reflow is a likely performance bottleneck" in Performance.</li>
 <li>Q: layout-forcing reads: offsetHeight/Top, clientWidth, scrollTop, getBoundingClientRect().</li>

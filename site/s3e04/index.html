@@ -6,12 +6,110 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 3 · Episode 4 · Web performance</span>
 <h1><span class="hl">CLS</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df6yubfk4QQ/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 5 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#the-usual-culprits-and-their-fixes">The usual culprits and their fixes</a></li><li><a href="#measure-it-in-code">Measure it in code</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-story">Real-world story</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li><strong>CLS (Cumulative Layout Shift)</strong> measures how much visible content <strong>moves unexpectedly</strong> while someone uses the page.</li>
+<li><strong>Good ≤ 0.1, poor &gt; 0.25.</strong> It's one of Google's three Core Web Vitals, with LCP (loading) and INP (responsiveness).</li>
+<li>Almost every shift has the same fix: <strong>reserve the space before the content arrives.</strong></li>
+</ul>
+<h2 id="the-analogy">The analogy</h2>
+<p>Someone pulls your chair away just as you sit down. The chair was fine; it just moved at the worst moment. That's a layout shift: you aim for "Cancel", an ad loads above it, everything slides down, and your thumb lands on "Buy".</p>
+<h2 id="how-it-actually-works">How it actually works</h2>
+<p>Each time a visible element moves without the user causing it, the browser records a <strong>layout shift</strong> and gives it a score:</p>
+<p><strong>shift score = impact fraction × distance fraction</strong></p>
+<ul>
+<li><strong>Impact fraction:</strong> how much of the viewport the moving elements touched (before + after positions combined).</li>
+<li><strong>Distance fraction:</strong> how far they moved, as a fraction of the viewport's height (or width).</li>
+</ul>
+<p><strong>Example:</strong> an article covers 50% of the screen. A banner loads above it and pushes it down by 25% of the screen height. The article now touches 75% of the viewport (old + new area), so impact = 0.75, distance = 0.25 → <strong>score 0.19</strong>. One banner, and you're already in "needs improvement".</p>
+<h3 id="bursts-not-totals">Bursts, not totals</h3>
+<p>Shifts that happen close together are grouped into a <strong>session window</strong> (gaps under 1 second, the window capped at 5 seconds). Your page's CLS is the score of its <strong>worst window</strong>, so one bad moment decides the number, no matter how long the user stays.</p>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">❌ No space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Image arrives late, pushes everything down ⬇</div><div class="dg-c">The button jumps under your thumb</div><div class="dg-c">CLS goes up</div></div><div class="dg-col good"><div class="dg-h">✅ Space reserved</div><div class="dg-c">Heading</div><div class="dg-c">Paragraph you&#x27;re reading</div><div class="dg-c">Empty box the exact size of the image waits for it</div><div class="dg-c">The button never moves</div><div class="dg-c">CLS stays 0</div></div></div></figure>
+
+<h2 id="the-usual-culprits-and-their-fixes">The usual culprits and their fixes</h2>
+<p><strong>1. Images and videos without dimensions.</strong> The browser doesn't know how tall they'll be until they load.</p>
+<div class="hl-code"><pre><span></span><code><span class="cm">&lt;!-- The browser computes the aspect ratio from these and reserves the box --&gt;</span>
+<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">"hero.jpg"</span> <span class="na">width</span><span class="o">=</span><span class="s">"1200"</span> <span class="na">height</span><span class="o">=</span><span class="s">"675"</span> <span class="na">alt</span><span class="o">=</span><span class="s">"…"</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="nt">img</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span><span class="w"> </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c">/* stays responsive, keeps the ratio */</span>
+<span class="p">.</span><span class="nc">video-embed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">aspect-ratio</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w"> </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p><strong>2. Ads, embeds and iframes.</strong> Reserve the slot's most likely size:</p>
+<div class="hl-code"><pre><span></span><code><span class="p">.</span><span class="nc">ad-slot</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">min-height</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="kt">px</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c">/* don't collapse it to 0 when there's no ad */</span>
+</code></pre></div>
+
+<p><strong>3. Content injected above what the user is reading</strong> (cookie banners, "download our app" bars, late-loading announcements). Put them in reserved space, overlay them (<code>position: fixed</code>), or insert them below the fold.</p>
+<p><strong>4. Web fonts swapping in.</strong> A fallback font with different letter widths reflows the text when the real font arrives. Preload the key font and match the fallback's size:</p>
+<div class="hl-code"><pre><span></span><code><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"/fonts/inter.woff2"</span> <span class="na">as</span><span class="o">=</span><span class="s">"font"</span> <span class="na">type</span><span class="o">=</span><span class="s">"font/woff2"</span> <span class="na">crossorigin</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="p">@</span><span class="k">font-face</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">font-family</span><span class="o">:</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="o">;</span>
+<span class="w">  </span><span class="nt">src</span><span class="o">:</span><span class="w"> </span><span class="nt">local</span><span class="o">(</span><span class="s1">'Arial'</span><span class="o">);</span>
+<span class="w">  </span><span class="nt">size-adjust</span><span class="o">:</span><span class="w"> </span><span class="nt">107</span><span class="o">%;</span><span class="w">   </span><span class="c">/* tune so Arial takes the same space as Inter */</span>
+<span class="p">}</span>
+<span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">'Inter'</span><span class="p">,</span><span class="w"> </span><span class="s1">'Inter Fallback'</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p><strong>5. Animating layout properties.</strong> Animating <code>top</code>, <code>height</code> or <code>margin</code> moves other elements. Animate <code>transform</code> instead: it moves pixels without changing layout, so it never counts as a shift.</p>
+<h2 id="measure-it-in-code">Measure it in code</h2>
+<div class="hl-code"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">cls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="ow">new</span><span class="w"> </span><span class="nx">PerformanceObserver</span><span class="p">(</span><span class="nx">list</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">getEntries</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">entry</span><span class="p">.</span><span class="nx">hadRecentInput</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// shifts right after a tap/keypress don't count</span>
+<span class="w">      </span><span class="nx">cls</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'shift'</span><span class="p">,</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mf">3</span><span class="p">),</span><span class="w"> </span><span class="nx">entry</span><span class="p">.</span><span class="nx">sources</span><span class="o">?</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">node</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}).</span><span class="nx">observe</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'layout-shift'</span><span class="p">,</span><span class="w"> </span><span class="nx">buffered</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<p>(This simple sum ignores session windows; for the real number use Google's <code>web-vitals</code> library: <code>onCLS(console.log)</code>.)</p>
+<h2 id="see-it-yourself">See it yourself</h2>
+<ul>
+<li>DevTools → ⋮ → More tools → <strong>Rendering</strong> → tick <strong>Layout Shift Regions</strong>. Every shift flashes blue.</li>
+<li>DevTools → <strong>Performance</strong> → record a page load → the <strong>Layout shifts</strong> track shows each one and which element moved.</li>
+<li>Lighthouse / PageSpeed Insights → "Avoid large layout shifts" lists the guilty elements.</li>
+</ul>
+<h2 id="real-world-story">Real-world story</h2>
+<p>Yahoo! JAPAN News (over 22 billion page views a month) fixed late-loading images that shoved text down by reserving their space. Its layout-shift score dropped from about 0.2 to almost zero, and readers viewed about <strong>15% more pages per session</strong> with <strong>13% longer sessions</strong>. (Reel: <em>The page that jumps under your thumb</em>.)</p>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>Testing only on a fast laptop.</strong> Shifts happen when things load <em>late</em>: test with Network throttling on "Slow 4G".</li>
+<li><strong>Setting <code>height</code> in CSS but <code>width: 100%</code>.</strong> The image stretches. Use <code>width</code>/<code>height</code> attributes plus <code>height: auto</code>, or <code>aspect-ratio</code>.</li>
+<li><strong>Collapsing empty ad slots.</strong> If no ad fills, keep the reserved space (or a placeholder), or the content jumps up.</li>
+</ul>
+<h2 id="interview-questions">Interview questions</h2>
+<details>
+<summary>What is CLS and what counts as a good score?</summary>
+<p>The largest burst of unexpected layout shifts during the page's life. Each shift = impact fraction × distance fraction. Good ≤ 0.1, needs improvement up to 0.25, poor above 0.25.</p>
+</details>
+<details>
+<summary>Does every movement count as a layout shift?</summary>
+<p>No. Shifts within 500 ms of a user input (tap, click, keypress) are expected and excluded. Movement done with CSS <code>transform</code> doesn't change layout, so it never counts. Content appearing at the end of the page without moving anything doesn't count either.</p>
+</details>
+<details>
+<summary>How do you prevent layout shift from images?</summary>
+<p>Always give <code>width</code> and <code>height</code> attributes (or CSS <code>aspect-ratio</code>) so the browser reserves the box before the image downloads; keep it responsive with <code>max-width: 100%; height: auto</code>.</p>
+</details>
+<details>
+<summary>A cookie banner is causing CLS. What are your options?</summary>
+<p>Make it an overlay (<code>position: fixed</code>), reserve its space from the first paint (render it server-side), or place it at the bottom where it doesn't push content.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Sum of unexpected shifts; each = impact × distance; grouped into bursts (session windows); your worst burst = CLS.</li>
 <li>Culprits: images without width/height, ads/embeds without reserved space, injected banners, font swaps. Fix: reserve space (<code>width/height</code>, <code>aspect-ratio</code>, <code>min-height</code>).</li>
 <li>See it: Rendering → Layout Shift Regions. Trap: shifts within 500 ms of a tap/keypress are excluded; <code>transform</code> animations never shift layout.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s3e03/"><small>← PREVIOUS</small>LCP</a>
 <a class="r" href="../s3e05/"><small>NEXT →</small>INP</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

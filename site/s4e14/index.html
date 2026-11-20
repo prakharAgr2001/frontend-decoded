@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 14 · State management</span>
 <h1><span class="hl">Normalization</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Store each entity once, keyed by id; everything else references the id: <code>users.byId[7]</code>, <code>posts.byId[101].author = 7</code>.</li>
 <li>Wins: one source of truth, updates in one place, O(1) lookups, no deep spreads.</li>
 <li>Tools: RTK <code>createEntityAdapter</code>; Apollo/Relay normalize automatically (<code>__typename</code> + id). React Query caches per query (invalidate instead).</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 11 · State management</span>
 <h1><span class="hl">Server state</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Lives on a server, you hold a copy, others can change it → stale on arrival. Async, can fail, shared across users and tabs.</li>
 <li>Needs: caching, dedupe, refetch when stale, background updates, pagination, garbage collection.</li>
 <li><code>useEffect</code> fetch: no cache, duplicate requests, races. Server Components (S2·E14) remove the client copy for read-only data; interactive data still needs a client cache.</li>

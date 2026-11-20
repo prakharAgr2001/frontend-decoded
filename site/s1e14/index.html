@@ -6,12 +6,107 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 1 · Episode 14 · How the browser really works</span>
 <h1><span class="hl">One-chef kitchen</span></h1>
-<div class="sheet"><ul>
+<div class="meta"><a class="reel" href="https://www.instagram.com/reel/Df4EtHkCMKI/" target="_blank" rel="noopener">▶ Watch the reel</a><span>📖 4 min read</span><span>⚡ 1-min cheat sheet</span></div>
+<div class="tabs"><button class="on" data-p="deep">📖 Deep notes</button><button data-p="sheet">⚡ Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#tldr">TL;DR</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-actually-works">How it actually works</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#real-world-connection">Real-world connection</a></li><li><a href="#common-mistakes">Common mistakes</a></li><li><a href="#interview-questions">Interview questions</a></li></ul></details><div class="deep"><h2 id="tldr">TL;DR</h2>
+<ul>
+<li>JavaScript in the browser runs on <strong>one main thread</strong>: one "chef" who also handles clicks, scrolling, style, layout and paint.</li>
+<li><strong>Waiting</strong> (timers, network, events) happens outside the chef, in the browser's Web APIs. <strong>Computing</strong> happens on the chef.</li>
+<li>So a <code>fetch()</code> never freezes the page, but a long loop does. Anything over ~50 ms on the main thread is a <strong>long task</strong>, and users feel it.</li>
+</ul>
+<h2 id="the-analogy">The analogy</h2>
+<p>A restaurant with exactly one cook. The cook makes your food, but also takes orders, plates dishes and wipes the counter. If one order takes the cook 3 minutes of chopping, every other table waits, even the person who just wants water.</p>
+<p>The cook does have helpers: a timer on the oven, a delivery boy who fetches ingredients. They work on their own and leave a note on the counter when done. The cook reads the notes only when the hands are free.</p>
+<h2 id="how-it-actually-works">How it actually works</h2>
+<p>The main thread runs one piece of work at a time. Here's the loop it repeats forever:</p>
+<figure class="dg"><ol class="dg-steps loop"><li><b>Pick the oldest task</b><span>a click, a timer that fired, a fetch response…</span></li><li><b>Run it to the end</b><span>on the call stack, no interruptions</span></li><li><b>Run ALL microtasks</b><span>promise callbacks, queueMicrotask</span></li><li><b>Draw a frame (if it&#x27;s time)</b><span>requestAnimationFrame → style → layout → paint, ~every 16.7 ms</span></li></ol><div class="dg-loopback">↺ back to step 1, forever</div></figure>
+
+<p>Meanwhile the <strong>Web APIs</strong> (timers, network, input) work on their own and drop finished jobs into the task queue.</p>
+<ul>
+<li><strong>Call stack:</strong> the function the chef is running right now, and the functions that called it.</li>
+<li><strong>Web APIs:</strong> the helpers. <code>setTimeout</code>, <code>fetch</code>, DOM events and so on are handled by the browser, not by your JavaScript.</li>
+<li><strong>Task queue:</strong> finished helper jobs waiting for the chef (a timer fired, a click happened, a response arrived).</li>
+<li><strong>Rendering:</strong> the browser tries to draw ~60 times a second (every ~16.7 ms), but only <em>between</em> tasks. If your task runs 3 seconds, no frames are drawn for 3 seconds. That's the "frozen" page.</li>
+</ul>
+<h3 id="blocking-vs-not-blocking">Blocking vs not blocking</h3>
+<div class="hl-code"><pre><span></span><code><span class="c1">// Freezes the page for 3 seconds: the chef never gets a break.</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">3000</span><span class="p">;</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">end</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="c1">// Doesn't freeze anything: the waiting happens in the browser, not on the chef.</span>
+<span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/orders'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="nx">then</span><span class="p">(</span><span class="nx">render</span><span class="p">);</span>
+<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'3 seconds later'</span><span class="p">),</span><span class="w"> </span><span class="mf">3000</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="how-to-do-heavy-work-without-freezing">How to do heavy work without freezing</h3>
+<p><strong>1. Break it into chunks</strong> and give the chef a break between them:</p>
+<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">processAll</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">heavyWork</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">200</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Let clicks, scroll and paint happen, then continue.</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>2. Hire a second chef</strong> with a Web Worker, which runs on a separate thread (it can't touch the DOM, but it can crunch numbers):</p>
+<div class="hl-code"><pre><span></span><code><span class="c1">// main.js</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">worker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Worker</span><span class="p">(</span><span class="s1">'worker.js'</span><span class="p">);</span>
+<span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">bigArray</span><span class="p">);</span>
+<span class="nx">worker</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">showResult</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+
+<span class="c1">// worker.js</span>
+<span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">postMessage</span><span class="p">(</span><span class="nx">expensiveCalculation</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">));</span>
+</code></pre></div>
+
+<h2 id="see-it-yourself">See it yourself</h2>
+<ul>
+<li>Open any site, paste the 3-second <code>while</code> loop in the Console, then try to scroll or click. Nothing responds until it ends.</li>
+<li>DevTools → <strong>Performance</strong> → record while it runs. You'll see one long grey/yellow block with a red triangle: a <strong>long task</strong>.</li>
+</ul>
+<h2 id="real-world-connection">Real-world connection</h2>
+<p>Google's <strong>INP</strong> (Interaction to Next Paint) metric, one of the Core Web Vitals, measures exactly this: how long after a tap the page actually paints a response. Busy main threads are the #1 cause of bad INP.</p>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li><strong>"<code>async</code> makes it run in the background."</strong> It doesn't. An <code>async</code> function still runs on the main thread; only the <em>waiting</em> (<code>await fetch</code>) is offloaded.</li>
+<li><strong>Thinking <code>setTimeout(fn, 0)</code> runs now.</strong> It means "add a task as soon as possible". It still waits for the current task (and all microtasks) to finish.</li>
+<li><strong>Parsing a huge JSON or sorting 1 lakh rows in a click handler.</strong> Chunk it, move it to a worker, or do it on the server.</li>
+</ul>
+<h2 id="interview-questions">Interview questions</h2>
+<details>
+<summary>Is JavaScript single-threaded? Then how does fetch not block?</summary>
+<p>Your JavaScript runs on one thread, but the browser is multi-threaded. <code>fetch</code> hands the request to the browser's network layer; when the response arrives, a callback is queued and runs when the main thread is free.</p>
+</details>
+<details>
+<summary>What's the output order?</summary>
+<div class="hl-code"><pre><span></span><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'A'</span><span class="p">);</span>
+<span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'B'</span><span class="p">),</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
+<span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">().</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'C'</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'D'</span><span class="p">);</span>
+</code></pre></div>
+
+<p><strong>A, D, C, B.</strong> Synchronous code first (A, D). Then all microtasks (the promise: C). Then the next task (the timer: B).</p>
+</details>
+<details>
+<summary>What is a long task and why does it matter?</summary>
+<p>Any task that keeps the main thread busy for more than 50 ms. During it the page can't respond to input or paint, so clicks feel laggy. It directly hurts INP.</p>
+</details>
+<details>
+<summary>How would you keep the UI responsive while processing a large dataset?</summary>
+<p>Split the work into chunks and yield between them (<code>setTimeout</code>, or <code>scheduler.yield()</code> where supported), move pure computation to a Web Worker, or paginate/virtualise so you don't process everything at once.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>JS runs on one main thread that also does style, layout, paint. A 3 s loop freezes everything.</li>
 <li>Waiting (timers, fetch, events) happens in browser Web APIs; results come back through queues.</li>
 <li>Trap: <code>setTimeout(fn, 0)</code> = "as soon as possible", not "now".</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">🖨️ Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">🔎 Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='✅ Link copied')">📤 Share</button></div>
 <div class="nav"><a href="../s1e12/"><small>← PREVIOUS</small>Smooth animation</a>
 <a class="r" href="../s1e15/"><small>NEXT →</small>Call stack &amp; task queue</a></div>
-<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">🦊 This is the cheat sheet for a short reel. Watch it, and get a new one every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

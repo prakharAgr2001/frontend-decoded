@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 9 · Real-time</span>
 <h1><span class="hl">Heartbeats</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>A dead TCP connection doesn't announce itself (sleep, Wi-Fi drop) → <strong>half-open</strong> connection; app shows "online" forever. Proxies also kill idle connections.</li>
 <li>App-level ping/pong: every message resets a timer; silence &gt; interval + margin (e.g. 35 s for 30 s pings) → <code>ws.close()</code> → reconnect.</li>
 <li>Browsers answer protocol ping frames silently, and JS can't send them → apps send their own <code>{type:'ping'}</code>.</li>

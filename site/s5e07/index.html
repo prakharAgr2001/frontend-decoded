@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 7 · Data fetching &amp; APIs</span>
 <h1><span class="hl">Cursor pagination</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>"10 items older than this one": response has <code>items</code> + opaque <code>nextCursor</code>; client sends <code>?after=&lt;cursor&gt;</code>; <code>null</code> = end.</li>
 <li>Server: <code>WHERE created_at &lt; :cursor ORDER BY created_at DESC LIMIT 10</code> — with an index, page 1000 ≈ page 1.</li>
 <li>See it: <code>reddit.com/r/javascript.json</code> → <code>"after": "t3_…"</code>.</li>

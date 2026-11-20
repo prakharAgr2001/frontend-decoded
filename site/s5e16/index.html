@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 16 · Data fetching &amp; APIs</span>
 <h1><span class="hl">429 Too Many Requests</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Rate limits: N requests per user / IP / key per window. Token bucket: each request spends a token; tokens refill steadily.</li>
 <li>See it: <code>api.github.com</code> headers <code>x-ratelimit-limit: 60</code>, <code>x-ratelimit-remaining</code>, <code>x-ratelimit-reset</code> (unauthenticated).</li>
 <li>On 429: read <code>Retry-After</code> and wait. Be a good client: debounce, dedupe, cache.</li>

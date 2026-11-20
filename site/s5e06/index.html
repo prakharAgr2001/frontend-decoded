@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 6 · Data fetching &amp; APIs</span>
 <h1><span class="hl">The offset bug</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li><code>?limit=10&amp;offset=10</code> → <code>LIMIT 10 OFFSET 10</code>. New item on top shifts rows → <strong>duplicates</strong>; deletes shift up → <strong>skipped</strong> items.</li>
 <li>Deep offsets are slow: DB still reads and discards every skipped row.</li>
 <li>Trap: offset is fine for rarely-changing data and jump-to-page UIs (admin tables, search results). It breaks on fast-changing feeds.</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 21 · State management</span>
 <h1><span class="hl">Immer</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>React compares by reference; mutation = same object = no re-render. Nested spreads are error-prone.</li>
 <li><code>produce(state, draft =&gt; { draft.user.address.city = 'Pune' })</code>: Proxy records writes, copy-on-write, structural sharing, frozen in dev.</li>
 <li>Used in RTK <code>createSlice</code>, <code>useImmer</code>, Zustand immer middleware. Trap: <code>d =&gt; d.count = 5</code> mutates AND returns → throws; use braces.</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 5 · Episode 13 · Data fetching &amp; APIs</span>
 <h1><span class="hl">AbortController</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li><code>const c = new AbortController(); fetch(url, { signal: c.signal }); c.abort();</code> → really stops the request.</li>
 <li>In effects: abort in the cleanup; ignore <code>AbortError</code> (a cancel isn't a failure). <code>AbortSignal.timeout(5000)</code> for timeouts.</li>
 <li>See it: Network shows aborted requests as <strong>(canceled)</strong>. Trap: abort doesn't undo a POST already on the server → idempotency key + status check.</li>

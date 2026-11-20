@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 13 · State management</span>
 <h1><span class="hl">Cache invalidation</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>After a mutation: <code>qc.invalidateQueries({ queryKey: ['addresses'] })</code> → marks matching queries stale, refetches active ones.</li>
 <li>Keys are folders: prefix match (<code>['addresses']</code> hits <code>['addresses', 7]</code>); <code>exact: true</code> for one key.</li>
 <li>Or <code>setQueryData</code> with the server's response (skip a round trip). Too little = screens lie; too much = refetch the world.</li>

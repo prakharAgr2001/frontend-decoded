@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 4 · Episode 20 · State management</span>
 <h1><span class="hl">State machines</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Boolean soup: 3 booleans = 8 combos, ~4 valid. Use one <code>status</code> + explicit transitions.</li>
 <li><code>machine = { idle: { SUBMIT: 'submitting' }, submitting: { OK, FAIL }, error: { RETRY } }</code>; unknown events are ignored.</li>
 <li>XState for complex flows (nested/parallel states, guards, timers, visual editor). Double payment: machine ignores SUBMIT + disable button + idempotency key.</li>

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 5 · Real-time</span>
 <h1><span class="hl">WebSockets</span></h1>
-<div class="sheet"><ul>
+<div class="meta"></div><div class="sheet"><ul>
 <li>Starts as HTTP <code>GET</code> with <code>Upgrade: websocket</code> → <code>101 Switching Protocols</code> → same TCP connection carries frames both ways.</li>
 <li>Frame header 2–14 bytes vs hundreds of bytes of HTTP headers. <code>wss://</code> = over TLS.</li>
 <li>API: <code>onopen</code>, <code>send</code>, <code>onmessage</code>, <code>onclose</code>. Each message is a task (S1E15) → batch bursts, render once per frame (<code>requestAnimationFrame</code>).</li>
