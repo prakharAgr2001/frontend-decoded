@@ -6,15 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 10 · Real-time</span>
 <h1><span class="hl">Reconnect</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Reconnecting <strong>instantly</strong> after a server restart makes every client reconnect at once: a <strong>thundering herd</strong>.</li>
+<li>Use <strong>exponential backoff</strong> (1, 2, 4, 8 … capped at 30 s) with <strong>random jitter</strong>.</li>
+<li>On reconnect: <strong>resync</strong> missed messages (<code>since=&lt;last seq&gt;</code>), then <strong>flush the outbox</strong> of unsent messages. Don't retry closes that won't succeed (like auth failures).</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>When a socket closes unexpectedly, I reconnect with exponential backoff and jitter so clients don't stampede the server after an outage. Once reconnected, I fetch everything after the last sequence number I processed, then resend any queued outgoing messages. I listen to online, offline and visibilitychange events to reconnect promptly when the network returns, and I use an AbortController to tear down the old socket's listeners and pending catch-up requests. I only retry abnormal closures; a normal close or an authentication failure needs a different response, like re-login.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>After a power cut, if every house switches every appliance on at the same instant, the grid trips again. Switching on gradually, at slightly different times, lets everyone recover.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Socket closes (1006 abnormal)</b><span>wait 1 s ± jitter, then 2 s, 4 s … max 30 s</span></li><li><b>Connected</b><span>reset the backoff</span></li><li><b>Resync</b><span>GET /messages?since=&lt;last seq&gt;</span></li><li><b>Flush outbox</b><span>resend messages typed while offline</span></li><li><b>online / visibilitychange</b><span>try again right away</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">attempt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">connect</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">ws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">WebSocket</span><span class="p">(</span><span class="nx">URL</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">attempt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">resyncSince</span><span class="p">(</span><span class="nx">lastSeq</span><span class="p">);</span><span class="w"> </span><span class="nx">flushOutbox</span><span class="p">(</span><span class="nx">ws</span><span class="p">);</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="nx">ws</span><span class="p">.</span><span class="nx">onclose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1000</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">code</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">4001</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w">           </span><span class="c1">// normal close / auth failed: don't retry</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="mf">30</span><span class="nx">_000</span><span class="p">,</span><span class="w"> </span><span class="mf">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="nx">attempt</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">connect</span><span class="p">,</span><span class="w"> </span><span class="nx">delay</span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'online'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">attempt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">connect</span><span class="p">();</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Instant retries</strong> in a tight loop: thundering herd and battery drain.</li>
+<li><strong>Retrying every close</strong>: an expired session needs re-login, not infinite retries.</li>
+<li><strong>Not resyncing</strong>: messages sent while you were disconnected never appear.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>WhatsApp Web → turn Wi-Fi off: a "Computer not connected" banner appears. Turn it on: missed messages arrive after a moment.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why add jitter to reconnect backoff?</summary>
+<p>So clients that disconnected at the same moment don't all reconnect at the same moment.</p>
+</details>
+<details>
+<summary>What should happen right after reconnecting?</summary>
+<p>Fetch missed messages since the last processed sequence number, then resend the outbox.</p>
+</details>
+<details>
+<summary>Which closes shouldn't trigger automatic reconnects?</summary>
+<p>Normal closes (1000) and auth/permission failures; those need user action instead.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>See it: WhatsApp Web, Wi-Fi off → "Computer not connected" banner; on → missed messages appear.</li>
 <li>Naive instant reconnect → <strong>thundering herd</strong> after a server restart. Fix: exponential backoff (1, 2, 4, 8 … cap 30 s) + random <strong>jitter</strong> (S5E14).</li>
 <li>On open: resync <code>since=&lt;last seq&gt;</code>, then flush the outbox. Listen to <code>online</code> / <code>offline</code> / <code>visibilitychange</code>.</li>
 <li><code>AbortController</code> (S5E13): one <code>abort()</code> removes the old socket's listeners and cancels its catch-up fetch.</li>
 <li>Trap: don't retry every close. 1000 = normal close; auth failures need re-login, not retries. Retry network errors (1006).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e09/"><small>← PREVIOUS</small>Heartbeats</a>
 <a class="r" href="../s6e11/"><small>NEXT →</small>Ordering</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

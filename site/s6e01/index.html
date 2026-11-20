@@ -6,14 +6,56 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 1 · Real-time</span>
 <h1><span class="hl">How did it arrive?</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Normal HTTP is <strong>request → response</strong>: the server can't speak first. "Real-time" means the server can <strong>push</strong> the moment something happens.</li>
+<li>There are five ways to get updates: <strong>short polling, long polling, Server-Sent Events (SSE), WebSockets, WebRTC</strong>.</li>
+<li>Pick by <strong>who talks and how often</strong>, not by hype: a badge can poll, AI answers stream over SSE, chat uses WebSockets.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>HTTP is client-initiated, so to get updates the client either asks repeatedly or keeps a channel open that the server can write to. Short polling asks on a timer; long polling holds each request open until there's news; Server-Sent Events keep one HTTP response open for server-to-client messages; WebSockets upgrade to a full-duplex connection; and WebRTC connects browsers directly for media and data. I choose based on direction, frequency and latency needs rather than defaulting to WebSockets.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Waiting for a parcel. <strong>Short polling</strong>: you check the door every 5 minutes. <strong>Long polling</strong>: you stand at the door until it comes, then go back and wait again. <strong>SSE</strong>: the courier rings your bell whenever something arrives. <strong>WebSockets</strong>: an open phone line you can both talk on. <strong>WebRTC</strong>: you and your friend talk directly without the post office in between.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Transport</div><div class="dg-c">Short polling</div><div class="dg-c">Long polling</div><div class="dg-c">SSE</div><div class="dg-c">WebSockets</div><div class="dg-c">WebRTC</div></div><div class="dg-col good"><div class="dg-h">Direction and best use</div><div class="dg-c">Client asks on a timer: badges, dashboards</div><div class="dg-c">Server answers when there&#x27;s news: fallback for real-time</div><div class="dg-c">Server → client stream: notifications, scores, AI answers</div><div class="dg-c">Both ways, low latency: chat, games, live cursors</div><div class="dg-c">Browser ↔ browser: calls, video, P2P data</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"Real-time means WebSockets."</strong> Often SSE or even polling is simpler and enough.</li>
+<li><strong>Ignoring direction.</strong> If only the server sends, a two-way socket is extra complexity.</li>
+<li><strong>Forgetting reconnection.</strong> Every long-lived connection drops eventually.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open WhatsApp Web → DevTools → <strong>Network</strong> → filter <strong>WS</strong> → click the connection → <strong>Messages</strong>: received frames in red (down arrow) and sent frames in green (up arrow).</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why can't plain HTTP push data to the client?</summary>
+<p>It's request-response: the server can only reply to a request the client made.</p>
+</details>
+<details>
+<summary>Name the five real-time transports.</summary>
+<p>Short polling, long polling, Server-Sent Events, WebSockets, WebRTC.</p>
+</details>
+<details>
+<summary>Which would you use to stream an AI chatbot's answer?</summary>
+<p>Server-Sent Events (server → client streaming over plain HTTP).</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>HTTP is request → response: the server can't speak first. "Real-time" = the server can push the moment something happens.</li>
 <li>See it: WhatsApp Web → DevTools → Network → filter <strong>WS</strong> → click the connection → <strong>Messages</strong>. ↓ red = received, ↑ green = sent.</li>
 <li>Five transports: short polling · long polling · Server-Sent Events · WebSockets · WebRTC.</li>
 <li>Trap: "real-time means WebSockets" → no. Pick by <strong>who talks</strong> and <strong>how often</strong> (a badge can poll; AI answers stream over SSE).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><span></span>
 <a class="r" href="../s6e02/"><small>NEXT →</small>Short polling</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

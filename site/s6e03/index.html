@@ -6,13 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 3 · Real-time</span>
 <h1><span class="hl">Long polling</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>In <strong>long polling</strong>, the server <strong>holds the request open until there's news</strong> (or a timeout of about 30 s, then an empty response). The client immediately sends the next request.</li>
+<li>Updates arrive almost instantly, using plain HTTP.</li>
+<li>Costs: full request and headers per message, and one open request per user. Use a <strong>cursor</strong> so no messages are lost between polls.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Long polling keeps each request open on the server until new data is available or a timeout expires; the client then immediately reopens it. This gives near real-time delivery over standard HTTP, which works through restrictive proxies and was the classic fallback before WebSockets. It's heavier than a persistent connection because every message needs a new request with full headers. To avoid losing messages that arrive between requests, the client sends the ID of the last message it saw, and the server returns everything after it.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Calling a shop and saying "call me back the moment the stock arrives". They keep the line on hold until it does. Once you hang up, you immediately call again to wait for the next delivery.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Client</b><span>GET /messages?since=981</span></li><li><b>Server waits</b><span>until a new message or ~30 s</span></li><li><b>Server responds</b><span>with the new messages (or empty on timeout)</span></li><li><b>Client immediately</b><span>GET /messages?since=&lt;last id&gt;</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">longPoll</span><span class="p">(</span><span class="nx">since</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`/api/messages?since=</span><span class="si">${</span><span class="nx">since</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span><span class="w">     </span><span class="c1">// server holds it open</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">msgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">      </span><span class="nx">msgs</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">render</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">msgs</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span><span class="w"> </span><span class="nx">since</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">msgs</span><span class="p">[</span><span class="nx">msgs</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1</span><span class="p">].</span><span class="nx">id</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="mf">2000</span><span class="p">));</span><span class="w">                 </span><span class="c1">// back off on errors</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Messages lost in the gap</strong> between one response and the next request. Always send a cursor (<code>since</code>).</li>
+<li><strong>Proxy and load balancer timeouts</strong> shorter than your hold time cut requests early.</li>
+<li><strong>Server resources</strong>: each waiting client holds a request; the server must handle many idle connections efficiently.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>DevTools → <strong>Network</strong> on an app using long polling: requests stay "pending" for a long time, complete, and a new one starts straight away.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How is long polling different from short polling?</summary>
+<p>The server holds the request until there's data (or a timeout) instead of answering immediately, so updates arrive almost instantly.</p>
+</details>
+<details>
+<summary>How do you avoid losing messages between long-poll requests?</summary>
+<p>Send a cursor (last message ID) and have the server return everything after it.</p>
+</details>
+<details>
+<summary>Main cost compared to WebSockets?</summary>
+<p>A new HTTP request with full headers for every response, plus connection overhead.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Server holds the request open until there's news (or ~30 s timeout → empty response), client immediately asks again.</li>
 <li>Near-instant, plain HTTP. Costs: full request + headers per message, one open request per user.</li>
 <li>Trap: messages in the gap between polls → send a cursor (<code>?since=&lt;last id&gt;</code>) so the server returns everything after it.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e02/"><small>← PREVIOUS</small>Short polling</a>
 <a class="r" href="../s6e04/"><small>NEXT →</small>Server-Sent Events</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

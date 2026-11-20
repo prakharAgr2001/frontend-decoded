@@ -6,14 +6,67 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 5 · Real-time</span>
 <h1><span class="hl">WebSockets</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A WebSocket starts as an HTTP <code>GET</code> with <code>Upgrade: websocket</code>. The server replies <strong><code>101 Switching Protocols</code></strong>, and the same connection then carries <strong>frames both ways</strong>.</li>
+<li>Frames have tiny headers (2–14 bytes) vs hundreds of bytes for HTTP headers. <code>wss://</code> runs over TLS.</li>
+<li>WebSockets <strong>do not reconnect by themselves</strong>. Reconnecting, catching up and resending are your job.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>A WebSocket connection begins with an HTTP upgrade handshake and then switches to a persistent, full-duplex protocol over the same TCP connection, where both sides can send text or binary frames with very little overhead. It's the right choice when the client also sends frequently with low latency, like chat, games or collaborative cursors. The browser API is simple, onopen, send, onmessage and onclose, but the application must handle reconnection, heartbeats, ordering and message acknowledgements. Each message is a separate task on the main thread, so I batch bursts and render once per animation frame.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A phone call versus sending letters. After dialling (the HTTP upgrade), both people can talk any time without re-addressing an envelope for every sentence.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">GET /chat · Upgrade: websocket · Sec-WebSocket-Key: …</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">101 Switching Protocols</div></div><div class="dg-msg"><div class="who">Browser <i>→</i> Server</div><div class="say">frame: {&quot;type&quot;:&quot;message&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div><div class="dg-msg reply"><div class="who">Browser <i>←</i> Server</div><div class="say">frame: {&quot;type&quot;:&quot;message&quot;,&quot;from&quot;:&quot;Riya&quot;,&quot;text&quot;:&quot;hey!&quot;}</div></div><div class="dg-note">Same TCP connection, both directions, tiny frame headers</div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">WebSocket</span><span class="p">(</span><span class="s1">'wss://chat.example.com/socket'</span><span class="p">);</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'join'</span><span class="p">,</span><span class="w"> </span><span class="nx">room</span><span class="o">:</span><span class="w"> </span><span class="s1">'general'</span><span class="w"> </span><span class="p">}));</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="nx">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">queue</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1</span><span class="p">)</span><span class="w"> </span><span class="nx">requestAnimationFrame</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">renderMessages</span><span class="p">(</span><span class="nx">queue</span><span class="p">);</span><span class="w"> </span><span class="nx">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span><span class="w"> </span><span class="p">});</span><span class="w">  </span><span class="c1">// batch bursts</span>
+<span class="p">};</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onclose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">scheduleReconnect</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">code</span><span class="p">);</span><span class="w">      </span><span class="c1">// not automatic: you must reconnect (E10)</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>No automatic reconnect.</strong> A dropped connection stays dropped until your code reconnects.</li>
+<li><strong>Rendering on every message</strong> in a burst floods the main thread. Batch per frame.</li>
+<li><strong>Load balancers</strong> must support the Upgrade header and long idle timeouts.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>WhatsApp Web → DevTools → <strong>Network</strong> → <strong>WS</strong> → click the socket → <strong>Headers</strong> shows the <code>101 Switching Protocols</code> upgrade; <strong>Messages</strong> shows the frames.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What status code completes the WebSocket handshake?</summary>
+<p>101 Switching Protocols.</p>
+</details>
+<details>
+<summary>Does a WebSocket reconnect automatically after a drop?</summary>
+<p>No. The application must implement reconnection (unlike EventSource).</p>
+</details>
+<details>
+<summary>Why are WebSockets more efficient than polling for chat?</summary>
+<p>One persistent connection with tiny frame headers instead of repeated HTTP requests with full headers, and the server can push instantly.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Starts as HTTP <code>GET</code> with <code>Upgrade: websocket</code> → <code>101 Switching Protocols</code> → same TCP connection carries frames both ways.</li>
 <li>Frame header 2–14 bytes vs hundreds of bytes of HTTP headers. <code>wss://</code> = over TLS.</li>
 <li>API: <code>onopen</code>, <code>send</code>, <code>onmessage</code>, <code>onclose</code>. Each message is a task (S1E15) → batch bursts, render once per frame (<code>requestAnimationFrame</code>).</li>
 <li>Trap: WebSockets do <strong>not</strong> reconnect by themselves. Reconnect, catch up and resend are your job (E10).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e04/"><small>← PREVIOUS</small>Server-Sent Events</a>
 <a class="r" href="../s6e06/"><small>NEXT →</small>WebRTC</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

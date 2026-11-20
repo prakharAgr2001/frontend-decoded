@@ -6,15 +6,57 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 19 · Real-time</span>
 <h1><span class="hl">Finale: one chat app</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>One chat app uses everything from Season 6: <strong>WebSocket</strong> for chat, <strong>SSE</strong> for notifications, <strong>WebRTC</strong> for calls (with the socket for signaling), <strong>polling</strong> for the admin dashboard.</li>
+<li>Sending: client UUID + outbox → optimistic bubble → server sequence number + ack → tick. Retries are deduplicated.</li>
+<li>Surviving and scaling: heartbeats, backoff with jitter, resync since the last sequence, pub/sub, TTL presence, throttled typing, CRDTs for shared notes.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>For a chat app I'd use WebSockets for messaging, SSE for one-way notifications, WebRTC for voice and video with the socket as the signaling channel, and simple polling where updates are rare. Messages get client-generated IDs, sit in an outbox until acknowledged, appear optimistically, and are ordered by server sequence numbers with deduplication. Connections use 25-second heartbeats, reconnect with exponential backoff and jitter, and resync from the last sequence before flushing the outbox. Socket servers stay stateless behind pub/sub, presence uses TTL keys sent only to viewers, typing is throttled, and shared notes use a CRDT library.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A well-run railway network: different trains for different journeys (transports), numbered tickets so nothing is lost or counted twice (ids, acks, sequence), signals that detect broken tracks (heartbeats), and a central control room connecting every station (pub/sub).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Transports</b><span>WebSocket chat · SSE notifications · WebRTC calls · polling for admin</span></li><li><b>Send</b><span>client UUID → outbox → optimistic bubble → server seq + ack → tick</span></li><li><b>Order and dedup</b><span>apply by seq, drop seen ids, fetch gaps</span></li><li><b>Stay alive</b><span>heartbeat ~25 s → backoff + jitter → resync since last seq → flush outbox</span></li><li><b>Scale</b><span>stateless socket servers + pub/sub, drain on deploy</span></li><li><b>Presence and typing</b><span>TTL keys, viewers only, throttled typing</span></li><li><b>Shared notes</b><span>CRDT library (Yjs)</span></li></ol></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>One transport for everything</strong> adds needless complexity or waste.</li>
+<li><strong>Server-generated message ids</strong> make retries impossible to dedupe.</li>
+<li><strong>No resync after reconnect</strong> loses messages sent while offline.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Use WhatsApp Web with DevTools open: the WS connection for chat, small periodic heartbeat frames, ticks updating as acks arrive, and recovery after toggling Wi-Fi.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why use SSE for notifications if chat already uses WebSockets?</summary>
+<p>Notifications are one-way and can come from other services; SSE is simple, reconnects automatically and works over plain HTTP. (Using the existing socket is also valid; it's a design trade-off.)</p>
+</details>
+<details>
+<summary>What happens to messages typed while offline?</summary>
+<p>They wait in the outbox with client IDs, shown as pending, and are sent after reconnect and resync; the server dedupes any repeats.</p>
+</details>
+<details>
+<summary>How do messages reach users connected to different servers?</summary>
+<p>Through a pub/sub layer that all socket servers publish to and subscribe from.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Transports: WebSocket for chat, SSE for notifications, WebRTC for calls (socket = signaling), polling for the admin dashboard.</li>
 <li>Send: client UUID + outbox → optimistic bubble → server seq + ack → tick; retries deduped.</li>
 <li>Survive: heartbeats 25 s → backoff + jitter → resync since last seq → flush outbox.</li>
 <li>Scale: dumb socket servers + pub/sub; presence with TTL to viewers only; typing throttled. Shared notes: CRDT library.</li>
 <li>Next: Season 7 · Caching.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e18/"><small>← PREVIOUS</small>IQ: collaboration</a>
 </div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

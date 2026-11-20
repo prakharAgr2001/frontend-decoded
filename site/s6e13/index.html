@@ -6,14 +6,67 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 13 · Real-time</span>
 <h1><span class="hl">Scaling WebSockets</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Sockets are <strong>stateful</strong>: Alice is connected to server A, Bob to server B. Server A can't write to Bob's socket.</li>
+<li>Fix: <strong>pub/sub</strong> (Redis, Kafka, NATS). Server A publishes to <code>user:bob</code>; server B is subscribed and pushes it down Bob's socket.</li>
+<li>Keep socket servers simple, scale them out, and on deploys <strong>drain gradually</strong> so clients reconnect with jitter.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>With multiple WebSocket servers, each user's connection lives on one specific server, so a message for a user connected elsewhere must be routed. I use a pub/sub layer like Redis, Kafka or NATS: each socket server subscribes to channels for its connected users or rooms, and any server publishes events to those channels. Socket servers stay stateless apart from connections and scale horizontally behind a load balancer that supports upgrades and long idle timeouts. Deploys close every socket on a server, so I drain servers gradually and rely on client backoff with jitter. Sticky sessions only help a reconnect land on the same server; they don't solve cross-server delivery.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Two call centres in different cities. A customer on a call in Pune needs a message passed to one on a call in Delhi. The Pune agent posts it on a shared internal board, and the Delhi agent watching that board reads it out to their caller.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-chat"><div class="dg-msg"><div class="who">Alice <i>→</i> Server A</div><div class="say">send &quot;hi&quot; to Bob</div></div><div class="dg-msg"><div class="who">Server A <i>→</i> Redis pub/sub</div><div class="say">PUBLISH user:bob {&quot;from&quot;:&quot;alice&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div><div class="dg-msg reply"><div class="who">Server B <i>←</i> Redis pub/sub</div><div class="say">message on user:bob (B subscribed when Bob connected)</div></div><div class="dg-msg reply"><div class="who">Bob <i>←</i> Server B</div><div class="say">frame: {&quot;from&quot;:&quot;alice&quot;,&quot;text&quot;:&quot;hi&quot;}</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Socket server (Node + ws + Redis)</span>
+<span class="nx">wss</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connection'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">ws</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">subscriber</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="sb">`user:</span><span class="si">${</span><span class="nx">userId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">msg</span><span class="p">));</span>
+<span class="w">  </span><span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span><span class="w"> </span><span class="nx">raw</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">to</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">raw</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">publisher</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="sb">`user:</span><span class="si">${</span><span class="nx">to</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="kr">from</span><span class="o">:</span><span class="w"> </span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Sticky sessions as the fix.</strong> They don't deliver messages between servers.</li>
+<li><strong>Deploying all servers at once</strong> drops every connection simultaneously → reconnect storm.</li>
+<li><strong>Load balancer idle timeouts</strong> shorter than your heartbeat interval.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Run two instances of a small WebSocket server on different ports with a shared Redis, connect one client to each, and send messages between them through pub/sub.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why can't server A send directly to Bob?</summary>
+<p>Bob's socket lives on server B; A has no connection to him.</p>
+</details>
+<details>
+<summary>Do sticky sessions solve cross-server messaging?</summary>
+<p>No. They only route a client back to the same server; messages still need pub/sub to reach users on other servers.</p>
+</details>
+<details>
+<summary>How do you deploy socket servers without a reconnect storm?</summary>
+<p>Drain servers gradually (stop new connections, close existing ones over time) and rely on clients reconnecting with backoff and jitter.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Sockets are stateful: Alice on server A, Bob on server B. Fix: <strong>pub/sub</strong> (Redis, Kafka, NATS): A publishes to <code>user:bob</code>, B is subscribed and pushes down Bob's socket.</li>
 <li>Keep socket servers dumb, scale out; load balancer must support Upgrade + long idle timeouts.</li>
 <li>Deploys drop every socket on a server → drain gradually, clients reconnect with jitter.</li>
 <li>Trap: sticky sessions only route reconnects to the same server; they don't deliver cross-server messages.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e12/"><small>← PREVIOUS</small>Acks &amp; dedup</a>
 <a class="r" href="../s6e14/"><small>NEXT →</small>Presence</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

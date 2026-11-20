@@ -6,15 +6,66 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 16 · Real-time</span>
 <h1><span class="hl">Edit conflicts</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>If two people edit and the app saves <strong>whole documents</strong>, the <strong>last save wins</strong> and someone's words disappear.</li>
+<li>Instead, send <strong>operations</strong> (<code>insert 'h' at 1</code>). But positions shift when edits happen at the same time, so operations must be <strong>adjusted</strong>.</li>
+<li>For forms, use <strong>optimistic concurrency</strong>: <code>PUT</code> with <code>If-Match: &lt;etag&gt;</code> → <strong><code>412 Precondition Failed</code></strong> means someone else changed it first.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Saving the whole document causes lost updates when two people edit concurrently, because the last write overwrites the other. Collaborative editors send fine-grained operations instead, but concurrent operations refer to positions that may have shifted, so they need to be transformed or modelled so they converge. For ordinary forms and records I use optimistic concurrency control with ETags: the client sends If-Match with the version it loaded, and if the server's version changed it returns 412, so the client can merge or ask the user. Pessimistic locking works but frustrates users, so I reserve it for things like tickets, not live text.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Two people editing the same printed page and both photocopying their version back into the folder. Whoever copies last wins, and the other person's corrections vanish.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Start</b><span>text = &quot;cat&quot;</span></li><li><b>Riya</b><span>insert &quot;h&quot; at position 1 → &quot;chat&quot;</span></li><li><b>Arjun, at the same time</b><span>delete position 2 (the &quot;t&quot; in &quot;cat&quot;)</span></li><li><b>Applied blindly on &quot;chat&quot;</b><span>deletes &quot;a&quot; → &quot;cht&quot; (wrong)</span></li><li><b>Adjusted for Riya&#x27;s insert</b><span>delete position 3 → &quot;cha&quot; (both intents kept)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// Forms: optimistic concurrency with ETags</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/profile'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'PUT'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Content-Type'</span><span class="o">:</span><span class="w"> </span><span class="s1">'application/json'</span><span class="p">,</span><span class="w"> </span><span class="s1">'If-Match'</span><span class="o">:</span><span class="w"> </span><span class="nx">etag</span><span class="w"> </span><span class="p">},</span><span class="w">   </span><span class="c1">// version we loaded</span>
+<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">profile</span><span class="p">),</span>
+<span class="p">});</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">412</span><span class="p">)</span><span class="w"> </span><span class="nx">showConflictDialog</span><span class="p">();</span><span class="w">                          </span><span class="c1">// someone saved first</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Last-write-wins on shared documents</strong> silently loses work.</li>
+<li><strong>Locking live text</strong>: a forgotten open tab blocks everyone.</li>
+<li><strong>Ignoring 412</strong>: overwriting anyway defeats the protection.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open the same Google Doc in two windows (or with a friend) and type in the same sentence: coloured, named cursors and both edits survive.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why does "save the whole document" lose edits?</summary>
+<p>The last save overwrites the entire document, including changes made by others since it was loaded.</p>
+</details>
+<details>
+<summary>"cat": Riya inserts "h" at 1, Arjun concurrently deletes at 2. What's the right result?</summary>
+<p>"cha": Arjun's delete must be shifted to position 3 because of Riya's insert.</p>
+</details>
+<details>
+<summary>What does a 412 response mean with If-Match?</summary>
+<p>The resource changed since your version (ETag mismatch), so your update was rejected to avoid overwriting someone else's change.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>See it: Google Docs with a friend: coloured named cursors in the same sentence.</li>
 <li>Whole-document saves = <strong>last save wins</strong> → lost words. Send <strong>operations</strong> (<code>insert 'h' @1</code>) instead.</li>
 <li>Positions shift: "cat" + insert h@1 → "chat"; concurrent delete @2 applied blindly → "cht". Adjusted to delete @3 → "cha".</li>
 <li>Forms: optimistic concurrency → <code>PUT</code> with <code>If-Match: &lt;etag&gt;</code> → <code>412</code> = conflict, merge or ask.</li>
 <li>Trap: locking works and users hate it (forgotten tab blocks everyone). Locks for forms/tickets, not live text.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e15/"><small>← PREVIOUS</small>IQ: staying alive</a>
 <a class="r" href="../s6e17/"><small>NEXT →</small>OT vs CRDT</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

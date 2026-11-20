@@ -6,14 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 6 · Real-time</span>
 <h1><span class="hl">WebRTC</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>WebRTC</strong> connects <strong>browser to browser</strong> for audio, video and data.</li>
+<li>Before connecting, the peers exchange an <strong>offer/answer (SDP)</strong> and <strong>ICE candidates</strong> through a <strong>signaling</strong> channel you build (usually a WebSocket).</li>
+<li><strong>STUN</strong> tells a browser its public address; <strong>TURN</strong> relays traffic when a direct connection is impossible.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>WebRTC enables peer-to-peer media and data between browsers. It has no built-in signaling, so peers exchange session descriptions, the offer and answer, and network candidates through my own server, typically over a WebSocket. ICE then tries to find a direct path using STUN servers to discover public addresses, and falls back to a TURN relay if NAT or firewalls block direct connections. Mesh calls don't scale because each participant uploads a stream to every other participant, so larger calls use an SFU that receives one upload and forwards it.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Two people who want to meet in a crowded city. A mutual friend passes messages between them ("I'm near the clock tower", "I'm at gate 3") until they find each other. After that, they talk directly. If they truly can't reach each other, they meet through the friend (TURN relay).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Caller</b><span>new RTCPeerConnection({ iceServers: [STUN, TURN] })</span></li><li><b>Add media or data</b><span>addTrack(camera) or createDataChannel(&#x27;chat&#x27;)</span></li><li><b>Create offer</b><span>createOffer → setLocalDescription → send via your signaling server</span></li><li><b>Callee answers</b><span>setRemoteDescription → createAnswer → send back</span></li><li><b>Exchange ICE candidates</b><span>both sides, via signaling</span></li><li><b>Connected</b><span>media and data flow peer to peer (or via TURN)</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">pc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">RTCPeerConnection</span><span class="p">({</span><span class="w"> </span><span class="nx">iceServers</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">urls</span><span class="o">:</span><span class="w"> </span><span class="s1">'stun:stun.l.google.com:19302'</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">});</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">createDataChannel</span><span class="p">(</span><span class="s1">'chat'</span><span class="p">);</span>
+<span class="nx">pc</span><span class="p">.</span><span class="nx">onicecandidate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">candidate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">signaling</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">candidate</span><span class="o">:</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">candidate</span><span class="w"> </span><span class="p">});</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">offer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">createOffer</span><span class="p">();</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">pc</span><span class="p">.</span><span class="nx">setLocalDescription</span><span class="p">(</span><span class="nx">offer</span><span class="p">);</span>
+<span class="nx">signaling</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span><span class="w"> </span><span class="nx">offer</span><span class="w"> </span><span class="p">});</span><span class="w">                        </span><span class="c1">// your WebSocket delivers it to the other peer</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>"WebRTC handles signaling."</strong> It doesn't; you build it.</li>
+<li><strong>No TURN server</strong>: calls fail for users behind strict corporate or mobile NATs.</li>
+<li><strong>Mesh for big calls</strong>: with 100 people, each uploads 99 streams. Use an SFU.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>During a Google Meet call, open <code>chrome://webrtc-internals</code> in another tab to see the peer connection, candidates and live bitrate graphs.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What is signaling in WebRTC?</summary>
+<p>Exchanging offers, answers and ICE candidates between peers through a channel you provide, often a WebSocket server.</p>
+</details>
+<details>
+<summary>STUN vs TURN?</summary>
+<p>STUN helps a peer discover its public IP/port; TURN relays the traffic when a direct connection can't be established.</p>
+</details>
+<details>
+<summary>Why don't big video calls use a mesh?</summary>
+<p>Each participant would upload a separate stream to every other participant; an SFU needs only one upload per participant.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Browser ↔ browser audio, video, data. See it: on a Meet call open <code>chrome://webrtc-internals</code>.</li>
 <li>Signaling (your choice, usually a WebSocket) swaps <strong>offer/answer (SDP)</strong> + <strong>ICE candidates</strong>. STUN = "what's my public address", TURN = relay when direct fails.</li>
 <li>Code: <code>new RTCPeerConnection({ iceServers })</code> → <code>createDataChannel</code> / <code>addTrack</code> → <code>createOffer</code> → <code>setLocalDescription</code> → send via signaling.</li>
 <li>Trap: 100-person mesh = 99 uploads each. Big calls use an <strong>SFU</strong> (Selective Forwarding Unit): upload once, server forwards.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e05/"><small>← PREVIOUS</small>WebSockets</a>
 <a class="r" href="../s6e07/"><small>NEXT →</small>The showdown</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

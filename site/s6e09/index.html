@@ -6,14 +6,70 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 9 · Real-time</span>
 <h1><span class="hl">Heartbeats</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>A dead connection <strong>doesn't announce itself</strong>. If a laptop sleeps or Wi-Fi drops, the socket can stay "open" on both sides (a <strong>half-open</strong> connection), and the app shows "online" forever.</li>
+<li>Proxies and load balancers also kill connections that stay idle too long.</li>
+<li>Fix: an <strong>app-level ping/pong heartbeat</strong>. If nothing arrives within the interval plus a margin, close the socket and reconnect.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>TCP connections can silently die: when a device sleeps or the network changes, neither side necessarily gets a close event, leaving a half-open connection. Intermediaries also drop idle connections after their timeout. So I add an application-level heartbeat: the server sends a ping every 25 to 30 seconds, any incoming message resets a timer on the client, and if the timer exceeds the interval plus a margin the client closes and reconnects. Browsers answer protocol-level ping frames automatically but don't expose them to JavaScript, so apps send their own ping messages. The interval must be shorter than the smallest idle timeout on the path but not so frequent that it drains mobile batteries.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>On a phone call where the other side has gone quiet, you say "hello? are you there?" every half minute. If nobody answers, you hang up and call back instead of holding a dead line forever.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Server sends {&quot;type&quot;:&quot;ping&quot;}</b><span>every 30 s</span></li><li><b>Client gets any message</b><span>resets a 35 s timer</span></li><li><b>Timer fires</b><span>no message for too long → connection is dead</span></li><li><b>Client closes the socket</b><span>and starts the reconnect logic</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="nx">deadTimer</span><span class="p">;</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">deadTimer</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">deadTimer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">close</span><span class="p">(),</span><span class="w"> </span><span class="mf">35</span><span class="nx">_000</span><span class="p">);</span><span class="w">    </span><span class="c1">// 30 s ping + 5 s margin</span>
+<span class="p">}</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">);</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">resetHeartbeat</span><span class="p">(</span><span class="nx">ws</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">type</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'ping'</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'pong'</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">  </span><span class="nx">handle</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Interval longer than a proxy's idle timeout</strong> (often 20–30 s or more): the proxy cuts the connection before your ping.</li>
+<li><strong>Too frequent pings</strong> drain phone batteries and data.</li>
+<li><strong>Trusting <code>navigator.onLine</code></strong>: it only knows if there's a network interface, not if your server is reachable.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>WhatsApp Web → DevTools → <strong>Network</strong> → <strong>WS</strong> → <strong>Messages</strong>: you'll see small periodic frames even when nobody is chatting.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What is a half-open connection?</summary>
+<p>One side thinks the connection is open while the other side (or the network path) is gone, with no close event delivered.</p>
+</details>
+<details>
+<summary>Why can't browser JS rely on protocol-level ping frames?</summary>
+<p>Browsers answer them automatically but don't expose them, and JS can't send them, so apps implement their own ping messages.</p>
+</details>
+<details>
+<summary>How do you choose the heartbeat interval?</summary>
+<p>Shorter than the smallest idle timeout along the path (proxies, load balancers), but long enough not to waste battery and data.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>A dead TCP connection doesn't announce itself (sleep, Wi-Fi drop) → <strong>half-open</strong> connection; app shows "online" forever. Proxies also kill idle connections.</li>
 <li>App-level ping/pong: every message resets a timer; silence &gt; interval + margin (e.g. 35 s for 30 s pings) → <code>ws.close()</code> → reconnect.</li>
 <li>Browsers answer protocol ping frames silently, and JS can't send them → apps send their own <code>{type:'ping'}</code>.</li>
 <li>Trap: interval must be under the shortest idle timeout on the path (often 20–30 s), but not so fast it drains batteries.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e08/"><small>← PREVIOUS</small>IQ: transports</a>
 <a class="r" href="../s6e10/"><small>NEXT →</small>Reconnect</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

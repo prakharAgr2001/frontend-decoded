@@ -6,11 +6,43 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 8 · Real-time</span>
 <h1><span class="hl">IQ: transports</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>1 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Revision episode: interview questions on <strong>real-time transports</strong>.</li>
+<li>Know what goes wrong with <code>setInterval</code> polling, why a 7th SSE tab hangs, which transport serves a million viewers, and how a WebRTC offer reaches the other peer.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I choose transports by direction and frequency, and I design for the failure modes of each: polling must not overlap and should pause when hidden, SSE needs HTTP/2 or a shared stream when many tabs are open, WebSockets need reconnect logic, and WebRTC needs my own signaling plus STUN and TURN servers.</p>
+</blockquote>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>A setInterval poll misbehaves when the server is slow. Why, and the fix?</summary>
+<p>Requests overlap and responses can arrive out of order. Schedule the next poll with setTimeout after the response, back off on errors, and pause when the tab is hidden.</p>
+</details>
+<details>
+<summary>The 7th tab with an SSE stream never connects. Why?</summary>
+<p>HTTP/1.1 allows about 6 connections per origin and each stream holds one. Use HTTP/2 (multiplexing) or share one stream across tabs (e.g. via BroadcastChannel or a SharedWorker).</p>
+</details>
+<details>
+<summary>Live scores for a million viewers: which transport?</summary>
+<p>SSE: one-way server push over plain HTTP, with automatic reconnect, and it scales with standard HTTP infrastructure and fan-out.</p>
+</details>
+<details>
+<summary>How does a WebRTC offer reach the other browser?</summary>
+<p>Through your own signaling channel (often a WebSocket server); WebRTC has no built-in signaling. STUN/TURN then help establish the actual connection.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>setInterval poll vs slow server (overlap, out of order → setTimeout after response, backoff, pause when hidden) · 7th SSE tab (HTTP/1.1 6-connection limit → HTTP/2 or share one stream) · million-viewer scores (SSE) · WebRTC offer delivery (no built-in signaling; STUN/TURN).</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e07/"><small>← PREVIOUS</small>The showdown</a>
 <a class="r" href="../s6e09/"><small>NEXT →</small>Heartbeats</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

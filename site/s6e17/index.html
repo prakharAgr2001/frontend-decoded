@@ -6,14 +6,63 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 17 · Real-time</span>
 <h1><span class="hl">OT vs CRDT</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>OT (Operational Transformation)</strong>: a <strong>central server orders operations</strong> and transforms late ones against earlier ones. Lean documents, but it needs a server.</li>
+<li><strong>CRDT (Conflict-free Replicated Data Type)</strong>: every character gets a <strong>permanent unique id</strong>; edits reference ids, so they <strong>merge in any order</strong>, even peer-to-peer and offline. Costs extra metadata and tombstones.</li>
+<li><strong>Don't write your own.</strong> Use <strong>Yjs</strong> or <strong>Automerge</strong>, and spend your time on presence, cursors and undo.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Operational Transformation sends position-based operations through a central server, which establishes an order and transforms concurrent operations so every client converges; Google Docs popularised it. CRDTs give each element a unique, permanent identity and define merges that are commutative, so replicas converge regardless of order, enabling offline and peer-to-peer collaboration, at the cost of extra metadata and deleted-element tombstones. Both are subtle to implement correctly, so in practice I'd use a proven library like Yjs or Automerge and focus on the product features around it.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p><strong>OT</strong> is a referee who receives everyone's moves and announces the official order, adjusting moves that came in late. <strong>CRDT</strong> is a game where every piece has a unique serial number, so players can move independently and their boards always end up identical when they compare.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">OT</div><div class="dg-c">Central server orders all operations</div><div class="dg-c">Operations use positions, transformed on conflict</div><div class="dg-c">Small document size</div><div class="dg-c">Hard offline / peer-to-peer</div><div class="dg-c">Google Docs</div></div><div class="dg-col good"><div class="dg-h">CRDT</div><div class="dg-c">No central authority required</div><div class="dg-c">Operations reference unique element ids</div><div class="dg-c">Extra metadata and tombstones</div><div class="dg-c">Built for offline and peer-to-peer</div><div class="dg-c">Yjs, Automerge (Figma-style multiplayer, local-first apps)</div></div></div></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Y</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'yjs'</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">Y</span><span class="p">.</span><span class="nx">Doc</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">doc</span><span class="p">.</span><span class="nx">getText</span><span class="p">(</span><span class="s1">'notes'</span><span class="p">);</span>
+<span class="nx">text</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s1">'hello'</span><span class="p">);</span>
+<span class="c1">// Sync with a provider (e.g. y-websocket or y-webrtc); edits merge automatically, even after offline edits</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Writing your own OT or CRDT.</strong> Edge cases are endless; use a battle-tested library.</li>
+<li><strong>Ignoring metadata growth</strong> in long-lived CRDT documents; use libraries with compaction.</li>
+<li><strong>Forgetting the product parts</strong>: presence, cursors and per-user undo matter as much as merging.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>In Google Docs, turn on offline mode, make edits while disconnected, then reconnect: your edits merge with others' changes.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Key difference between OT and CRDT?</summary>
+<p>OT relies on a central server to order and transform position-based operations; CRDTs use unique element ids so edits merge in any order without central coordination.</p>
+</details>
+<details>
+<summary>Which suits an offline-first notes app with no server?</summary>
+<p>A CRDT (e.g. Yjs or Automerge).</p>
+</details>
+<details>
+<summary>What do CRDTs cost?</summary>
+<p>Extra metadata per element and tombstones for deleted items, so documents grow larger.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li><strong>OT</strong>: central server orders ops and transforms late ones against earlier ones. Lean docs, needs a server.</li>
 <li><strong>CRDT</strong>: every character gets a permanent unique id; inserts reference ids; merges in any order, peer-to-peer and offline. Costs metadata + tombstones.</li>
 <li>See it: Google Docs offline mode → edit → reconnect → merged.</li>
 <li>Trap: don't write your own. Use <strong>Yjs</strong> or <strong>Automerge</strong>; spend time on presence, cursors, undo.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e16/"><small>← PREVIOUS</small>Edit conflicts</a>
 <a class="r" href="../s6e18/"><small>NEXT →</small>IQ: collaboration</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

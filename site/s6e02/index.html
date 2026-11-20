@@ -6,13 +6,69 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 2 · Real-time</span>
 <h1><span class="hl">Short polling</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Short polling</strong> = ask the server on a fixed timer: "anything new?"</li>
+<li>Costs: <strong>latency</strong> (up to one interval late) and <strong>load</strong>: 10,000 open tabs polling every 5 s = 2,000 requests per second, mostly empty.</li>
+<li>Fine for <strong>rare updates where a few seconds of delay is OK</strong>: dashboards, build status, unread badges. It works through every proxy.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Short polling sends a request at a fixed interval to check for updates. It's the simplest approach, works with any infrastructure and caching, and is perfectly fine for low-frequency updates where some delay is acceptable. The drawbacks are latency up to the interval and a lot of wasted requests at scale. I schedule the next poll after the previous response arrives rather than using setInterval, back off when the server is slow, and pause polling when the tab is hidden.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A kid in the back seat asking "are we there yet?" every five minutes. Simple, but most answers are "no", and you only learn you've arrived up to five minutes late.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="c1">// setTimeout after the response: no overlapping requests if the server slows down</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">poll</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">document</span><span class="p">.</span><span class="nx">hidden</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/notifications/unread-count'</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">updateBadge</span><span class="p">((</span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">()).</span><span class="nx">count</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ignore, try again next round */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">poll</span><span class="p">,</span><span class="w"> </span><span class="mf">5000</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">poll</span><span class="p">();</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'visibilitychange'</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nb">document</span><span class="p">.</span><span class="nx">hidden</span><span class="p">)</span><span class="w"> </span><span class="nx">updateNow</span><span class="p">();</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">setInterval(fetch, 5000)</div><div class="dg-c">Fires even if the last request is still running</div><div class="dg-c">Overlapping requests when the server slows</div><div class="dg-c">Responses can arrive out of order</div></div><div class="dg-col good"><div class="dg-h">setTimeout after response</div><div class="dg-c">Next poll starts only after the last finishes</div><div class="dg-c">Never overlaps</div><div class="dg-c">Always in order</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong><code>setInterval</code> with fetch</strong> overlaps and piles up when the server is slow.</li>
+<li><strong>Polling hidden tabs</strong> wastes battery and server capacity. Check <code>document.hidden</code>.</li>
+<li><strong>Too short an interval</strong> at scale = huge, mostly empty traffic.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Open GitHub Actions on a running workflow with DevTools → <strong>Network</strong>: you'll often see status requests repeating on a timer.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>What's the worst-case delay with 10 s short polling?</summary>
+<p>About 10 seconds (just missed the last poll).</p>
+</details>
+<details>
+<summary>Why use setTimeout instead of setInterval for polling?</summary>
+<p>So the next request starts only after the previous one finishes, avoiding overlap and out-of-order responses.</p>
+</details>
+<details>
+<summary>When is short polling the right choice?</summary>
+<p>Low-frequency updates where a few seconds' delay is fine, and simplicity or compatibility matters.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Ask on a fixed timer ("anything new?"). Cost = latency (up to one interval) + load (10,000 tabs ÷ 5 s = 2,000 req/s, mostly empty).</li>
 <li>Fine for rare updates where seconds of delay are OK: dashboards, build status, unread badges. Works through every proxy.</li>
 <li>Trap: <code>setInterval(fetch)</code> overlaps when the server slows → schedule the next poll with <code>setTimeout</code> <em>after</em> the response; skip work when <code>document.hidden</code>.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e01/"><small>← PREVIOUS</small>How did it arrive?</a>
 <a class="r" href="../s6e03/"><small>NEXT →</small>Long polling</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

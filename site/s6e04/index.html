@@ -6,14 +6,74 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 4 · Real-time</span>
 <h1><span class="hl">Server-Sent Events</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Server-Sent Events (SSE)</strong> = one HTTP response that <strong>never ends</strong>, with <code>Content-Type: text/event-stream</code>. The server writes events into it whenever it wants.</li>
+<li>In the browser: <code>new EventSource('/stream')</code>. It <strong>reconnects automatically</strong> and sends <strong><code>Last-Event-ID</code></strong> so the server can resume.</li>
+<li>Limits: <strong>one-way</strong> (server → client; send with a normal POST) and <strong>text only</strong>.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>SSE keeps a single HTTP response open and streams text events in a simple format with id, event and data fields. The EventSource API handles parsing and automatic reconnection, and on reconnect it sends the Last-Event-ID header so the server can replay missed events. It's ideal when the server pushes and the client mostly listens, like notifications, live scores or streaming AI responses, and it stays plain HTTP, so it works with existing auth, proxies and load balancers. Under HTTP/1.1 each stream holds one of the roughly six connections per origin, which HTTP/2 multiplexing avoids.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>A radio station. You tune in once and keep listening; the station broadcasts whenever there's news. If you lose signal, your radio retunes automatically. But you can't talk back through the radio.</p>
+<h2 id="how-it-works">How it works</h2>
+<div class="hl-code"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/event-stream</span>
+
+id: 41
+event: score
+data: {"match":"IND-AUS","runs":187}
+
+id: 42
+event: score
+data: {"match":"IND-AUS","runs":191}
+</code></pre></div>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EventSource</span><span class="p">(</span><span class="s1">'/api/live-score'</span><span class="p">);</span>
+<span class="nx">source</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'score'</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">updateScore</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">data</span><span class="p">)));</span>
+<span class="nx">source</span><span class="p">.</span><span class="nx">onerror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">showReconnecting</span><span class="p">();</span><span class="w">          </span><span class="c1">// EventSource retries by itself</span>
+
+<span class="c1">// Sending goes over normal HTTP</span>
+<span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/predictions'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">pick</span><span class="o">:</span><span class="w"> </span><span class="s1">'IND'</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>The 7th tab hangs on HTTP/1.1</strong>: browsers allow about 6 connections per origin, and each open stream holds one. Use HTTP/2, or share one stream across tabs.</li>
+<li><strong>Buffering proxies or compression</strong> can hold events back. Disable buffering for the stream.</li>
+<li><strong>Binary data</strong> isn't supported; use WebSockets or base64.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On ChatGPT or Claude's web app, DevTools → <strong>Network</strong> → the response to a sent message is often an event stream: its <strong>EventStream</strong> tab shows events arriving one by one.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How does SSE resume after a disconnect?</summary>
+<p>EventSource reconnects automatically and sends the Last-Event-ID header; the server replays events after it.</p>
+</details>
+<details>
+<summary>How does a client send data when using SSE?</summary>
+<p>With ordinary HTTP requests (fetch POST); SSE itself is one-way.</p>
+</details>
+<details>
+<summary>Why might a 7th SSE tab not connect?</summary>
+<p>HTTP/1.1's ~6 connections per origin limit; each stream holds one. HTTP/2 multiplexes them on one connection.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>One HTTP response that never ends: <code>Content-Type: text/event-stream</code>. Format: <code>id:</code>, <code>event:</code>, <code>data:</code> lines, blank line ends an event.</li>
 <li><code>new EventSource('/stream')</code> → <code>onmessage</code>. Auto-reconnects and sends <strong>Last-Event-ID</strong> so the server can resume.</li>
 <li>Limits: one-way (send with normal <code>fetch</code> POST), text only.</li>
 <li>Trap: HTTP/1.1 ≈ 6 connections per origin; each open stream holds one → 7th tab hangs. HTTP/2 multiplexes streams on one connection.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e03/"><small>← PREVIOUS</small>Long polling</a>
 <a class="r" href="../s6e05/"><small>NEXT →</small>WebSockets</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

@@ -6,14 +6,56 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 7 · Real-time</span>
 <h1><span class="hl">The showdown</span></h1>
-<div class="meta"></div><div class="sheet"><ol>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>Decision order: <strong>audio/video or peer data → WebRTC</strong>. <strong>Client sends often with low latency → WebSockets</strong>. <strong>Server pushes, client listens → SSE</strong>. <strong>Rare updates, delay OK → polling</strong>.</li>
+<li>SSE: one-way, built-in reconnect, plain HTTP. WebSockets: two-way, binary, do-it-yourself reconnect. Polling: most compatible, most wasteful.</li>
+<li>Chat <strong>doesn't require</strong> WebSockets: SSE down plus POST up is valid.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>I pick a transport by asking who sends and how often. Media or peer-to-peer data needs WebRTC. Frequent low-latency messages from the client, like games, chat or live cursors, fit WebSockets. When the server pushes and the client mainly listens, such as notifications, live scores or streamed AI answers, SSE is simpler, reconnects automatically and stays on plain HTTP. For infrequent updates where delay is acceptable, polling is fine. Even chat can use SSE for receiving and regular POSTs for sending, which keeps standard HTTP auth, caching and load balancing.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Choosing how to stay in touch: a video call (WebRTC), a phone call (WebSocket), a radio broadcast you listen to (SSE), or checking your letterbox once a day (polling).</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><div class="dg-compare"><div class="dg-col bad"><div class="dg-h">Need</div><div class="dg-c">Audio, video, peer-to-peer data</div><div class="dg-c">Client sends often, low latency (games, cursors, chat)</div><div class="dg-c">Server pushes, client listens (scores, notifications, AI answers)</div><div class="dg-c">Rare updates, seconds of delay OK (badges, dashboards)</div></div><div class="dg-col good"><div class="dg-h">Choose</div><div class="dg-c">WebRTC</div><div class="dg-c">WebSockets</div><div class="dg-c">SSE</div><div class="dg-c">Polling (long polling if faster)</div></div></div></figure>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>WebSockets by default</strong> adds reconnect, heartbeat and scaling work you may not need.</li>
+<li><strong>Polling for chat</strong> at scale wastes huge amounts of traffic.</li>
+<li><strong>SSE on HTTP/1.1 with many tabs</strong> hits the connection limit.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>Check a few apps in DevTools: WhatsApp Web (WS filter), a live cricket score site (EventStream or polling), Google Meet (<code>chrome://webrtc-internals</code>).</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Live cricket score for a million viewers: which transport?</summary>
+<p>SSE: one-way server push over plain HTTP, easy to scale and cache-friendly, with automatic reconnect.</p>
+</details>
+<details>
+<summary>Multiplayer game with constant input from players?</summary>
+<p>WebSockets (or WebRTC data channels for peer-to-peer).</p>
+</details>
+<details>
+<summary>Can you build chat without WebSockets?</summary>
+<p>Yes: SSE (or long polling) for receiving and normal POST requests for sending.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ol>
 <li>Audio/video/peer data → <strong>WebRTC</strong>. 2. Client sends often, low latency (chat, games, cursors) → <strong>WebSockets</strong>.</li>
 <li>Server pushes, client listens (scores, notifications, AI answers) → <strong>SSE</strong>. 4. Rare updates / delay OK → <strong>polling</strong> (long polling if faster).</li>
 <li>SSE: one-way, built-in reconnect, text, plain HTTP. WS: two-way, binary, DIY reconnect, leaves HTTP after upgrade. Polling: most compatible, most wasteful.</li>
 <li>Trap: "chat needs WebSockets" → not necessarily: SSE down + POST up is valid and stays plain HTTP (caching, auth, load balancing).</li>
-</ol></div>
+</ol></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e06/"><small>← PREVIOUS</small>WebRTC</a>
 <a class="r" href="../s6e08/"><small>NEXT →</small>IQ: transports</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

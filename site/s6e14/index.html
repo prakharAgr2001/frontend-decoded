@@ -6,14 +6,64 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 14 · Real-time</span>
 <h1><span class="hl">Presence</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li><strong>Presence</strong> (online / offline / last seen) comes from <strong>connections + heartbeats + a TTL</strong>: <code>SET presence:riya online EX 60</code>, renewed on every heartbeat.</li>
+<li>Count <strong>connections, not users</strong>: laptop closed but phone open = still online. <strong>Debounce offline</strong> to avoid flapping.</li>
+<li>Send presence updates only to people <strong>currently viewing</strong>, and throttle "typing…" to about one event every 3 seconds.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Presence is derived from active connections. Each heartbeat refreshes a short-lived key with a TTL in an in-memory store like Redis, so if a device disappears without closing its connection, the key simply expires. A user is online if any of their connections is alive, and I debounce the transition to offline to avoid flickering during brief reconnects. To keep fan-out manageable, presence and typing indicators are sent only to users who are currently viewing the relevant chat, typing events are throttled and expire automatically, and none of this goes into the main database.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>An office attendance board where your name stays lit only while your badge keeps checking in every minute. If you leave without swiping out, the light goes off on its own when the check-ins stop.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>Socket connects</b><span>INCR connections:riya, SET presence:riya online EX 60</span></li><li><b>Each heartbeat</b><span>refresh the TTL</span></li><li><b>Last connection closes</b><span>wait a few seconds (debounce) before marking offline</span></li><li><b>No heartbeat at all</b><span>TTL expires → offline automatically</span></li><li><b>Fan-out</b><span>only to users viewing that chat or contact list</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="c1">// On each heartbeat for a user</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">redis</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="sb">`presence:</span><span class="si">${</span><span class="nx">userId</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="s1">'online'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">EX</span><span class="o">:</span><span class="w"> </span><span class="mf">60</span><span class="w"> </span><span class="p">});</span>
+
+<span class="c1">// Typing indicator: throttle on the client, auto-expire on the receiver</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">sendTyping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">throttle</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'typing'</span><span class="p">,</span><span class="w"> </span><span class="nx">chat</span><span class="w"> </span><span class="p">})),</span><span class="w"> </span><span class="mf">3000</span><span class="p">);</span>
+<span class="nx">input</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span><span class="w"> </span><span class="nx">sendTyping</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Storing presence in the main database</strong>: constant writes for data that's useless a minute later. Use an in-memory store with TTLs.</li>
+<li><strong>Offline flapping</strong> on every brief disconnect. Debounce it.</li>
+<li><strong>Broadcasting presence to every contact</strong> of every user = enormous fan-out. Send only to active viewers.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On WhatsApp, watch a friend's status switch between "online" and "last seen…" and notice the small delay before it changes after they leave.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>How does a TTL handle a device that disappears without disconnecting?</summary>
+<p>Heartbeats stop refreshing the key, so it expires and the user becomes offline automatically.</p>
+</details>
+<details>
+<summary>Why count connections instead of users?</summary>
+<p>A user with several devices is online as long as any one of them is connected.</p>
+</details>
+<details>
+<summary>How do you keep "typing…" cheap for a 200-person group?</summary>
+<p>Throttle typing events (~1 per 3 s), send only to people viewing the chat, auto-expire the indicator, and never store it in the database.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>Online/offline from connections + heartbeats + <strong>TTL</strong> (<code>SET presence:riya online EX 60</code>, renewed by each heartbeat).</li>
 <li>Count connections, not users (laptop closed, phone open = online). Debounce offline to avoid flapping.</li>
 <li>Fan-out: only to users currently viewing; throttle "typing…" (~1 event / 3 s, auto-expires).</li>
 <li>Trap: don't store presence in the main database → in-memory store with TTLs.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e13/"><small>← PREVIOUS</small>Scaling WebSockets</a>
 <a class="r" href="../s6e15/"><small>NEXT →</small>IQ: staying alive</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>

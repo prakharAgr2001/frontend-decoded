@@ -6,14 +6,68 @@
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <div class="top"><a class="logo" href="../"><img src="../fox.png" alt="">TECH, <b>EXPLAINED</b></a><a class="follow" href="https://instagram.com/tech.explained.dev">Follow on Instagram</a></div><span class="pill">Season 6 · Episode 12 · Real-time</span>
 <h1><span class="hl">Acks &amp; dedup</span></h1>
-<div class="meta"></div><div class="sheet"><ul>
+<div class="meta"><span>2 min read</span></div>
+<div class="tabs"><button class="on" data-p="deep">Notes</button><button data-p="sheet">Cheat sheet</button></div>
+<div class="pane on" id="deep"><details class="toc"><summary>On this page</summary><ul><li><a href="#key-points">Key points</a></li><li><a href="#interview-answer">Interview answer</a></li><li><a href="#the-analogy">The analogy</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#common-traps">Common traps</a></li><li><a href="#see-it-yourself">See it yourself</a></li><li><a href="#quick-quiz">Quick quiz</a></li></ul></details><div class="deep"><h2 id="key-points">Key points</h2>
+<ul>
+<li>WhatsApp's ticks map to acknowledgements: <strong>one grey</strong> = the server got it, <strong>two grey</strong> = delivered to the device, <strong>two blue</strong> = read. The clock = still pending.</li>
+<li>If an ack is lost, the client retries and the server may get the message <strong>twice</strong>.</li>
+<li>Fix: a <strong>client-generated id</strong> (<code>crypto.randomUUID()</code>), an <strong>outbox</strong> until acked, and the server <strong>drops repeat ids</strong>. At-least-once delivery + dedup ≈ exactly-once.</li>
+</ul>
+<h2 id="interview-answer">Interview answer</h2>
+<blockquote>
+<p>Reliable messaging is built from acknowledgements and retries. The client gives each outgoing message a unique ID, shows it optimistically with a pending state, keeps it in an outbox and resends it until the server acknowledges it. Because an ack can be lost after the server stored the message, retries can create duplicates, so the server deduplicates by the client ID and the client merges the server's echo with its local copy. The result is at-least-once delivery with deduplication, which behaves like exactly-once. The ID must be generated on the client, because a server ID doesn't exist until the first attempt succeeds.</p>
+</blockquote>
+<h2 id="the-analogy">The analogy</h2>
+<p>Sending a registered letter with a reference number. If you don't get the receipt, you send it again with the same number, and the post office recognises it's the same letter and doesn't deliver it twice.</p>
+<h2 id="how-it-works">How it works</h2>
+<figure class="dg"><ol class="dg-steps"><li><b>User sends</b><span>id = crypto.randomUUID(), bubble shows a clock</span></li><li><b>Outbox</b><span>keep it until the server acks this id</span></li><li><b>Server stores it</b><span>ack → one grey tick (and assigns seq)</span></li><li><b>Ack lost?</b><span>client resends the same id → server sees the id, ignores the duplicate</span></li><li><b>Delivered / read</b><span>two grey / two blue ticks</span></li></ol></figure>
+
+<div class="hl-code"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span><span class="p">(),</span><span class="w"> </span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'pending'</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="nx">addBubble</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span><span class="w">                                   </span><span class="c1">// optimistic UI</span>
+<span class="w">  </span><span class="nx">outbox</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">msg</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">trySend</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">onAck</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">outbox</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">updateBubble</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'sent'</span><span class="p">,</span><span class="w"> </span><span class="nx">seq</span><span class="w"> </span><span class="p">});</span><span class="w">        </span><span class="c1">// merge own echo by id, not by text</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="common-traps">Common traps</h2>
+<ul>
+<li><strong>Generating the id on the server.</strong> It doesn't exist until the first attempt succeeds, so retries can't be matched.</li>
+<li><strong>Deduping by message text.</strong> Two identical messages ("ok") are different messages.</li>
+<li><strong>Clearing the outbox on send</strong> instead of on ack.</li>
+</ul>
+<h2 id="see-it-yourself">See it yourself</h2>
+<p>On WhatsApp, send a message in airplane mode: the clock icon stays until you reconnect, then one tick, then two.</p>
+<h2 id="quick-quiz">Quick quiz</h2>
+<details>
+<summary>Why can retries create duplicate messages?</summary>
+<p>The server may have stored the message but the ack was lost, so the client sends it again.</p>
+</details>
+<details>
+<summary>Why must the message id be generated on the client?</summary>
+<p>So every retry carries the same id, letting the server recognise duplicates before any server id exists.</p>
+</details>
+<details>
+<summary>What does "at-least-once + dedup" achieve?</summary>
+<p>Messages are never lost (retries) and never shown twice (dedup), effectively exactly-once delivery.</p>
+</details></div></div>
+<div class="pane" id="sheet"><div class="sheet"><ul>
 <li>WhatsApp ticks: 1 grey = server got it, 2 grey = delivered to the device, 2 blue = read. Clock = pending (optimistic UI, S4E15).</li>
 <li>Lost ack → retry → duplicate. Fix: client-generated id (<code>crypto.randomUUID()</code>), outbox until acked, server drops repeat ids, client merges its own echo.</li>
 <li>Guarantee: <strong>at-least-once + dedup</strong> ≈ exactly-once.</li>
 <li>Trap: generate the id on the <strong>client</strong>: a server id doesn't exist until the first attempt succeeds.</li>
-</ul></div>
+</ul></div><div class="bar"><button class="btn" onclick="print()">Print / save as PDF</button></div></div>
 <div class="bar"><a class="btn" href="../">Search all notes</a><button class="btn" onclick="navigator.share?navigator.share({title:document.title,url:location.href}):navigator.clipboard.writeText(location.href).then(()=>this.textContent='Link copied')">Share</button></div>
 <div class="nav"><a href="../s6e11/"><small>← PREVIOUS</small>Ordering</a>
 <a class="r" href="../s6e13/"><small>NEXT →</small>Scaling WebSockets</a></div>
 
-<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div></body></html>
+<div class="cta">These notes go with a 60-second reel. New reel every day: <a href="https://instagram.com/tech.explained.dev">follow @tech.explained.dev</a></div><footer>Short, visual explainers on how the web really works · <a href="https://instagram.com/tech.explained.dev">@tech.explained.dev</a></footer></div><script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));history.replaceState(null,'',b.dataset.p==='sheet'?'#cheatsheet':location.pathname)});
+if(location.hash==='#cheatsheet')document.querySelector('[data-p=sheet]').click();
+</script></body></html>
