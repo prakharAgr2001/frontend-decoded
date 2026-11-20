@@ -159,5 +159,82 @@
   "media_id": "18188348521423437",
   "permalink": "https://www.instagram.com/reel/Df8ICAlDgwy/",
   "posted_at": "2026-11-19 22:13 UTC"
+ },
+ {
+  "id": "WR12",
+  "posted": false,
+  "video": "videos/WR12.mp4",
+  "cover": "covers/WR12.jpg",
+  "caption": "A Boeing 787 had to be switched off every 248 days. ✈️\n\nIn 2015 the FAA issued an airworthiness directive: a software counter inside the 787's generator control units would overflow after 248 days of continuous power, putting them into failsafe mode and risking loss of all AC power. Programmers noticed 248 days ≈ 2^31 hundredths of a second (FAA didn't confirm the counter's size). Interim fix: power-cycle before it overflows.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR13",
+  "posted": false,
+  "video": "videos/WR13.mp4",
+  "cover": "covers/WR13.jpg",
+  "caption": "Knight Capital lost about $440 million in 45 minutes. 💸\n\nAugust 1, 2012: a deploy reached 7 of 8 servers. A reused feature flag woke up old 'Power Peg' code on the 8th, which sent millions of orders with no kill switch. Lesson: delete dead code, verify every deploy, have a kill switch.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR14",
+  "posted": false,
+  "video": "videos/WR14.mp4",
+  "cover": "covers/WR14.jpg",
+  "caption": "16,000 Covid cases went missing because of an Excel file. 📊\n\nEngland, Sept–Oct 2020: lab results (CSV) were loaded into templates in the old .XLS format, which holds only 65,536 rows, about 1,400 cases per file. Everything beyond was cut off without an error. Nearly 16,000 positives missed the daily count for a week.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR15",
+  "posted": false,
+  "video": "videos/WR15.mp4",
+  "cover": "covers/WR15.jpg",
+  "caption": "11 lines of code broke thousands of JavaScript builds. 📦\n\nMarch 2016: a developer unpublished all his npm packages, including left-pad, an 11-line function that pads strings. Babel, React tooling and thousands of projects depended on it, so installs failed with 'not found'. npm restored it and changed its unpublish rules.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR16",
+  "posted": false,
+  "video": "videos/WR16.mp4",
+  "cover": "covers/WR16.jpg",
+  "caption": "NASA lost a $125 million spacecraft because of units. 🚀\n\nMars Climate Orbiter, 1999: one team's software reported thruster impulse in pound-force seconds; the navigation software expected newton-seconds (1 lbf = 4.45 N). The orbiter arrived far too low and was lost. Lesson: put the unit in the name (delayMs, not delay).\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR17",
+  "posted": false,
+  "video": "videos/WR17.mp4",
+  "cover": "covers/WR17.jpg",
+  "caption": "A rocket and cargo worth ~$500 million exploded 37 seconds after launch. 💥\n\nAriane 5 flight 501, 1996: navigation code reused from Ariane 4 converted a 64-bit horizontal-velocity value into a 16-bit signed integer (max 32,767). Ariane 5 was faster, the value overflowed, and the backup computer, running the same code, failed too.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR18",
+  "posted": false,
+  "video": "videos/WR18.mp4",
+  "cover": "covers/WR18.jpg",
+  "caption": "On 19 Jan 2038, some computers will think it's 1901. ⏰\n\nUnix time counts seconds since 1 Jan 1970. In a signed 32-bit integer the max is 2,147,483,647, reached at 03:14:07 UTC on 19 Jan 2038; one second later it wraps negative (13 Dec 1901). Modern systems use 64-bit time; old embedded devices may not. Same number as the YouTube counter.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR19",
+  "posted": false,
+  "video": "videos/WR19.mp4",
+  "cover": "covers/WR19.jpg",
+  "caption": "In April 2019, some GPS devices jumped back ~19 years. 🛰️\n\nGPS broadcasts the week number in 10 bits: it counts 0–1023, then rolls over every 1,024 weeks (~19.6 years). Rollovers happened in 1999 and on 6 April 2019; unprepared receivers showed wrong dates. Newer GPS messages use 13 bits (~157 years).\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR20",
+  "posted": false,
+  "video": "videos/WR20.mp4",
+  "cover": "covers/WR20.jpg",
+  "caption": "One typo took down a big part of the internet for hours. ☁️\n\n28 Feb 2017: an engineer debugging Amazon S3 billing ran a command meant to remove a few servers; a mistyped input removed far more. S3 in us-east-1 needed a full restart, which took hours; many sites and even AWS's status page were affected. Fix: the tool now removes capacity slowly and won't go below a safe minimum.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR21",
+  "posted": false,
+  "video": "videos/WR21.mp4",
+  "cover": "covers/WR21.jpg",
+  "caption": "One regular expression caused 27 minutes of errors across a huge part of the web. 🌐\n\n2 July 2019: Cloudflare deployed a new WAF rule whose regex could backtrack catastrophically, pushing CPUs to 100% worldwide and returning 502 errors. Disabling the rules globally fixed it. Lesson: test regex performance, roll out gradually, use engines that guarantee linear time.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR22",
+  "posted": false,
+  "video": "videos/WR22.mp4",
+  "cover": "covers/WR22.jpg",
+  "caption": "Scientists renamed human genes because Excel kept turning them into dates. 🧬\n\nGene symbols like SEPT1 and MARCH1 were auto-converted by Excel into dates (1-Sep, 1-Mar). A 2016 study found such errors in about a fifth of papers with Excel gene lists. In 2020 the HGNC renamed them: SEPT1 → SEPTIN1, MARCH1 → MARCHF1.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
  }
 ]

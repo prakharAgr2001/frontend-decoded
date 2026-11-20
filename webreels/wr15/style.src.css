@@ -1,0 +1,6 @@
+.node{position:absolute;width:400px;height:100px;border-radius:20px;background:#16161a;box-shadow:0 0 0 3px #3a3a42;display:flex;align-items:center;justify-content:center;font:700 44px Mono;opacity:0}
+#n0{box-shadow:0 0 0 4px var(--yel);color:var(--yel)}
+.dots{position:absolute;left:110px;right:110px;top:1080px;display:grid;grid-template-columns:repeat(20,1fr);gap:10px}
+.dots i{display:block;aspect-ratio:1;border-radius:6px;background:var(--blue);opacity:0}
+.redwash{position:absolute;inset:0;background:var(--red);mix-blend-mode:multiply;pointer-events:none}
+#s4 .wb{font-size:32px}

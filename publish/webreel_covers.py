@@ -16,6 +16,17 @@ C = {  # id: (title lines, hook, key-frame second)
     'WR08': (['NETFLIX', 'DELETED REACT'], '…and got 50% faster', 2.0),
     'WR09': (['THE PAGE', 'JUMPED'], '…and you tapped an ad', 1.6),
     'WR10': (['HINGE USES', 'NOBEL MATH'], 'to pick your match', 1.4),
+    'WR12': (['REBOOT EVERY', '248 DAYS'], 'or a Boeing 787 loses power', 1.0),
+    'WR13': (['$440 MILLION', 'IN 45 MINUTES'], 'killed by old code', 1.2),
+    'WR14': (['16,000 CASES', 'LOST IN EXCEL'], 'one hidden row limit', 1.2),
+    'WR15': (['11 LINES', 'BROKE THE WEB'], 'the left-pad disaster', 1.0),
+    'WR16': (['$125M LOST', 'TO UNITS'], 'pounds vs newtons', 1.2),
+    'WR17': (['37 SECONDS', 'TO EXPLODE'], 'a number too big for 16 bits', 1.0),
+    'WR18': (['2038:', 'TIME RUNS OUT'], 'computers will think it is 1901', 1.0),
+    'WR19': (['GPS JUMPED', 'BACK 20 YEARS'], 'a 10-bit counter rolled over', 1.0),
+    'WR20': (['ONE TYPO', 'BROKE THE WEB'], 'the S3 outage of 2017', 1.0),
+    'WR21': (['ONE REGEX', '27 MIN OF 502s'], 'how Cloudflare went down', 1.0),
+    'WR22': (['EXCEL RENAMED', 'HUMAN GENES'], 'well, scientists had to', 1.0),
     'WR11': (['AN AI SEES', 'IT FIRST'], 'what Bumble does to some photos', 1.4),
 }
 def cover(ep):

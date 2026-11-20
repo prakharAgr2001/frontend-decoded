@@ -1,0 +1,4 @@
+.clk{position:absolute;left:110px;right:110px;top:420px;height:500px;border-radius:30px;background:#0e0e11;box-shadow:0 0 0 3px #2a2a31;text-align:center;padding-top:70px}
+.clk .cd{font:700 80px Roboto}.clk .ct{font:700 170px Mono;color:var(--grn);text-shadow:0 0 30px rgba(61,220,132,.4);margin:10px 0}
+.devs{position:absolute;left:90px;right:90px;top:440px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.dev{position:relative;height:400px;padding-top:60px;text-align:center;opacity:0}.dev .nm{font:700 44px Roboto;margin:20px 0}.dev .ok{font:700 40px Roboto}.dev .ok.g{color:var(--grn)}.dev .ok.r{color:var(--red)}

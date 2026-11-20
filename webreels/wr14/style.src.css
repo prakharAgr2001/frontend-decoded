@@ -1,0 +1,11 @@
+.sheet{position:absolute;left:90px;right:90px;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 50px 110px rgba(0,0,0,.6);color:#222}
+.sh-h,.sh-r{display:grid;grid-template-columns:170px repeat(5,1fr);height:76px;align-items:center}
+.sh-h{background:#e9ecef;font:600 28px Roboto;color:#555;text-align:center}
+.sh-r{border-top:1px solid #e3e3e3;font:400 30px Roboto}.sh-r span{border-left:1px solid #e3e3e3;height:100%;display:flex;align-items:center;padding-left:14px}
+.sh-r span:first-child{background:#f3f4f6;color:#666;justify-content:center;padding:0;font-variant-numeric:tabular-nums;border-left:0}
+.sh-r.last{background:#fff3c4}.sh-r.last span:first-child{background:#ffd23f;color:#000;font-weight:700}
+.sh-r.cut{background:#ffe0e0;color:#b3121c}
+.file{position:absolute;left:100px;padding:22px 34px;border-radius:14px;background:#22222a;font:500 34px Mono;color:#ddd;box-shadow:0 0 0 2px #333}
+.bars{position:absolute;left:110px;right:110px;top:460px;height:760px;display:flex;align-items:flex-end;gap:22px;transform-origin:bottom}
+.bc{flex:1;height:100%;position:relative;transform-origin:bottom}
+.bc i{position:absolute;left:0;right:0;bottom:0;border-radius:10px 10px 0 0}.bc .real{background:repeating-linear-gradient(45deg,rgba(255,59,59,.5) 0 12px,transparent 12px 24px);box-shadow:inset 0 0 0 3px var(--red)}.bc .rep{background:var(--yel)}
