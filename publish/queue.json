@@ -801,10 +801,13 @@
  },
  {
   "id": "S4E02",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E02.mp4",
   "cover": "covers/S4E02.jpg",
-  "caption": "One food-app screen holds 5 different kinds of state. Mixing them up causes most bugs 🗂️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "One food-app screen holds 5 different kinds of state. Mixing them up causes most bugs 🗂️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18031803620925349",
+  "permalink": "https://www.instagram.com/reel/DgBDxmPjlXm/",
+  "posted_at": "2026-11-21 20:12 UTC"
  },
  {
   "id": "S4E03",
