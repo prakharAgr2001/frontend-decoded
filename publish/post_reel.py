@@ -19,24 +19,34 @@ def pick_host():
         print(host, '->', r.status_code, r.text[:300])
     sys.exit('Token not accepted by either Graph host. Check IG_TOKEN / IG_USER_ID secrets.')
 
-def post(host, e):
+def make_container(host, e, trial):
     data = {'media_type': 'REELS', 'video_url': RAW + e['video'], 'caption': e['caption'],
             'cover_url': RAW + e['cover'], 'share_to_feed': 'true', 'access_token': TOKEN}
     r = None
-    if TRIAL:
+    if trial:
         r = requests.post(f'{host}/{VER}/{IG_ID}/media', data={**data, 'trial_params': json.dumps({'graduation_strategy': 'SS_PERFORMANCE'})}, timeout=60)
         if not r.ok: print('trial reel not accepted, posting normally:', r.text[:200]); r = None
     if r is None:
         r = requests.post(f'{host}/{VER}/{IG_ID}/media', data=data, timeout=60)
-    if not r.ok: sys.exit(f'create container failed: {r.text}')
-    cid = r.json()['id']; print(e['id'], 'container', cid)
+    if not r.ok: print('create container failed:', r.text[:300]); return None
+    cid = r.json()['id']; print(e['id'], 'container', cid, '(trial)' if trial else '')
     for _ in range(90):  # up to 15 min
         s = requests.get(f'{host}/{VER}/{cid}', params={'fields': 'status_code,status', 'access_token': TOKEN}, timeout=30).json()
         code = s.get('status_code'); print('status', code)
-        if code == 'FINISHED': break
-        if code in ('ERROR', 'EXPIRED'): sys.exit(f'processing failed: {s}')
+        if code == 'FINISHED': return cid
+        if code in ('ERROR', 'EXPIRED'): print('processing failed:', s); return None
         time.sleep(10)
-    else: sys.exit('processing timed out')
+    print('processing timed out'); return None
+
+def post(host, e):
+    # Instagram sometimes fails processing for no reason on our side (e.g. "error code 2207076").
+    # Its docs say: make a NEW container and try again. Last attempt drops the trial flag.
+    cid = None
+    for attempt, trial in enumerate([TRIAL, TRIAL, False], 1):
+        cid = make_container(host, e, trial)
+        if cid: break
+        if attempt < 3: print(f'attempt {attempt} failed, retrying in 60 s with a new container'); time.sleep(60)
+    if not cid: sys.exit(f'{e["id"]}: Instagram could not process the video after 3 attempts')
     p = requests.post(f'{host}/{VER}/{IG_ID}/media_publish', data={'creation_id': cid, 'access_token': TOKEN}, timeout=60)
     if not p.ok: sys.exit(f'publish failed: {p.text}')
     mid = p.json()['id']
