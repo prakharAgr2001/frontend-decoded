@@ -64,9 +64,14 @@ if __name__ == '__main__':
                     for e in q if e.get('posted_at')), default=0)
         if time.time() - last < gap * 3600:
             print(f'Already posted within {gap} h, skipping this run.'); sys.exit(0)
-    todo = [e for e in q if (e['id'] == want if want else not e['posted'])][:int(os.environ.get('COUNT') or 1)]
-    if not todo: print('nothing to post'); sys.exit(0)
-    for e in todo:
+    cands = [e for e in q if (e['id'] == want if want else not e['posted'])]
+    n, done = int(os.environ.get('COUNT') or 1), 0
+    for e in cands:
+        if done >= n: break
+        missing = [f for f in (e['video'], e['cover']) if not os.path.exists(f)]
+        if missing:  # not committed to the repo -> Instagram would get a 404; skip it instead of blocking the queue
+            print(f'::warning::{e["id"]} skipped: {missing} not in the repo (commit them, then it posts next time)'); continue
         mid, link = post(host, e)
         e.update(posted=True, media_id=mid, permalink=link, posted_at=time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime()))
-        json.dump(q, open(QUEUE, 'w'), indent=1, ensure_ascii=False)
+        json.dump(q, open(QUEUE, 'w'), indent=1, ensure_ascii=False); done += 1
+    if not done: sys.exit('nothing posted' if cands else 0)
