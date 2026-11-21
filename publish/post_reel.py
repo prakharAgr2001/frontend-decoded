@@ -8,7 +8,8 @@ TOKEN, IG_ID = os.environ['IG_TOKEN'].strip(), os.environ['IG_USER_ID'].strip()
 VER = os.environ.get('GRAPH_VERSION', 'v24.0')
 QUEUE = os.environ.get('QUEUE') or 'publish/queue.json'
 TRIAL = os.environ.get('TRIAL') == '1'  # Instagram trial reel: shown to non-followers first
-RAW = 'https://raw.githubusercontent.com/' + os.environ.get('GITHUB_REPOSITORY', 'prakharAgr2001/frontend-decoded') + '/main/'
+# pin media URLs to the exact commit: never stale-cached, and a URL Instagram saw as 404 earlier is a fresh URL now
+RAW = 'https://raw.githubusercontent.com/' + os.environ.get('GITHUB_REPOSITORY', 'prakharAgr2001/frontend-decoded') + '/' + (os.environ.get('GITHUB_SHA') or 'main') + '/'
 
 def pick_host():
     # Instagram-login tokens live on graph.instagram.com, Facebook/system-user tokens on graph.facebook.com
