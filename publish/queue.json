@@ -811,10 +811,13 @@
  },
  {
   "id": "S4E03",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E03.mp4",
   "cover": "covers/S4E03.jpg",
-  "caption": "Type one letter in a search box and the whole page re-renders. The fix is where your state lives 📍\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Type one letter in a search box and the whole page re-renders. The fix is where your state lives 📍\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18122560975958684",
+  "permalink": "https://www.instagram.com/reel/DgDqYjHmTIP/",
+  "posted_at": "2026-11-22 20:28 UTC"
  },
  {
   "id": "S4E04",
