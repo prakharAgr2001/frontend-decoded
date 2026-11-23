@@ -169,10 +169,13 @@
  },
  {
   "id": "WR12",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR12.mp4",
   "cover": "covers/WR12.jpg",
-  "caption": "A Boeing 787 had to be switched off every 248 days. ✈️\n\nIn 2015 the FAA issued an airworthiness directive: a software counter inside the 787's generator control units would overflow after 248 days of continuous power, putting them into failsafe mode and risking loss of all AC power. Programmers noticed 248 days ≈ 2^31 hundredths of a second (FAA didn't confirm the counter's size). Interim fix: power-cycle before it overflows.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "A Boeing 787 had to be switched off every 248 days. ✈️\n\nIn 2015 the FAA issued an airworthiness directive: a software counter inside the 787's generator control units would overflow after 248 days of continuous power, putting them into failsafe mode and risking loss of all AC power. Programmers noticed 248 days ≈ 2^31 hundredths of a second (FAA didn't confirm the counter's size). Interim fix: power-cycle before it overflows.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18135886597705537",
+  "permalink": "https://www.instagram.com/reel/DgGIuqTij-T/",
+  "posted_at": "2026-11-23 19:31 UTC"
  },
  {
   "id": "WR13",
