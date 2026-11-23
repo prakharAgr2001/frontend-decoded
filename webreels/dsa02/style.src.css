@@ -1,0 +1,16 @@
+.offer{position:absolute;left:150px;right:150px;top:380px;height:560px;border-radius:36px;background:linear-gradient(160deg,#1e1e24,#121216);box-shadow:0 60px 120px rgba(0,0,0,.6),0 0 0 2px rgba(255,210,63,.35);padding:56px 60px;opacity:0}
+.ok{display:inline-block;padding:10px 26px;border-radius:12px;background:var(--grn);color:#0c0c0e;font:800 30px Roboto;letter-spacing:6px}
+.role{font:700 44px Roboto;margin-top:40px}.co{font:500 38px Roboto;color:var(--mute);margin-top:10px}
+.ctc{margin-top:50px;font:900 140px Roboto;color:var(--yel);letter-spacing:-3px}.ctc small{font:600 34px Roboto;color:var(--mute);letter-spacing:0}
+.tag{display:inline-block;padding:16px 30px;border-radius:14px;background:#2a230a;box-shadow:0 0 0 3px var(--yel);color:var(--yel);font:800 32px Roboto;letter-spacing:2px}
+.qcard{position:absolute;left:110px;right:110px;top:560px;padding:60px;border-radius:30px;background:#16161a;box-shadow:0 0 0 3px #2a2a31;font:500 56px/1.35 Roboto;text-align:center;opacity:0}.qcard b{color:var(--yel)}
+.row{position:absolute;left:122px;width:838px;height:150px}
+.b{position:absolute;top:0;width:96px;height:150px;border-radius:18px;background:#16161a;box-shadow:0 0 0 3px #2a2a31;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:none}
+.b b{font:700 72px Mono}.b span{font:500 22px Mono;color:var(--mute)}
+.b.on{background:#10301f;box-shadow:0 0 0 3px #2f8f5c}.b.bad{background:#3a1214;box-shadow:0 0 0 4px var(--red)}
+.frame{position:absolute;top:-12px;height:174px;border:6px solid var(--grn);border-radius:26px;pointer-events:none;opacity:0}
+.pt{position:absolute;width:140px;text-align:center;font:800 30px Roboto;color:var(--c);letter-spacing:2px}.pt i{display:block;width:0;height:0;margin:0 auto 6px;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:30px solid var(--c)}
+.map{position:absolute;left:250px;right:250px;top:540px}
+.mr{display:flex;justify-content:space-between;align-items:center;height:140px;margin-bottom:22px;padding:0 60px;border-radius:24px;background:#16161a;box-shadow:0 0 0 3px #2a2a31;font:700 70px Mono;opacity:0}
+.mr span{color:var(--mute)}.mr i{font-style:normal;color:var(--blue)}.mr.hl{box-shadow:0 0 0 5px var(--yel)}.mr.hl i{color:var(--yel)}
+.notes{display:inline-block;padding:40px 80px;border-radius:30px;background:var(--yel);color:#0c0c0e;font:900 150px Roboto;letter-spacing:6px}
