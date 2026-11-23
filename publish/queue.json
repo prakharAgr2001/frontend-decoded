@@ -821,10 +821,13 @@
  },
  {
   "id": "S4E04",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E04.mp4",
   "cover": "covers/S4E04.jpg",
-  "caption": "You type a coupon code, and the header, footer and item list all re-render. Blame one Provider 📢\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "You type a coupon code, and the header, footer and item list all re-render. Blame one Provider 📢\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18132082246833438",
+  "permalink": "https://www.instagram.com/reel/DgF6qWkCerr/",
+  "posted_at": "2026-11-23 17:29 UTC"
  },
  {
   "id": "S4E05",
