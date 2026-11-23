@@ -13,7 +13,7 @@ on:
       trial:
         description: 'Post as trial reel (non-followers first)'
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
           SKIP_IF_POSTED_WITHIN_H: ${{ github.event_name == 'schedule' && '12' || '' }}
           QUEUE: publish/shorts_queue.json
           EPISODE: ${{ github.event.inputs.episode }}
-          TRIAL: ${{ (github.event_name == 'schedule' || github.event.inputs.trial == 'true') && '1' || '0' }}
+          TRIAL: ${{ github.event.inputs.trial == 'true' && '1' || '0' }}   # normal reel (grid + followers); trial only if asked
         run: python3 publish/post_reel.py
       - name: Save queue status
         if: always()
