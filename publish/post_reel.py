@@ -65,7 +65,7 @@ if __name__ == '__main__':
                     for e in q if e.get('posted_at')), default=0)
         if time.time() - last < gap * 3600:
             print(f'Already posted within {gap} h, skipping this run.'); sys.exit(0)
-    cands = [e for e in q if (e['id'] == want if want else not e['posted'])]
+    cands = [e for e in q if (e['id'] == want if want else not e['posted'] and not e.get('hold'))]  # hold: keep in queue, don't auto-post
     n, done = int(os.environ.get('COUNT') or 1), 0
     for e in cands:
         if done >= n: break
