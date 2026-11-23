@@ -28,6 +28,16 @@ C = {  # id: (title lines, hook, key-frame second)
     'WR21': (['ONE REGEX', '27 MIN OF 502s'], 'how Cloudflare went down', 1.0),
     'WR22': (['EXCEL RENAMED', 'HUMAN GENES'], 'well, scientists had to', 1.0),
     'WR23': (['GHOST 8 PEOPLE?', 'NO MORE MATCHES'], "Hinge's real rate limiter", 1.2),
+    'WR24': (['50x MORE', 'PLAYERS'], 'than the launch plan', 1.0),
+    'WR25': (['5 BACKUPS.', '0 WORKED.'], "GitLab's worst night", 1.0),
+    'WR26': (['32 ENGINEERS', '450M USERS'], "WhatsApp's secret weapon", 1.0),
+    'WR27': (['ONE EXTRA', 'SECOND'], 'crashed Reddit and an airline', 1.0),
+    'WR28': ('600 CRORE,|THEN SORRY'.split('|'), "Flipkart's Big Billion Day", 1.0),
+    'WR29': (['A LEAP YEAR', 'FROZE THEM ALL'], 'the day 366 bug', 1.0),
+    'WR30': (['13 PEOPLE', '$1 BILLION'], 'Instagram in 2012', 1.0),
+    'WR31': (['GMAIL WAS', 'AN APRIL FOOL?'], 'the 1 GB joke that was real', 1.0),
+    'WR32': (['A MOVIE', 'ALMOST DELETED'], 'saved by a home computer', 1.0),
+    'WR33': (['ONE MISSING', 'CHECK'], 'Heartbleed leaked passwords', 1.0),
     'WR11': (['AN AI SEES', 'IT FIRST'], 'what Bumble does to some photos', 1.4),
 }
 def cover(ep):

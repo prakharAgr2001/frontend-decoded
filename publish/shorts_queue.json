@@ -253,5 +253,75 @@
   "media_id": "18133002220696776",
   "permalink": "https://www.instagram.com/reel/Df9r0SskSqh/",
   "posted_at": "2026-11-20 12:45 UTC"
+ },
+ {
+  "id": "WR24",
+  "posted": false,
+  "video": "videos/WR24.mp4",
+  "cover": "covers/WR24.jpg",
+  "caption": "A game got 50x the traffic it planned for. On launch day. 🎮\n\nJuly 2016, Pokémon GO. The plan: 1x traffic, worst case 5x (Google Cloud's own blog). Within 15 minutes of launch in Australia/NZ it passed the target, then hit 50x, ten times the worst case. Lesson: capacity planning is a guess; build so you can add servers fast.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR25",
+  "posted": false,
+  "video": "videos/WR25.mp4",
+  "cover": "covers/WR25.jpg",
+  "caption": "GitLab had 5 backup systems. When they needed one, none worked. 💾\n\n31 Jan 2017: during a late-night database fix, an engineer deleted the data directory on the primary server instead of the secondary. ~300 GB gone. Their own postmortem: out of five backup/replication techniques, none were working reliably. A manual snapshot from 6 hours earlier saved them; 6 hours of data were lost. Lesson: test restores, not just backups.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR26",
+  "posted": false,
+  "video": "videos/WR26.mp4",
+  "cover": "covers/WR26.jpg",
+  "caption": "WhatsApp served 450 million users with about 32 engineers. 💬\n\nWhen Facebook bought it for $19B in 2014, WhatsApp ran on Erlang (built for telephone switches) and FreeBSD, tuned to ~2 million connections per server. Fewer servers → fewer engineers → fewer things to break.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR27",
+  "posted": false,
+  "video": "videos/WR27.mp4",
+  "cover": "covers/WR27.jpg",
+  "caption": "One extra second crashed Reddit, LinkedIn and an airline's check-in. ⏱️\n\n30 June 2012: a leap second (23:59:60) was added to UTC. A Linux kernel bug made servers spin at 100% CPU. Amadeus' Altea system went down and Qantas/Virgin Australia checked passengers in by hand. Today big providers 'smear' leap seconds across the day.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR28",
+  "posted": false,
+  "video": "videos/WR28.mp4",
+  "cover": "covers/WR28.jpg",
+  "caption": "Flipkart sold ₹600 crore in 10 hours. Then the founders apologised to everyone. 🛒\n\nBig Billion Day, 6 Oct 2014: traffic far beyond plan, pages failing, items out of stock in seconds. Next day Sachin and Binny Bansal emailed every customer to say sorry. Lesson: a sale is a load test on real customers. Queue, cache, and protect checkout.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR29",
+  "posted": false,
+  "video": "videos/WR29.mp4",
+  "cover": "covers/WR29.jpg",
+  "caption": "On 31 Dec 2008, Microsoft's 30GB Zunes froze worldwide. 🎵\n\nThe clock driver turned 'days since 1980' into a year with a loop. On day 366 of a leap year, neither branch subtracted anything, so the loop never ended. Microsoft's official advice: wait until 1 January. One missing edge case, every device, same day.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR30",
+  "posted": false,
+  "video": "videos/WR30.mp4",
+  "cover": "covers/WR30.jpg",
+  "caption": "Instagram had 13 employees when Facebook bought it for $1 billion. 📸\n\nApril 2012, ~30 million users. A tiny team, simple proven tools (Django, Postgres, Redis), add servers as you grow. Do the simple thing first.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR31",
+  "posted": false,
+  "video": "videos/WR31.mp4",
+  "cover": "covers/WR31.jpg",
+  "caption": "Google launched Gmail on 1 April 2004. People thought it was a joke. 📧\n\nHotmail gave 2 MB free. Gmail offered 1 GB, about 500x more, plus search instead of folders. It stayed invite-only for almost three years. Cheap storage + great search changed how we keep everything.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR32",
+  "posted": false,
+  "video": "videos/WR32.mp4",
+  "cover": "covers/WR32.jpg",
+  "caption": "Pixar almost lost Toy Story 2 to one delete command. 🎬\n\n1998: a delete command started wiping the film's files, and most of it was gone. The backups had been failing. A technical director who'd been working from home had a copy on her computer. They carried it to the studio, wrapped in blankets. Lesson: check your backups, and keep more than one copy.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+ },
+ {
+  "id": "WR33",
+  "posted": false,
+  "video": "videos/WR33.mp4",
+  "cover": "covers/WR33.jpg",
+  "caption": "One missing length check exposed hundreds of thousands of websites. 🩸\n\nHeartbleed (2014) was a bug in OpenSSL's heartbeat: the client sends a word and says how long it is; the server never checked. Ask for 64 KB with a 4-letter word, get 64 KB of server memory back: passwords, session cookies, even private keys. About half a million secure servers were vulnerable.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
  }
 ]

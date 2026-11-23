@@ -1,0 +1,9 @@
+.files{position:absolute;left:150px;right:150px;top:500px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.files.sm{position:static;margin-top:30px}
+.fl{padding:24px 30px;border-radius:16px;background:#16161a;font:600 40px Mono;transition:none}.fl.gone{opacity:.08;text-decoration:line-through;color:var(--red)}
+.wd{position:absolute;left:0;right:0;text-align:center;font:800 90px Roboto;opacity:0}
+.house{position:absolute;left:240px;top:430px;width:600px;height:720px}.roof{width:0;height:0;border-left:300px solid transparent;border-right:300px solid transparent;border-bottom:220px solid #c9813a}
+.house .body{height:500px;background:#f4f1ea;display:flex;align-items:center;justify-content:center}
+.pc{width:300px}.mon{height:200px;border-radius:14px;background:#333;border:14px solid #222}.stand{width:80px;height:60px;margin:0 auto;background:#222}
+.car{position:absolute;left:240px;top:560px;width:600px}.bl{height:340px;border-radius:60px;background:repeating-linear-gradient(45deg,#c96b6b 0 30px,#e9b0b0 30px 60px);box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.files.sm .fl{font-size:30px;padding:18px 20px}

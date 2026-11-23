@@ -1,0 +1,7 @@
+.ppl{position:absolute;left:150px;right:150px;top:720px;display:grid;grid-template-columns:repeat(7,1fr);gap:22px}
+.ppl i{display:block;height:130px;position:relative;opacity:0}.ppl i::before{content:'';position:absolute;left:50%;top:0;width:54px;height:54px;margin-left:-27px;border-radius:50%;background:var(--yel)}
+.ppl i::after{content:'';position:absolute;left:50%;top:62px;width:90px;height:64px;margin-left:-45px;border-radius:45px 45px 12px 12px;background:var(--yel)}
+.feed{position:absolute;left:150px;right:150px;top:840px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.feed i{display:block;aspect-ratio:1;border-radius:6px}
+.stack{position:absolute;left:190px;right:190px;top:540px}.blk{height:150px;margin-bottom:22px;border-radius:20px;background:#16161a;box-shadow:0 0 0 3px #3a3a42;display:flex;align-items:center;justify-content:center;font:700 54px Roboto;opacity:0}
+.srvg{position:absolute;left:150px;right:150px;top:520px;display:grid;grid-template-columns:repeat(8,1fr);gap:14px}
+.srvg i{display:block;aspect-ratio:1;border-radius:10px;background:#26262c}.srvg i.on{background:var(--grn)}
