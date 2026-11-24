@@ -179,10 +179,13 @@
  },
  {
   "id": "WR13",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR13.mp4",
   "cover": "covers/WR13.jpg",
-  "caption": "Knight Capital lost about $440 million in 45 minutes. 💸\n\nAugust 1, 2012: a deploy reached 7 of 8 servers. A reused feature flag woke up old 'Power Peg' code on the 8th, which sent millions of orders with no kill switch. Lesson: delete dead code, verify every deploy, have a kill switch.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "Knight Capital lost about $440 million in 45 minutes. 💸\n\nAugust 1, 2012: a deploy reached 7 of 8 servers. A reused feature flag woke up old 'Power Peg' code on the 8th, which sent millions of orders with no kill switch. Lesson: delete dead code, verify every deploy, have a kill switch.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18109353488202208",
+  "permalink": "https://www.instagram.com/reel/DgIrBbviJyO/",
+  "posted_at": "2026-11-24 19:09 UTC"
  },
  {
   "id": "WR14",
