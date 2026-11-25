@@ -189,10 +189,13 @@
  },
  {
   "id": "WR14",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR14.mp4",
   "cover": "covers/WR14.jpg",
-  "caption": "16,000 Covid cases went missing because of an Excel file. 📊\n\nEngland, Sept–Oct 2020: lab results (CSV) were loaded into templates in the old .XLS format, which holds only 65,536 rows, about 1,400 cases per file. Everything beyond was cut off without an error. Nearly 16,000 positives missed the daily count for a week.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "16,000 Covid cases went missing because of an Excel file. 📊\n\nEngland, Sept–Oct 2020: lab results (CSV) were loaded into templates in the old .XLS format, which holds only 65,536 rows, about 1,400 cases per file. Everything beyond was cut off without an error. Nearly 16,000 positives missed the daily count for a week.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18024884132959645",
+  "permalink": "https://www.instagram.com/reel/DgLJh_WBGYS/",
+  "posted_at": "2026-11-25 18:14 UTC"
  },
  {
   "id": "WR15",
