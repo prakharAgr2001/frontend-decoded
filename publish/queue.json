@@ -841,10 +841,13 @@
  },
  {
   "id": "S4E06",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E06.mp4",
   "cover": "covers/S4E06.jpg",
-  "caption": "Actions, reducers, stores, middleware… sounds heavy. The core of Redux is about 10 lines. Let's write it ✍️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Actions, reducers, stores, middleware… sounds heavy. The core of Redux is about 10 lines. Let's write it ✍️\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18114114305182906",
+  "permalink": "https://www.instagram.com/reel/DgK_-3dBKHj/",
+  "posted_at": "2026-11-25 16:51 UTC"
  },
  {
   "id": "S4E07",
