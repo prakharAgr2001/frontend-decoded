@@ -851,10 +851,13 @@
  },
  {
   "id": "S4E07",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E07.mp4",
   "cover": "covers/S4E07.jpg",
-  "caption": "One feature used to mean 4 files. Same Redux, a third of the code, and yes, you can write .push() 🧰\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "One feature used to mean 4 files. Same Redux, a third of the code, and yes, you can write .push() 🧰\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18390641536227406",
+  "permalink": "https://www.instagram.com/reel/DgNiECUB9p2/",
+  "posted_at": "2026-11-26 16:27 UTC"
  },
  {
   "id": "S4E08",
