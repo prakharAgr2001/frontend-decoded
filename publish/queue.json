@@ -861,10 +861,13 @@
  },
  {
   "id": "S4E08",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E08.mp4",
   "cover": "covers/S4E08.jpg",
-  "caption": "Not just Redux. One store, many atoms, or observable objects: three ways to share state 🧩 (+ an SSR trap)\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Not just Redux. One store, many atoms, or observable objects: three ways to share state 🧩 (+ an SSR trap)\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18137489140597553",
+  "permalink": "https://www.instagram.com/reel/DgQFGvxT9p2/",
+  "posted_at": "2026-11-27 16:13 UTC"
  },
  {
   "id": "S4E09",
