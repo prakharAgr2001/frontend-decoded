@@ -219,10 +219,13 @@
  },
  {
   "id": "WR17",
-  "posted": false,
+  "posted": true,
   "video": "videos/WR17.mp4",
   "cover": "covers/WR17.jpg",
-  "caption": "A rocket and cargo worth ~$500 million exploded 37 seconds after launch. 💥\n\nAriane 5 flight 501, 1996: navigation code reused from Ariane 4 converted a 64-bit horizontal-velocity value into a 16-bit signed integer (max 32,767). Ariane 5 was faster, the value overflowed, and the backup computer, running the same code, failed too.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained"
+  "caption": "A rocket and cargo worth ~$500 million exploded 37 seconds after launch. 💥\n\nAriane 5 flight 501, 1996: navigation code reused from Ariane 4 converted a 64-bit horizontal-velocity value into a 16-bit signed integer (max 32,767). Ariane 5 was faster, the value overflowed, and the backup computer, running the same code, failed too.\n\nFull system design series on my page.\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for tech, explained in 30 seconds.\n\n#techexplained #technews #tech #india #ai #github #startup #business #techreels #explained",
+  "media_id": "18382664422210945",
+  "permalink": "https://www.instagram.com/reel/DgSro0ev2EH/",
+  "posted_at": "2026-11-28 16:27 UTC"
  },
  {
   "id": "WR18",
