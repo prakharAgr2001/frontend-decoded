@@ -871,10 +871,13 @@
  },
  {
   "id": "S4E09",
-  "posted": false,
+  "posted": true,
   "video": "videos/S4E09.mp4",
   "cover": "covers/S4E09.jpg",
-  "caption": "Your cart badge shows one number, yet it re-renders on every keystroke. Selectors fix that 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels"
+  "caption": "Your cart badge shows one number, yet it re-renders on every keystroke. Selectors fix that 🎯\n💬 Comment NOTES for the cheat sheet.\n\nFollow @tech.explained.dev for the full series.\n\n#techexplained #frontend #webdevelopment #javascript #softwareengineer #systemdesign #codinginterview #webdev #programming #techreels",
+  "media_id": "18353974906281528",
+  "permalink": "https://www.instagram.com/reel/DgSiSBaJTxj/",
+  "posted_at": "2026-11-28 15:06 UTC"
  },
  {
   "id": "S4E10",
